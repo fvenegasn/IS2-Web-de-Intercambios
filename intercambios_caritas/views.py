@@ -1,3 +1,4 @@
+import datetime
 import django
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
@@ -14,7 +15,7 @@ def register(request):
     # Si mandaron el formulario
     if request.method == "POST":
         # Almaceno datos de usuario en variables
-        nombre = request.POST['fname']
+        nombre = request.POST['nombre']
         apellido = request.POST['apellido']
         dni = request.POST['dni']
         telefono = request.POST['telefono']
@@ -39,8 +40,16 @@ def register(request):
         if len(password)<8:
             messages.error(request, "La contraseña debe tener, al menos, 8 caracteres")
             return redirect("register")
-        
-        # FALTA VALIDAR NACIMIENTO !!!!
+
+        # lo voy a poner mas lindo cuando tengamos un helpers.py
+        now = datetime.datetime.now()
+        nacimiento_parseado = datetime.datetime.strptime(nacimiento, "%Y-%m-%d")
+        edad = now.year - nacimiento_parseado.year - ((now.month, now.day) < (nacimiento_parseado.month, nacimiento_parseado.day))
+
+        if edad < 18:
+            messages.error(request, "Debe ser mayor de 18 años para registrarse en este sitio")
+            return redirect("register")
+
         
         # Si las validaciones estan OK (no entra en ningun if), crea usuario
         nuevo_usuario = User.objects.create_user(username=dni, email=email, password=password)
