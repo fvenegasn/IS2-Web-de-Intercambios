@@ -2,10 +2,13 @@ import datetime
 import django
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
+
+from intercambios_caritas.models import Usuario
 from . import views
-from django.contrib.auth.models import User
+#from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
+from is2.settings import LOGIN_ATTEMPTS_LIMIT
 
 # Create your views here.
 def home(request):
@@ -25,11 +28,11 @@ def register(request):
         password = request.POST['password']
 
         # Evaluo condiciones de registro
-        if User.objects.filter(username=dni):
+        if Usuario.objects.filter(username=dni):
             messages.error(request, "El DNI ya está registrado")
             return redirect("register")
         
-        if User.objects.filter(email=email):
+        if Usuario.objects.filter(email=email):
             messages.error(request, "El email ya se encuentra registrado")            
             return redirect("register")
         
@@ -52,12 +55,12 @@ def register(request):
 
         
         # Si las validaciones estan OK (no entra en ningun if), crea usuario
-        nuevo_usuario = User.objects.create_user(username=dni, email=email, password=password)
+        nuevo_usuario = Usuario.objects.create_user(username=dni, email=email, password=password)
         nuevo_usuario.first_name = nombre
         nuevo_usuario.last_name = apellido
-        #nuevo_usuario. = telefono
-        #nuevo_usuario.direccion = direccion
-        #nuevo_usuario.nacimiento = nacimiento
+        nuevo_usuario.telefono = telefono
+        nuevo_usuario.direccion = direccion
+        nuevo_usuario.nacimiento = nacimiento
 
         # OPCIONAL? -> activar usuario - min. 01.02.50
 
@@ -80,22 +83,30 @@ def signin(request):
         password = request.POST['password']
 
         # Método para autenticar usuario?
-        usuario = authenticate(username=dni, password=password)
+        user = authenticate(username=dni, password=password)
 
         # Si autentica OK
-        if usuario is not None: # equivalente a null
-            login(request, usuario)
-            nombre = usuario.first_name # no anda
+        if user is not None: # equivalente a null
+            login(request, user)
+            nombre = user.first_name # update 07.05 -> no me preguntes cómo pero ahora anda
             return render(request, "authentication/index.html", {'fname': nombre})
         
         # Si no autentica OK
         else:
             messages.error(request, "El DNI o la contraseña ingresadas son incorrectas")
-            # aca entiendo que tendríamos que llevar el conteo de intentos incorrectos
-            #contador_incorrectos+=1
-            #if (contador_incorrectos = 3 ):
-            #    bloquear_cuenta()
-            return redirect("signin")
+            # Me fijo que exista como usuario
+            user = Usuario.objects.filter(username=dni).first()
+            # Si existe
+            if user is not None:
+                user.login_attempts += 1
+                user.save()
+                if user.login_attempts >= LOGIN_ATTEMPTS_LIMIT:
+                    user.is_active = False
+                    user.save()
+                    messages.error(request, "Alcanzaste el máximo de intentos permitidos. Cuenta bloqueada")
+        if user.is_active == False:
+            messages.error(request, "Cuenta bloqueada")
+        return redirect("signin")
 
     return render(request, "authentication/login.html")
 
