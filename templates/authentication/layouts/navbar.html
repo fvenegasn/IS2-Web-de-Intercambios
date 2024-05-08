@@ -1,0 +1,19 @@
+</nav>
+<ul>
+    <li><a href="{% url 'main_page' %}">Inicio/IntercambiosCaritasLogo</a></li>
+    <li><a href="{% url 'home' %}">Publicar Producto</a></li>
+    <li><a href="{% url 'home' %}">Mis Intercambios</a></li>
+    <li><a href="{% url 'quienes_somos' %}">Quienes Somos</a></li>
+    <li><a href="{% url 'home' %}">Mi perfil</a></li>
+    <!-- se puede poner este id como si estuviera en index.html: -->
+    <!--     {% if user.is_authenticated %}
+    <li><button type="submit"><a href="/logout">Cerrar sesión</a></button></li>
+    {% else %}
+    <li><button type="submit"><a href="/register">Registrarse</a></button></li>
+    <li><button type="submit"><a href="/login">Iniciar sesión</a></button></li>
+    {% endif %} -->
+    <!-- lo dejo comentado para mostrarlo pero despues lo borro -->
+</ul>
+</nav>
+{% block content %}
+{% endblock %}
