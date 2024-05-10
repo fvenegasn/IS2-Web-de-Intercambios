@@ -32,21 +32,16 @@ def register(request):
 
         # Evaluo condiciones de registro
         if Usuario.objects.filter(username=dni):
-            messages.error(request, "El DNI ya está registrado")
-            return redirect("register")
+            return render(request, "authentication/register.html", {"error": "El DNI ya está registrado", "n": nombre, "a": apellido, "d": dni, "t": telefono, "dir": direccion, "nac": nacimiento, "e": email})
 
         if Usuario.objects.filter(email=email):
-            messages.error(request, "El email ya se encuentra registrado")
-            return redirect("register")
+            return render(request, "authentication/register.html", {"error": "El email ya se encuentra registrado", "n": nombre, "a": apellido, "d": dni, "t": telefono, "dir": direccion, "nac": nacimiento, "e": email})
 
         if len(dni) > 8 or len(dni) < 8:
-            messages.error(request, "El DNI debe contener 8 dígitos")
-            return redirect("register")
+            return render(request, "authentication/register.html", {"error": "El DNI debe contener 8 dígitos", "n": nombre, "a": apellido, "d": dni, "t": telefono, "dir": direccion, "nac": nacimiento, "e": email})
 
         if len(password) < 8:
-            messages.error(
-                request, "La contraseña debe tener, al menos, 8 caracteres")
-            return redirect("register")
+            return render(request, "authentication/register.html", {"error": "La contraseña debe tener, al menos, 8 caracteres", "n": nombre, "a": apellido, "d": dni, "t": telefono, "dir": direccion, "nac": nacimiento, "e": email})
 
         # lo voy a poner mas lindo cuando tengamos un helpers.py
         now = datetime.datetime.now()
@@ -56,9 +51,7 @@ def register(request):
             ((now.month, now.day) < (nacimiento_parseado.month, nacimiento_parseado.day))
 
         if edad < 18:
-            messages.error(
-                request, "Debe ser mayor de 18 años para registrarse en este sitio")
-            return redirect("register")
+            return render(request, "authentication/register.html", {"error": "Debe ser mayor de 18 años para registrarse en este sitio", "n": nombre, "a": apellido, "d": dni, "t": telefono, "dir": direccion, "nac": nacimiento, "e": email})
 
         # Si las validaciones estan OK (no entra en ningun if), crea usuario
         nuevo_usuario = Usuario.objects.create_user(
