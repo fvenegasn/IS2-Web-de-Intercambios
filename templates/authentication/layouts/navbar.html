@@ -1,19 +1,34 @@
-</nav>
-<ul>
-    <li><a href="{% url 'main_page' %}">Inicio/IntercambiosCaritasLogo</a></li>
-    <li><a href="{% url 'home' %}">Publicar Producto</a></li>
-    <li><a href="{% url 'home' %}">Mis Intercambios</a></li>
-    <li><a href="{% url 'quienes_somos' %}">Quienes Somos</a></li>
-    <li><a href="{% url 'home' %}">Mi perfil</a></li>
-    <!-- se puede poner este id como si estuviera en index.html: -->
-    <!--     {% if user.is_authenticated %}
-    <li><button type="submit"><a href="/logout">Cerrar sesión</a></button></li>
-    {% else %}
-    <li><button type="submit"><a href="/register">Registrarse</a></button></li>
-    <li><button type="submit"><a href="/login">Iniciar sesión</a></button></li>
-    {% endif %} -->
-    <!-- lo dejo comentado para mostrarlo pero despues lo borro -->
-</ul>
-</nav>
-{% block content %}
-{% endblock %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intercambios Caritas</title>
+</head>
+
+<body>
+    </nav>
+    <ul>
+        <li><a href="{% url 'home' %}">Inicio/IntercambiosCaritasLogo</a></li>
+
+        <!-- por ahora no hacen nada estos 2: -->
+        <li><a href="{% url 'home' %}">Publicar Producto</a></li>
+        <li><a href="{% url 'home' %}">Mis Intercambios</a></li>
+        <!-- por ahora no hacen nada estos 2: -->
+
+        <li><a href="{% url 'quienes_somos' %}">Quienes Somos</a></li>
+        {% if user.is_authenticated %}
+        <li><a href="{% url 'home' %}">Mi perfil</a></li>
+        <li><button type="submit"><a href="/logout">Cerrar sesión</a></button></li>
+        {% else %}
+        <li><button type="submit"><a href="/register">Registrarse</a></button></li>
+        <li><button type="submit"><a href="/login">Iniciar sesión</a></button></li>
+        {% endif %}
+    </ul>
+    </nav>
+    {% block content %}
+    {% endblock %}
+</body>
+
+</html>

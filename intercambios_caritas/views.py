@@ -90,7 +90,7 @@ def signin(request):
         if user is not None:  # equivalente a null
             login(request, user)
             nombre = user.first_name  # update 07.05 -> no me preguntes cómo pero ahora anda
-            return render(request, "authentication/index.html", {'fname': nombre})
+            return render(request, "authentication/index.html", {'aviso': f"Hola {nombre} has iniciado sesión"})
 
         # Si no autentica OK
         else:
@@ -116,13 +116,8 @@ def signin(request):
 
 def signout(request):
     logout(request)
-    messages.success(request, "Cerraste tu sesión")
-    return redirect("home")
+    return render(request, "authentication/index.html", {'aviso': "Sesión cerrada exitosamente"})
 
 
 def quienes_somos(request):
     return render(request, 'authentication/quienes_somos.html')
-
-
-def main_page(request):
-    return render(request, 'authentication/main_page.html')

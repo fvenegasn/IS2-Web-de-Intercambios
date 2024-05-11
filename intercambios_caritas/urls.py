@@ -10,5 +10,4 @@ urlpatterns = [
     path('login', views.signin, name="signin"),  # www.hola.com/login
     path('logout', views.signout, name="signout"),  # www.hola.com/logout
     path('quienes_somos', views.quienes_somos, name="quienes_somos"),
-    path('main_page', views.main_page, name="main_page")
 ]

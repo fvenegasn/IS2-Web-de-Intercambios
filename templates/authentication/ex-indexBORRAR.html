@@ -1,0 +1,30 @@
+{% extends 'authentication/layouts/navbar.html' %}
+{% block content %}
+
+{% for message in messages %}
+<div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+    <strong>Message:</strong> {{ message }}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+{% endfor %}
+
+<h1>Intercambios Cáritas</h1>
+<h2>¡Bienvenido!</h2>
+<h3>Seleccione una opción</h3>
+
+{% if user.is_authenticated %}
+<h4>Hello {{ fname }}</h4>
+<!-- TODO: anda mal, cuando te registrar y recargas la pagina el fname desaparece misteriosamente -->
+<h4>Has iniciado sesión</h4>
+<button type="submit"><a href="/logout">Cerrar sesión</a></button>
+
+{% else %}
+
+<button type="submit"><a href="/register">Registrarse</a></button>
+<button type="submit"><a href="/login">Iniciar sesión</a></button>
+
+{% endif %}
+
+{% endblock %}
