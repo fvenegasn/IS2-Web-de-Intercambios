@@ -3,6 +3,8 @@ from django.urls import path, include
 
 from intercambios_caritas import views
 
+from django.contrib.auth import views as auth_views
+
 urlpatterns = [
     path('', views.home, name="home"),  # www.hola.com/
     # www.hola.com/register/
@@ -10,4 +12,20 @@ urlpatterns = [
     path('login', views.signin, name="signin"),  # www.hola.com/login
     path('logout', views.signout, name="signout"),  # www.hola.com/logout
     path('quienes_somos', views.quienes_somos, name="quienes_somos"),
+    
+    path('reset_password/',
+         auth_views.PasswordResetView.as_view(template_name='authentication\password_reset.html'),
+         name="reset_password"), # resetear contraseña
+    
+    path('reset_password_sent/',
+         auth_views.PasswordResetDoneView.as_view(template_name='authentication\password_reset_sent.html'),
+         name="password_reset_done"), # envia el email de éxito para el reseteo de password
+    
+    path('reset/<uidb64>/<token>/',
+         auth_views.PasswordResetConfirmView.as_view(template_name='authentication\password_reset_form.html'), 
+         name="password_reset_confirm"), # link al password reset form desde el mail
+    
+    path('reset_password_complete/',
+         auth_views.PasswordResetCompleteView.as_view(template_name='authentication\password_reset_done.html'), 
+         name="password_reset_complete") # contraseña cambiada exitosamente
 ]

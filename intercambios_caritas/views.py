@@ -8,7 +8,7 @@ from . import views
 # from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
-from is2.settings import LOGIN_ATTEMPTS_LIMIT
+#from is2.settings import LOGIN_ATTEMPTS_LIMIT
 
 # Create your views here.
 
@@ -99,7 +99,7 @@ def signin(request):
             # Me fijo que exista como usuario
             user = Usuario.objects.filter(username=dni).first()
             # Si existe
-            if user is not None:
+            """if user is not None:
                 user.login_attempts += 1
                 user.save()
                 if user.login_attempts >= LOGIN_ATTEMPTS_LIMIT:
@@ -109,7 +109,7 @@ def signin(request):
                         request, "Alcanzaste el máximo de intentos permitidos. Cuenta bloqueada")
         if user.is_active == False:
             messages.error(request, "Cuenta bloqueada")
-        return redirect("signin")
+        return redirect("signin")"""
 
     return render(request, "authentication/login.html")
 
