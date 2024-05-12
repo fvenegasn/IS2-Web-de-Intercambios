@@ -132,4 +132,4 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-LOGIN_ATTEMPTS_LIMIT = 3 # establece cantidad máxima de intentos para iniciar sesión
+#LOGIN_ATTEMPTS_LIMIT = 3 # establece cantidad máxima de intentos para iniciar sesión
