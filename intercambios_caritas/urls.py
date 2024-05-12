@@ -5,6 +5,11 @@ from intercambios_caritas import views
 
 from django.contrib.auth import views as auth_views
 
+from django.conf.urls.static import static
+from django.conf import settings
+
+
+
 urlpatterns = [
     path('', views.home, name="home"),  # www.hola.com/
     # www.hola.com/register/
@@ -28,5 +33,6 @@ urlpatterns = [
     path('reset_password_complete/',
          auth_views.PasswordResetCompleteView.as_view(template_name='authentication\password_reset_done.html'), 
          name="password_reset_complete"), # contraseña cambiada exitosamente
-    path('mi_pefil', views.ver_perfil ,name = "mi_perfil")
-]
+    path('mi_pefil', views.ver_perfil ,name = "mi_perfil"),
+    path('crear_publicacion', views.crear_publicacion,name="crear_publicacion")
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

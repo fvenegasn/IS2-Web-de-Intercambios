@@ -10,16 +10,16 @@
 <body>
     </nav>
     <ul>
-        <li><a href="{% url 'home' %}">Inicio/IntercambiosCaritasLogo</a></li>
+        <li><button type="submit"><a href="{% url 'home' %}">Inicio/IntercambiosCaritasLogo</a></button></li>
 
         <!-- por ahora no hacen nada estos 2: -->
-        <li><a href="{% url 'home' %}">Publicar Producto</a></li>
-        <li><a href="{% url 'home' %}">Mis Intercambios</a></li>
+        <li><button type="submit"><a href="{% url 'crear_publicacion' %}">Publicar Producto</a></button></li>
+        <li><button type="submit"><a href="{% url 'home' %}">Mis Intercambios</a></button></li>
         <!-- por ahora no hacen nada estos 2: -->
 
-        <li><a href="{% url 'quienes_somos' %}">Quienes Somos</a></li>
+        <li><button type="submit"><a href="{% url 'quienes_somos' %}">Quienes Somos</a></button></li>
         {% if user.is_authenticated %}
-        <li><a href="{% url 'home' %}">Mi perfil</a></li>
+        <li><button type="submit"><a href="{% url 'home' %}">Mi perfil</a></button></li>
         <li><button type="submit"><a href="/logout">Cerrar sesión</a></button></li>
         {% else %}
         <li><button type="submit"><a href="/register">Registrarse</a></button></li>

@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
+import os
 from pathlib import Path
 from . info import *
 
@@ -136,3 +137,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 #LOGIN_ATTEMPTS_LIMIT = 3 # establece cantidad máxima de intentos para iniciar sesión
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

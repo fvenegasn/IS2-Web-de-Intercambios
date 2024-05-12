@@ -3,12 +3,18 @@
 
 <p>{{aviso}}</p><!-- esto es para avisar que abriste o cerraste sesion, borre lo de los mensajes -->
 <h1>PAGINA PRINCIPAL</h1> <!-- TODO: cambiar el nombre de esta pagina a index.html? -->
-<h2>aca iria una lista de los productos:</h2>
-<p>producto 1</p>
-<p>producto 2</p>
-<p>producto 3</p>
-<p>producto 4</p>
-<p>producto 5</p>
-<p>producto 6</p>
-<p>producto 7</p>
+<h2>Lista de Publicaciones</h2>
+    <ul>
+        {% for publicacion in publicaciones %}
+            <li>
+                <h2>{{ publicacion.nombre }}</h2>
+                <p>Categoría: {{ publicacion.categoria }}</p>
+                <p>Descripción: {{ publicacion.descripcion }}</p>
+                <p>Imagen: <img src="{{ publicacion.imagen.url }}" alt="Imagen de la publicación"></p>
+                <p>Estado: {{ publicacion.estado }}</p>
+                <p>Punto de encuentro: {{ publicacion.punto_encuentro }}</p>
+                <!-- Agrega más campos según tus necesidades -->
+            </li>
+        {% endfor %}
+    </ul>
 {% endblock %}

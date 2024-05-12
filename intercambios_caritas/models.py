@@ -23,3 +23,18 @@ class Usuario(AbstractUser):
             self.direccion = direccion
         if nacimiento is not None:
             self.nacimiento = nacimiento
+
+    def __str__(self):
+        return self.username
+
+class Publicacion(models.Model):
+
+    nombre = models.CharField(max_length=50, blank=False, null=False)
+    categoria = models.CharField(max_length=50, blank=False, null=False)
+    descripcion = models.CharField(max_length=280, blank=True,null=True)
+    imagen = models.ImageField()
+    estado = models.CharField(max_length=50, blank=True, null=True)
+    punto_encuentro = models.CharField(max_length=50, blank=True, null=True)
+
+    def __str__(self):
+        return self.nombre

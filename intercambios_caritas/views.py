@@ -3,7 +3,8 @@ import django
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
 
-from intercambios_caritas.models import Usuario
+from intercambios_caritas.forms import PublicacionForm
+from intercambios_caritas.models import Usuario, Publicacion
 from . import views
 # from django.contrib.auth.models import User
 from django.contrib import messages
@@ -14,7 +15,8 @@ from django.contrib.auth import authenticate, login, logout
 
 
 def home(request):
-    return render(request, 'authentication/index.html')
+    publicaciones = Publicacion.objects.all()
+    return render(request, 'authentication/index.html', {'publicaciones': publicaciones})
 
 
 def register(request):
@@ -130,3 +132,17 @@ def ver_perfil(request):
 
     # render
     pass
+
+def crear_publicacion(request):
+    form = PublicacionForm()
+    if request.method == 'POST':
+        form = PublicacionForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Publicación creada con éxito!")
+            return redirect('home')
+        else:
+            messages.error(request, "Publicación no creada")
+    else:
+        messages.error(request, "Mensaje 1!")
+    return render(request, 'publicacion/crear_publicacion.html', {'form': form})
