@@ -27,5 +27,6 @@ urlpatterns = [
     
     path('reset_password_complete/',
          auth_views.PasswordResetCompleteView.as_view(template_name='authentication\password_reset_done.html'), 
-         name="password_reset_complete") # contraseña cambiada exitosamente
+         name="password_reset_complete"), # contraseña cambiada exitosamente
+    path('mi_pefil', views.ver_perfil ,name = "mi_perfil")
 ]

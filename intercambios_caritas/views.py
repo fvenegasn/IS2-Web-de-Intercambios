@@ -121,3 +121,12 @@ def signout(request):
 
 def quienes_somos(request):
     return render(request, 'authentication/quienes_somos.html')
+
+
+def ver_perfil(request):
+    # obtener el usuario
+
+    # guardar cada atributo
+
+    # render
+    pass
