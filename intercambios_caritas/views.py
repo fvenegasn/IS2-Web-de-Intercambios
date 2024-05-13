@@ -138,7 +138,9 @@ def crear_publicacion(request):
     if request.method == 'POST':
         form = PublicacionForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
+            publicacion = form.save()
+            publicacion.usuario = request.user.first_name
+            publicacion.save()
             messages.success(request, "Publicación creada con éxito!")
             return redirect('home')
         else:
