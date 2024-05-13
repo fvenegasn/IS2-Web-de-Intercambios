@@ -143,6 +143,4 @@ def crear_publicacion(request):
             return redirect('home')
         else:
             messages.error(request, "Publicación no creada")
-    else:
-        messages.error(request, "Mensaje 1!")
     return render(request, 'publicacion/crear_publicacion.html', {'form': form})

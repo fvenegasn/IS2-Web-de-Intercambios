@@ -19,9 +19,15 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
+                {% if user.is_authenticated %}
                 <li class="nav-item">
                     <a href="{% url 'crear_publicacion' %}" class="nav-link">Publicar Producto</a>
                 </li>
+                {% else %}
+                <li class="nav-item">
+                    <a href="{% url 'signin' %}" class="nav-link">Publicar Producto</a>
+                </li>
+                {% endif %}
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'home' %}">Mis Intercambios</a>
                     <!-- TODO: yo pondria ver mis intercambios adentro de mi perfil -->
