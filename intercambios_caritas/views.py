@@ -126,12 +126,7 @@ def quienes_somos(request):
 
 
 def ver_perfil(request):
-    # obtener el usuario
-
-    # guardar cada atributo
-
-    # render
-    pass
+    return render(request, 'administracion_usuarios/mi_perfil.html')
 
 def crear_publicacion(request):
     form = PublicacionForm()

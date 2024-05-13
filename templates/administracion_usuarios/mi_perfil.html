@@ -1,0 +1,16 @@
+{% extends 'authentication/layouts/navbar.html' %}
+{% block content %}
+
+<h1>Mi Perfil </h1> <!-- TODO: cambiar el nombre de esta pagina a index.html? -->
+<h2>{{ user.first_name }} {{ user.last_name }}</h2>
+<h3><u>Información General</u></h3>
+<p><b>Fecha Nacimiento:</b> {{ user.nacimiento}}</p>
+<p><b>Fecha de Registro:</b> {{ user.date_joined}}</p>
+<p><b>DNI:</b>{{ user.username}}</p>
+
+<h3><u>Datos de Contacto</u></h3>
+<p><b>Mail:</b> {{ user.email}}</p>
+<p><b>Dirección:</b> {{ user.direccion}}</p>
+<p><b>Teléfono:</b> {{ user.telefono}}</p>
+
+{% endblock %}

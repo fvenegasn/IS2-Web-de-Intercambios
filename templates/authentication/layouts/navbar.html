@@ -19,7 +19,7 @@
 
         <li><button type="submit"><a href="{% url 'quienes_somos' %}">Quienes Somos</a></button></li>
         {% if user.is_authenticated %}
-        <li><button type="submit"><a href="{% url 'home' %}">Mi perfil</a></button></li>
+        <li><button type="submit"><a href="{% url 'mi_perfil' %}">Mi perfil</a></button></li>
         <li><button type="submit"><a href="/logout">Cerrar sesión</a></button></li>
         {% else %}
         <li><button type="submit"><a href="/register">Registrarse</a></button></li>
