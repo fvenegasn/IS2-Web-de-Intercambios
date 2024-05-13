@@ -1,58 +1,57 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    {% for message in messages %}
-    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-        <strong>Message:</strong> {{ message }}
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-    {% endfor %}
+{% extends 'layouts/base.html' %}
+<!-- esto es para que se herede la estructura html y estilos del archivo base -->
+{% block title %}Quienes Somos{% endblock %}
+<!-- titulo personalizado -->
 
-    <h1>Intercambios Cáritas</h1>
-    <h2>Publicar un producto</h2>
+{% block content %}
+{% include 'layouts/navbar.html' %}
+<!-- esto es para que se vea el navbar  -->
 
-    <form action="/crear_publicacion" method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        <label for="nombre">Nombre:</label>
-        <input type="text" id="nombre" name="nombre" required><br><br>
-    
-        <label for="descripcion">Descripción:</label>
-        <textarea id="descripcion" name="descripcion"></textarea><br><br>
-    
-        <label for="categoria">Categoría:</label>
-        <select id="categoria" name="categoria" required>
-            <option value="Ropa">Ropa</option>
-            <option value="Alimentos">Alimentos</option>
-            <option value="Utiles">Útiles escolares</option>
-            <option value="Limpieza">Artículos de limpieza</option>
-        </select><br><br>
-    
-        <label for="imagen">Imagen:</label>
-        <input type="file" id="imagen" name="imagen" required><br><br>
-    
-        <label for="estado">Estado:</label>
-        <input type="radio" id="nuevo" name="estado" value="Nuevo">
-        <label for="Nuevo">Nuevo</label>
-        <input type="radio" id="usado" name="estado" value="Usado">
-        <label for="Usado">Usado</label><br><br>
-    
-        <label for="punto_encuentro">Punto de encuentro:</label>
-        <select id="punto_encuentro" name="punto_encuentro">
-            <option value="lp">La Plata</option>
-            <option value="caba">CABA</option>
-            <option value="quilmes">Quilmes</option>
-            <option value="temperley">Temperley</option>
-        </select><br><br>
-    
-        <input type="submit" value="Crear">
-    </form>
-    
-</body>
-</html>
+{% for message in messages %}
+<div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+    <strong>Message:</strong> {{ message }}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+{% endfor %}
+
+<h1>Publicar un producto</h1>
+
+<form action="/crear_publicacion" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <label for="nombre">Nombre:</label>
+    <input type="text" id="nombre" name="nombre" required><br><br>
+
+    <label for="descripcion">Descripción:</label>
+    <textarea id="descripcion" name="descripcion"></textarea><br><br>
+
+    <label for="categoria">Categoría:</label>
+    <select id="categoria" name="categoria" required>
+        <option value="Ropa">Ropa</option>
+        <option value="Alimentos">Alimentos</option>
+        <option value="Utiles">Útiles escolares</option>
+        <option value="Limpieza">Artículos de limpieza</option>
+    </select><br><br>
+
+    <label for="imagen">Imagen:</label>
+    <input type="file" id="imagen" name="imagen" required><br><br>
+
+    <label for="estado">Estado:</label>
+    <input type="radio" id="nuevo" name="estado" value="Nuevo">
+    <label for="Nuevo">Nuevo</label>
+    <input type="radio" id="usado" name="estado" value="Usado">
+    <label for="Usado">Usado</label><br><br>
+
+    <label for="punto_encuentro">Punto de encuentro:</label>
+    <select id="punto_encuentro" name="punto_encuentro">
+        <option value="lp">La Plata</option>
+        <option value="caba">CABA</option>
+        <option value="quilmes">Quilmes</option>
+        <option value="temperley">Temperley</option>
+    </select><br><br>
+
+    <input type="submit" value="Crear">
+</form>
+
+{% endblock %}

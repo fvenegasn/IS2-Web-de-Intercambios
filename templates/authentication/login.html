@@ -1,37 +1,31 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'layouts/base.html' %}
+<!-- esto es para que se herede la estructura html y estilos del archivo base -->
+{% block title %}Login{% endblock %}
+<!-- titulo personalizado -->
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Intercambios Caritas</title>
-</head>
+{% block content %}
 
-<body>
+{% for message in messages %}
+<div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+    <strong>Message:</strong> {{ message }}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+{% endfor %}
 
-    {% for message in messages %}
-    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-        <strong>Message:</strong> {{ message }}
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-    {% endfor %}
-
-    <h1>Intercambios Cáritas</h1>
-    <h2>Inicio de sesión</h2>
-    <form action="/login" method="post">
-        {% csrf_token %}
-        <label for="">DNI</label>
-        <input type="text" id="dni" name="dni" placeholder="Ingrese su DNI" required>
-        <br>
-        <label for="">Contraseña</label>
-        <input type="password" id="password" name="password" placeholder="Ingrese su contraseña" required>
-        <br>
-        <button type="submit">Confirmar</button>
-    </form>
-    <div><a href="{% url 'reset_password' %}"> Olvidaste la contraseña?</a>
-    </div>
-</body>
-
-</html>
+<h1>Intercambios Cáritas</h1>
+<h2>Inicio de sesión</h2>
+<form action="/login" method="post">
+    {% csrf_token %}
+    <label for="">DNI</label>
+    <input type="text" id="dni" name="dni" placeholder="Ingrese su DNI" required>
+    <br>
+    <label for="">Contraseña</label>
+    <input type="password" id="password" name="password" placeholder="Ingrese su contraseña" required>
+    <br>
+    <button type="submit">Confirmar</button>
+</form>
+<div><a href="{% url 'reset_password' %}"> Olvidaste la contraseña?</a>
+</div>
+{% endblock %}

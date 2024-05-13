@@ -1,20 +1,51 @@
-{% extends 'authentication/layouts/navbar.html' %}
+{% extends 'layouts/base.html' %}
+<!-- esto es para que se herede la estructura html y estilos del archivo base -->
 {% block content %}
+{% include 'layouts/navbar.html' %}
+<!-- esto es para que se vea el navbar  -->
 
-<p>{{aviso}}</p><!-- esto es para avisar que abriste o cerraste sesion, borre lo de los mensajes -->
-<h1>PAGINA PRINCIPAL</h1> <!-- TODO: cambiar el nombre de esta pagina a index.html? -->
-<h2>Lista de Publicaciones</h2>
-    <ul>
-        {% for publicacion in publicaciones %}
-            <li>
-                <h2>{{ publicacion.nombre }}</h2>
-                <p>Categoría: {{ publicacion.categoria }}</p>
-                <p>Descripción: {{ publicacion.descripcion }}</p>
-                <p>Imagen: <img src="{{ publicacion.imagen.url }}" alt="Imagen de la publicación"></p>
-                <p>Estado: {{ publicacion.estado }}</p>
-                <p>Punto de encuentro: {{ publicacion.punto_encuentro }}</p>
-                <!-- Agrega más campos según tus necesidades -->
-            </li>
-        {% endfor %}
-    </ul>
+<p>{{aviso}}</p> <!-- esto es para avisar que abriste o cerraste sesion -->
+<h1 class="d-flex justify-content-center align-items-center"> Bienvendo a intercambios Caritas</h1>
+<div class="row">
+    <div class="col-md-3">
+        <h2>Filtros</h2>
+        <form action="/filtrar" method="post">
+            {% csrf_token %}
+            <label for="ropa">Ropa.</label>
+            <input type="checkbox" id="ropa" name="ropa" value="Ropa">
+            <br>
+            <label for="alimentos">Alimentos.</label>
+            <input type="checkbox" id="alimentos" name="alimentos" value="Alimentos">
+            <br>
+            <label for="utiles">Útiles escolares.</label>
+            <input type="checkbox" id="utiles" name="utiles" value="Utiles">
+            <br>
+            <label for="limpieza">Artíc. de limpieza.</label>
+            <input type="checkbox" id="limpieza" name="limpieza" value="Limpieza">
+            <br>
+            <button type="submit">Actualizar</button>
+        </form>
+    </div>
+    <div class="col-md-9">
+        <div class="row">
+            {% for publicacion in publicaciones %}
+            <div class="col-md-4">
+                <div class="card">
+                    <img src="{{ publicacion.imagen.url }}" class="card-img-top" alt="Imagen de la publicación">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ publicacion.nombre }}</h5>
+                        <p class="card-text">Categoría: {{ publicacion.categoria }}</p>
+                        <p class="card-text">Descripción: {{ publicacion.descripcion }}</p>
+                        <p class="card-text">Estado: {{ publicacion.estado }}</p>
+                        <p class="card-text">Punto de encuentro: {{ publicacion.punto_encuentro }}</p>
+                        <!-- Agrega más campos según tus necesidades -->
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+
 {% endblock %}

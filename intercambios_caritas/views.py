@@ -9,7 +9,7 @@ from . import views
 # from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
-#from is2.settings import LOGIN_ATTEMPTS_LIMIT
+# from is2.settings import LOGIN_ATTEMPTS_LIMIT
 
 # Create your views here.
 
@@ -118,7 +118,11 @@ def signin(request):
 
 def signout(request):
     logout(request)
-    return render(request, "authentication/index.html", {'aviso': "Sesión cerrada exitosamente"})
+    return home(request)
+
+
+"""TODO: error por lo que no cargaban las publicaciones cuando se cerraban las sesiones
+render(request, "authentication/index.html", {'aviso': "Sesión cerrada exitosamente"})  """
 
 
 def quienes_somos(request):
@@ -127,6 +131,7 @@ def quienes_somos(request):
 
 def ver_perfil(request):
     return render(request, 'administracion_usuarios/mi_perfil.html')
+
 
 def crear_publicacion(request):
     form = PublicacionForm()

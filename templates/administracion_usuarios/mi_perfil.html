@@ -1,7 +1,12 @@
-{% extends 'authentication/layouts/navbar.html' %}
+{% extends 'layouts/base.html' %}
+<!-- esto es para que se herede la estructura html y estilos del archivo base -->
+{% block title %}Mi Perfil{% endblock %}
+<!-- titulo personalizado -->
 {% block content %}
+{% include 'layouts/navbar.html' %}
+<!-- esto es para que se vea el navbar  -->
 
-<h1>Mi Perfil </h1> <!-- TODO: cambiar el nombre de esta pagina a index.html? -->
+<h1>Mi Perfil </h1>
 <h2>{{ user.first_name }} {{ user.last_name }}</h2>
 <h3><u>Información General</u></h3>
 <p><b>Fecha Nacimiento:</b> {{ user.nacimiento}}</p>
