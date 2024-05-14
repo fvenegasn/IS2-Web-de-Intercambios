@@ -35,6 +35,7 @@ class Publicacion(models.Model):
     imagen = models.ImageField()
     estado = models.CharField(max_length=50, blank=True, null=True)
     punto_encuentro = models.CharField(max_length=50, blank=True, null=True)
+    # TODO -> ver como integrar con models.ForeignKey
     usuario_dni = models.CharField(max_length=150,default="")
     usuario_nombre = models.CharField(max_length=150,default="")
 
