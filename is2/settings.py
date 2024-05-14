@@ -10,7 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
-import os
+import os  # lo importe para generar la ruta de los archivos estaticos y el favicon
 from pathlib import Path
 from . info import *
 
@@ -21,8 +21,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'jmfdesarrollos@gmail.com' 
-EMAIL_HOST_PASSWORD =  'jjqd kolz bqaj hiit' #'JMFdesarrollos!1' #TODO: ver como encriptar para no dejar en el codigo
+EMAIL_HOST_USER = 'jmfdesarrollos@gmail.com'
+# 'JMFdesarrollos!1' #TODO: ver como encriptar para no dejar en el codigo
+EMAIL_HOST_PASSWORD = 'jjqd kolz bqaj hiit'
 EMAIL_PORT = 587
 
 
@@ -37,7 +38,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-STATICFILES_DIRS = ['templates/'] # esto es para llamar a los estilos, ver como hacer para referenciar bien
+# esto es para llamar a los estilos, ver como hacer para referenciar bien
+STATICFILES_DIRS = ['templates/']
 
 # Application definition
 
@@ -128,7 +130,14 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-STATIC_URL = 'static/'
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# aca pongo la carpeta donde estan los archivos estaticos y el favicon
+STATIC_URL = '/static/'
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
@@ -136,7 +145,7 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-#LOGIN_ATTEMPTS_LIMIT = 3 # establece cantidad máxima de intentos para iniciar sesión
+# LOGIN_ATTEMPTS_LIMIT = 3 # establece cantidad máxima de intentos para iniciar sesión
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
