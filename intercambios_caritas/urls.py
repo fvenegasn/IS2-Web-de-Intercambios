@@ -34,5 +34,6 @@ urlpatterns = [
          auth_views.PasswordResetCompleteView.as_view(template_name='authentication\password_reset_done.html'), 
          name="password_reset_complete"), # contraseña cambiada exitosamente
     path('mi_pefil', views.ver_perfil ,name = "mi_perfil"),
-    path('crear_publicacion', views.crear_publicacion,name="crear_publicacion")
+    path('crear_publicacion', views.crear_publicacion,name="crear_publicacion"),
+    path('mis_publicaciones', views.mis_publicaciones, name="mis_publicaciones")
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

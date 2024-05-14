@@ -93,7 +93,7 @@ def signin(request):
             login(request, user)
             nombre = user.first_name  # update 07.05 -> no me preguntes cómo pero ahora anda
             return render(request, "authentication/index.html", {'aviso': f"Hola {nombre} has iniciado sesión"})
-
+            #TODO: como devolver y que no limpie las publicaciones
         # Si no autentica OK
         else:
             messages.error(
@@ -139,10 +139,17 @@ def crear_publicacion(request):
         form = PublicacionForm(request.POST, request.FILES)
         if form.is_valid():
             publicacion = form.save()
-            publicacion.usuario = request.user.first_name
+            publicacion.usuario_dni = request.user.username
+            publicacion.usuario_nombre = request.user.first_name
             publicacion.save()
             messages.success(request, "Publicación creada con éxito!")
             return redirect('home')
         else:
             messages.error(request, "Publicación no creada")
     return render(request, 'publicacion/crear_publicacion.html', {'form': form})
+
+def mis_publicaciones(request):
+    usuario_actual = request.user.username
+    publicaciones = Publicacion.objects.filter(usuario_dni = usuario_actual)
+    return render(request, 'publicacion/mis_publicaciones.html', {'publicaciones': publicaciones}) # si le pasas index anda
+

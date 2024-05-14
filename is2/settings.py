@@ -22,7 +22,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'jmfdesarrollos@gmail.com'
-# 'JMFdesarrollos!1' #TODO: ver como encriptar para no dejar en el codigo
+#TODO: ver como encriptar para no dejar en el codigo
 EMAIL_HOST_PASSWORD = 'jjqd kolz bqaj hiit'
 EMAIL_PORT = 587
 
