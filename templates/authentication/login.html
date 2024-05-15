@@ -5,7 +5,7 @@
 
 {% block content %}
 
-{% for message in messages %}
+{% for message in messages %} <!-- TODO: buscar nueva forma de mostrar avisos -->
 <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
     <strong>Message:</strong> {{ message }}
     <button type="button" class="close" data-dismiss="alert" aria-label="Close">

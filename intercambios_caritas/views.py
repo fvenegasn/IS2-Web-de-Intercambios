@@ -72,7 +72,8 @@ def register(request):
 
         # Lleva al home
         messages.success(request, "Cuenta creada con éxito!")
-        return redirect('home')
+        return redirect('signin')
+        """ redirecciono al login, no al home """
 
     return render(request, "authentication/register.html")
 
@@ -91,38 +92,21 @@ def signin(request):
         # Si autentica OK
         if user is not None:  # equivalente a null
             login(request, user)
-            nombre = user.first_name  # update 07.05 -> no me preguntes cómo pero ahora anda
-            return render(request, "authentication/index.html", {'aviso': f"Hola {nombre} has iniciado sesión"})
-            #TODO: como devolver y que no limpie las publicaciones
+            return redirect('home')
         # Si no autentica OK
         else:
             messages.error(
                 request, "El DNI o la contraseña ingresadas son incorrectas")
-            # Me fijo que exista como usuario
-            user = Usuario.objects.filter(username=dni).first()
-            # Si existe
-            """if user is not None:
-                user.login_attempts += 1
-                user.save()
-                if user.login_attempts >= LOGIN_ATTEMPTS_LIMIT:
-                    user.is_active = False
-                    user.save()
-                    messages.error(
-                        request, "Alcanzaste el máximo de intentos permitidos. Cuenta bloqueada")
-        if user.is_active == False:
-            messages.error(request, "Cuenta bloqueada")
-        return redirect("signin")"""
+
+        """ return redirect("signin")""" """ TODO: ver por que funciona ese ultimo else sin el redirect """
 
     return render(request, "authentication/login.html")
 
 
 def signout(request):
     logout(request)
-    return home(request)
-
-
-"""TODO: error por lo que no cargaban las publicaciones cuando se cerraban las sesiones
-render(request, "authentication/index.html", {'aviso': "Sesión cerrada exitosamente"})  """
+    return redirect('home')
+    """ con redirect muestra las publicaciones, con render(request, "authentication/index.html") parece que no y con return home(request) el url no cambia queda /logout"""
 
 
 def quienes_somos(request):
@@ -148,8 +132,9 @@ def crear_publicacion(request):
             messages.error(request, "Publicación no creada")
     return render(request, 'publicacion/crear_publicacion.html', {'form': form})
 
+
 def mis_publicaciones(request):
     usuario_actual = request.user.username
-    publicaciones = Publicacion.objects.filter(usuario_dni = usuario_actual)
-    return render(request, 'publicacion/mis_publicaciones.html', {'publicaciones': publicaciones}) # si le pasas index anda
-
+    publicaciones = Publicacion.objects.filter(usuario_dni=usuario_actual)
+    # si le pasas index anda
+    return render(request, 'publicacion/mis_publicaciones.html', {'publicaciones': publicaciones})

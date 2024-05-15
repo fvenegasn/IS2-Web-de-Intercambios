@@ -4,27 +4,26 @@
 {% include 'layouts/navbar.html' %}
 <!-- esto es para que se vea el navbar  -->
 
-<p>{{aviso}}</p> <!-- esto es para avisar que abriste o cerraste sesion -->
 <h1 class="d-flex justify-content-center align-items-center"> Mis publicaciones</h1>
-    <div class="col-md-9">
-        <div class="row">
-            {% for publicacion in publicaciones %}
-            <div class="col-md-4">
-                <div class="card">
-                    <img src="{{ publicacion.imagen.url }}" class="card-img-top" alt="Imagen de la publicación">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ publicacion.nombre }}</h5>
-                        <p class="card-text"><u>Categoría</u>: {{ publicacion.categoria }}</p>
-                        <p class="card-text"><u>Descripción</u>: {{ publicacion.descripcion }}</p>
-                        <p class="card-text"><u>Estado:</u> {{ publicacion.estado }}</p>
-                        <p class="card-text"><u>Punto de encuentro</u>: {{ publicacion.punto_encuentro }}</p>
-                        <!-- Agrega más campos según tus necesidades -->
-                    </div>
+<div class="col-md-9">
+    <div class="row">
+        {% for publicacion in publicaciones %}
+        <div class="col-md-4">
+            <div class="card">
+                <img src="{{ publicacion.imagen.url }}" class="card-img-top" alt="Imagen de la publicación">
+                <div class="card-body">
+                    <h5 class="card-title">{{ publicacion.nombre }}</h5>
+                    <p class="card-text"><u>Categoría</u>: {{ publicacion.categoria }}</p>
+                    <p class="card-text"><u>Descripción</u>: {{ publicacion.descripcion }}</p>
+                    <p class="card-text"><u>Estado:</u> {{ publicacion.estado }}</p>
+                    <p class="card-text"><u>Punto de encuentro</u>: {{ publicacion.punto_encuentro }}</p>
+                    <!-- Agrega más campos según tus necesidades -->
                 </div>
             </div>
-            {% endfor %}
         </div>
+        {% endfor %}
     </div>
+</div>
 </div>
 
 
