@@ -1,0 +1,170 @@
+
+
+/* Reset some default browser styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body styling */
+body {
+    font-family: 'Arial', sans-serif;
+    line-height: 1.6;
+    background-color: #f7f7f7;
+    color: #333;
+    padding: 20px;
+}
+
+/* Header styling */
+header {
+    background: #0056b3;
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+}
+
+/* Main content area */
+main {
+    margin: 20px auto;
+    max-width: 800px;
+    padding: 20px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+    margin-bottom: 15px;
+    color: #0056b3;
+}
+
+/* Paragraphs */
+p {
+    margin-bottom: 15px;
+}
+
+/* Links */
+a {
+    color: #0056b3;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Lists */
+ul {
+    list-style: none;
+    margin: 15px 0;
+    padding: 0;
+}
+
+ul li {
+    background: #e6f0ff;
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid #d0e0f7;
+}
+
+/* Form elements */
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+input, select {
+    margin-bottom: 15px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+input[type="submit"] {
+    background: #0056b3;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    padding: 10px 20px;
+    font-size: 16px;
+}
+
+input[type="submit"]:hover {
+    background: #004494;
+}
+
+/* Footer styling */
+footer {
+    background: #0056b3;
+    color: #fff;
+    text-align: center;
+    padding: 20px;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+}
+
+.navbar-custom{
+    background: #004684;
+}
+
+/* Botones */
+.nav-link{
+    color: #fff;
+}
+.nav-link:hover, .nav-link:focus {
+    color: #AF3336 !important;
+}
+
+.nav-item{
+    background: #004684;
+    color: #fff;
+    border-color: #004684;
+}
+
+/* Carrousel */
+
+.custom-h1-bg {
+    background-color: #f0f8ff;
+    /* Light blue background */
+    padding: 20px;
+    border-radius: 5px;
+}
+
+.custom-carousel-bg {
+    background-color: #e6e6fa;
+    /* Light lavender background */
+    padding: 10px;
+    border-radius: 5px;
+}
+
+
+/* Custom styles for the button */
+.btn-custom {
+    background-color: #AF3336!important; 
+    color: #fff!important;
+    border: none!important;
+    padding: 10px 20px !important;
+    font-size: 16px !important;
+    border-radius: 5px !important;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+    text-align: center !important;
+    display: block !important;
+    width: 100% !important;
+    margin: 10px 0 !important;
+    transition: background-color 0.3s ease !important;
+}
+
+.btn-custom:hover {
+    background-color: #0056b3 !important;
+    cursor: pointer !important;
+}
