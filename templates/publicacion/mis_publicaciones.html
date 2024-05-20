@@ -5,24 +5,28 @@
 <!-- esto es para que se vea el navbar  -->
 
 <h1 class="d-flex justify-content-center align-items-center"> Mis publicaciones</h1>
-<div class="col-md-9">
     <div class="row">
-        {% for publicacion in publicaciones %}
-        <div class="col-md-4">
-            <div class="card">
-                <img src="{{ publicacion.imagen.url }}" class="card-img-top" alt="Imagen de la publicación">
-                <div class="card-body">
-                    <h5 class="card-title">{{ publicacion.nombre }}</h5>
-                    <p class="card-text"><u>Categoría</u>: {{ publicacion.categoria }}</p>
-                    <p class="card-text"><u>Descripción</u>: {{ publicacion.descripcion }}</p>
-                    <p class="card-text"><u>Estado:</u> {{ publicacion.estado }}</p>
-                    <p class="card-text"><u>Punto de encuentro</u>: {{ publicacion.punto_encuentro }}</p>
-                    <!-- Agrega más campos según tus necesidades -->
+        {% if publicaciones %}
+            {% for publicacion in publicaciones %}
+            <div class="col-md-4">
+                <div class="card">
+                    <img src="{{ publicacion.imagen.url }}" class="card-img-top" alt="Imagen de la publicación">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ publicacion.nombre }}</h5>
+                        <p class="card-text"><u>Categoría</u>: {{ publicacion.categoria }}</p>
+                        <p class="card-text"><u>Descripción</u>: {{ publicacion.descripcion }}</p>
+                        <p class="card-text"><u>Estado:</u> {{ publicacion.estado }}</p>
+                        <p class="card-text"><u>Punto de encuentro</u>: {{ publicacion.punto_encuentro }}</p>
+                        <!-- Agrega más campos según tus necesidades -->
+                    </div>
                 </div>
             </div>
+            {% endfor %}
+        {% else %}
+        <div class="container text-center">
+            <p style="font-size: 1.2rem; color: #555; text-align: center; margin-top: 20px;">No hay publicaciones en este momento.</p>
         </div>
-        {% endfor %}
-    </div>
+        {% endif %}
 </div>
 </div>
 
