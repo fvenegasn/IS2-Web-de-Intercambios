@@ -72,7 +72,7 @@ def register(request):
 
         # Lleva al home
         messages.success(request, "Cuenta creada con éxito!")
-        return redirect('signin')
+        return redirect('home')
         """ redirecciono al login, no al home """
 
     return render(request, "authentication/register.html")
