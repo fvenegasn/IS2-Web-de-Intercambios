@@ -5,27 +5,38 @@
 
 {% block content %}
 
-{% for message in messages %} <!-- TODO: buscar nueva forma de mostrar avisos -->
-<div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-    <strong>Message:</strong> {{ message }}
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-    </button>
+<div class="d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+    <div class="card" style="width: 40rem;">
+        <div class="card-body">
+            <div class="text-center">
+                <h1>Intercambios Cáritas</h1>
+                <h2>Inicio de sesión</h2>
+            </div>
+            <form action="/login" method="post">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="dni" class="form-label">DNI</label>
+                    <input type="text" id="dni" name="dni" value="{{ d }}" class="form-control"
+                        placeholder="Ingrese su DNI" required>
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Contraseña</label>
+                    <input type="password" id="password" name="password" class="form-control"
+                        placeholder="Ingrese su contraseña" required>
+                </div>
+                {% if alerta %}
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    {{ alerta }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                {% endif %}
+                <button type="submit" class="btn btn-primary btn-block">Confirmar</button>
+            </form>
+            <div class="text-center mt-3">
+                <a href="{% url 'reset_password' %}">¿Olvidaste tu contraseña?</a><br>
+                <a href="{% url 'register' %}">¿Nuevo en el sistema?</a>
+            </div>
+        </div>
+    </div>
 </div>
-{% endfor %}
-
-<h1>Intercambios Cáritas</h1>
-<h2>Inicio de sesión</h2>
-<form action="/login" method="post">
-    {% csrf_token %}
-    <label for="">DNI</label>
-    <input type="text" id="dni" name="dni" placeholder="Ingrese su DNI" required>
-    <br>
-    <label for="">Contraseña</label>
-    <input type="password" id="password" name="password" placeholder="Ingrese su contraseña" required>
-    <br>
-    <button type="submit">Confirmar</button>
-</form>
-<div><a href="{% url 'reset_password' %}"> Olvidaste la contraseña?</a></div>
-<div><a href="{% url 'register' %}">Sos nuevo en el sistema?</a></div>
 {% endblock %}

@@ -1,5 +1,3 @@
-
-
 /* Reset some default browser styles */
 * {
     margin: 0;
@@ -7,42 +5,49 @@
     box-sizing: border-box;
 }
 
+html {
+    scroll-behavior: smooth;
+    /* font-size: 62.5%;
+    1rem = 10px */
+}
+
 /* Body styling */
 body {
+    /* font-size: 1.6rem; */
     font-family: 'Arial', sans-serif;
     line-height: 1.6;
     background-color: #f7f7f7;
     color: #333;
-    padding: 20px;
 }
 
 /* Header styling */
 header {
     background: #0056b3;
     color: #fff;
-    padding: 20px;
     text-align: center;
 }
 
 /* Main content area */
 main {
-    margin: 20px auto;
-    max-width: 800px;
-    padding: 20px;
     background: #fff;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 /* Headings */
-h1, h2, h3, h4, h5, h6 {
-    margin-bottom: 15px;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    margin-bottom: 0;
     color: #0056b3;
 }
 
 /* Paragraphs */
 p {
-    margin-bottom: 15px;
+    margin-bottom: 0;
 }
 
 /* Links */
@@ -58,14 +63,14 @@ a:hover {
 /* Lists */
 ul {
     list-style: none;
-    margin: 15px 0;
+    margin: 0;
     padding: 0;
 }
 
 ul li {
     background: #e6f0ff;
-    margin-bottom: 10px;
-    padding: 10px;
+    margin: 0;
+    padding: 0;
     border-radius: 4px;
     border: 1px solid #d0e0f7;
 }
@@ -81,7 +86,8 @@ label {
     font-weight: bold;
 }
 
-input, select {
+input,
+select {
     margin-bottom: 15px;
     padding: 10px;
     border: 1px solid #ddd;
@@ -113,19 +119,21 @@ footer {
     width: 100%;
 }
 
-.navbar-custom{
+.navbar-custom {
     background: #004684;
 }
 
 /* Botones */
-.nav-link{
+.nav-link {
     color: #fff;
 }
-.nav-link:hover, .nav-link:focus {
+
+.nav-link:hover,
+.nav-link:focus {
     color: #AF3336 !important;
 }
 
-.nav-item{
+.nav-item {
     background: #004684;
     color: #fff;
     border-color: #004684;
@@ -150,9 +158,9 @@ footer {
 
 /* Custom styles for the button */
 .btn-custom {
-    background-color: #AF3336!important; 
-    color: #fff!important;
-    border: none!important;
+    background-color: #AF3336 !important;
+    color: #fff !important;
+    border: none !important;
     padding: 10px 20px !important;
     font-size: 16px !important;
     border-radius: 5px !important;

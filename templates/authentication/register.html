@@ -4,38 +4,95 @@
 <!-- titulo personalizado -->
 
 {% block content %}
+<section class="min-vh-100 d-flex align-items-center">
+    <div class="container py-3">
+        <div class="row justify-content-center align-items-center">
+            <div class="col-12 col-lg-9 col-xl-7">
+                <div class="card shadow-2-strong card-registration" style="border-radius: 15px;">
+                    <div class="card-body p-4 p-md-5">
+                        <h3 class="mb-4 pb-2 pb-md-0 mb-md-5">Registro Intercambios Caritas</h3>
+                        <form action="/register" method="post">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col-md-6 mb-4">
+                                    <div data-mdb-input-init class="form-outline">
+                                        <label class="form-label" for="nombre">Nombre</label>
+                                        <input type="text" id="nombre" name="nombre" value="{{ n }}"
+                                            class="form-control form-control-lg" required />
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-4">
+                                    <div data-mdb-input-init class="form-outline">
+                                        <label class="form-label" for="apellido">Apellido</label>
+                                        <input type="text" id="apellido" name="apellido" value="{{ a }}"
+                                            class="form-control form-control-lg" required />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-4">
+                                    <div data-mdb-input-init class="form-outline">
+                                        <label class="form-label" for="mail">Mail</label>
+                                        <input type="email" id="mail" name="mail" value="{{ e }}"
+                                            class="form-control form-control-lg" required />
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-4">
+                                    <div data-mdb-input-init class="form-outline datepicker w-100">
+                                        <label for="nacimiento" class="form-label">Nacimiento</label>
+                                        <input type="date" id="nacimiento" name="nacimiento" value="{{ nac }}"
+                                            class="form-control form-control-lg" required />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-4 pb-2">
+                                    <div data-mdb-input-init class="form-outline">
+                                        <label class="form-label" for="direccion">Dirección</label>
+                                        <input type="text" id="direccion" name="direccion" value="{{ d }}"
+                                            class="form-control form-control-lg" required />
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-4 pb-2">
+                                    <div data-mdb-input-init class="form-outline">
+                                        <label class="form-label" for="telefono">Teléfono</label>
+                                        <input type="number" id="telefono" name="telefono" value="{{ t }}"
+                                            class="form-control form-control-lg" required />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-4 pb-2">
+                                    <div data-mdb-input-init class="form-outline">
+                                        <label class="form-label" for="dni">Nro Dni</label>
+                                        <input type="number" id="dni" name="dni" value="{{ d }}"
+                                            class="form-control form-control-lg" required />
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-4 pb-2">
+                                    <div data-mdb-input-init class="form-outline">
+                                        <label class="form-label" for="password">Contraseña</label>
+                                        <input type="password" id="password" name="password"
+                                            class="form-control form-control-lg" required />
+                                    </div>
+                                </div>
+                            </div>
+                            {% for message in messages %} <!-- TODO: buscar nueva forma de mostrar avisos -->
+                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                <strong>Message:</strong> {{ message }}
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            {% endfor %}
+                            {{error}}
 
-<p>{{error}}</p>
-
-<h1>Registro Intercambios Caritas</h1>
-<form action="/register" method="post">
-    {% csrf_token %}
-    <label for="">Nombre</label>
-    <input type="text" id="nombre" name="nombre" value="{{ n }}" placeholder="Ingrese su nombre" required>
-    <br>
-    <label for="">Apellido</label>
-    <input type="text" id="apellido" name="apellido" value="{{ a }}" placeholder="Ingrese su apellido" required>
-    <br>
-    <label for="">DNI</label>
-    <input type="text" id="dni" name="dni" value="{{ d }}" placeholder="Ingrese su DNI (8 dígitos)" required>
-    <br>
-    <label for="">Telefono</label>
-    <input type="text" id="telefono" name="telefono" value="{{ t }}" placeholder="Ingrese su número de telefono"
-        required>
-    <br>
-    <label for="">Direccion</label>
-    <input type="text" id="direccion" name="direccion" value="{{ d }}" placeholder="Ingrese su direccion" required>
-    <br>
-    <label for="">Nacimiento</label>
-    <input type="date" id="nacimiento" name="nacimiento" value="{{ nac }}" placeholder="Ingrese su fecha de nacimiento"
-        required>
-    <br>
-    <label for="">Mail</label>
-    <input type="email" id="mail" name="mail" value="{{ e }}" placeholder="Ingrese su mail" required>
-    <br>
-    <label for="">Contraseña</label>
-    <input type="password" id="password" name="password" placeholder="Ingrese su contraseña (8 caracteres)" required>
-    <br>
-    <button type="submit">Confirmar</button>
-</form>
+                            <button type="submit" class="btn btn-primary btn-block">Confirmar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 {% endblock %}
