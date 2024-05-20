@@ -1,0 +1,32 @@
+{% extends 'layouts/base.html' %}
+{% block title %}Publicacion{% endblock %}
+{% block content %}
+{% include 'layouts/navbar.html' %}
+
+<div class="container mt-5">
+    <div class="row">
+        <!-- Parte izquierda -->
+        <div class="col-md-6">
+            <h1>{{ publicacion.nombre }}</h1>
+            <p>{{ publicacion.descripcion }}</p>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item"><u>Categoría</u>: {{ publicacion.categoria }}</li>
+                <li class="list-group-item"><u>Estado</u>: {{ publicacion.estado }}</li>
+                <li class="list-group-item"><u>Punto de encuentro</u>: {{ publicacion.punto_encuentro }}</li>
+                <li class="list-group-item"><u>Dueño</u>: {{ publicacion.usuario_nombre }}</li>
+            </ul>
+            <a href="{% url 'home' %}" class="btn btn-primary mt-3">Volver</a>
+        </div>
+        <!-- Parte derecha -->
+        <div class="col-md-6">
+            <img src="{{ publicacion.imagen.url }}" class="img-fluid" alt="Imagen de la publicación">
+        </div>
+    </div>
+    <!-- Botón de intercambiar -->
+    <div class="row mt-3">
+        <div class="col-md-12 d-flex justify-content-center">
+            <a href="#" class="btn btn-primary">Intercambiar</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

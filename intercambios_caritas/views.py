@@ -1,8 +1,7 @@
 import datetime
 import django
 from django.http import HttpResponse
-from django.shortcuts import redirect, render
-
+from django.shortcuts import redirect, render, get_object_or_404
 from intercambios_caritas.forms import PublicacionForm
 from intercambios_caritas.models import Usuario, Publicacion
 from . import views
@@ -138,3 +137,6 @@ def mis_publicaciones(request):
     publicaciones = Publicacion.objects.filter(usuario_dni=usuario_actual)
     # si le pasas index anda
     return render(request, 'publicacion/mis_publicaciones.html', {'publicaciones': publicaciones})
+def ver_publicacion(request,publicacion_id):
+    publicacion = get_object_or_404(Publicacion, pk=publicacion_id)
+    return render(request, 'publicacion/ver_publicacion.html', {'publicacion': publicacion})

@@ -74,7 +74,7 @@
                             <!-- <li class="list-group-item"><u>Dueño</u>: {{ publicacion.usuario_nombre }}</li> esto lo pondria en ver publicacion-->
                         </ul>
                         <div class="card-body">
-                            <a href="#" class="btn btn-primary d-block mb-2">Ver publicacion</a>
+                            <a href="{% url 'ver_publicacion' publicacion.id %}" class="btn btn-primary d-block mb-2">Ver publicacion</a>
                             <a href="#" class="btn btn-primary d-block btn-custom">Intercambiar</a>
                         </div>
                     </div>
