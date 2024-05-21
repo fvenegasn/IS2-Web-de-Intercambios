@@ -12,7 +12,7 @@
 </div>
 {% endfor %}
 {% endif %}
-<h1 class="d-flex justify-content-center align-items-center custom-h1-bg"> Bienvenido a Intercambios Caritas</h1>
+<h1 class="text-center custom-h1-bg mb-2"> Bienvenido a Intercambios Caritas</h1>
 
 <!--
 <div id="carouselExampleInterval" class="carousel slide mb-4 custom-carousel-bg" data-bs-ride="carousel">
@@ -43,50 +43,58 @@
 
 <div class="row">
     <div class="col-md-3">
-        <h2>Filtros</h2>
-        <form action="/filtrar" method="post">
-            {% csrf_token %}
-            <label for="ropa">Ropa.</label>
-            <input type="checkbox" id="ropa" name="ropa" value="Ropa">
-            <br>
-            <label for="alimentos">Alimentos.</label>
-            <input type="checkbox" id="alimentos" name="alimentos" value="Alimentos">
-            <br>
-            <label for="utiles">Útiles escolares.</label>
-            <input type="checkbox" id="utiles" name="utiles" value="Utiles">
-            <br>
-            <label for="limpieza">Artíc. de limpieza.</label>
-            <input type="checkbox" id="limpieza" name="limpieza" value="Limpieza">
-            <br>
-            <!-- <a href="#" class="btn btn-primary d-block mb-2">Actualizar</a> -->
-            <!-- <button type="submit">Actualizar</button> -->
-        </form>
+        <div class="mb-2" style="background-color: #f0f8ff">
+            <h3 class="p-1 mb-2">Filtros de búsqueda:</h3>
+            <form action="/filtrar" method="post" style="display: flex; flex-direction: column;">
+                {% csrf_token %}
+                <div class="p-1" style="display: flex; justify-content: space-between;">
+                    <label for="ropa">Ropa.</label>
+                    <input type="checkbox" id="ropa" name="ropa" value="Ropa">
+                </div>
+                <div class="p-1" style="display: flex; justify-content: space-between;">
+                    <label for="alimentos">Alimentos.</label>
+                    <input type="checkbox" id="alimentos" name="alimentos" value="Alimentos">
+                </div>
+                <div class="p-1" style="display: flex; justify-content: space-between;">
+                    <label for="utiles">Útiles escolares.</label>
+                    <input type="checkbox" id="utiles" name="utiles" value="Utiles">
+                </div>
+                <div class="p-1" style="display: flex; justify-content: space-between;">
+                    <label for="limpieza">Artíc. de limpieza.</label>
+                    <input type="checkbox" id="limpieza" name="limpieza" value="Limpieza">
+                </div>
+                <!-- <a href="#" class="btn btn-primary d-block mb-2">Actualizar</a> -->
+                <!-- <button type="submit">Actualizar</button> -->
+            </form>
+        </div>
     </div>
+
     <div class="col-md-9">
         <div class="row">
             {% if publicaciones %}
             {% for publicacion in publicaciones %}
-            <div class="col-md-4">
-                <div class="card">
+            <div class="col-lg-4 col-md-6 mb-3 d-flex align-items-stretch">
+                <div class="card flex-column d-flex w-100">
                     <div class="ratio ratio-4x3">
                         <img src="{{ publicacion.imagen.url }}" class="card-img-top" style="object-fit: cover;"
                             alt="Imagen de la publicación">
                     </div>
-                    <div class="card-body">
+                    <div class="card-body flex-grow-1">
                         <h5 class="card-title">{{ publicacion.nombre }}</h5>
-                        <p class="card-text">{{ publicacion.descripcion }}</p>
+                        <p class="card-text" style="max-height: 4.1rem; overflow: auto">{{ publicacion.descripcion }}</p>
                     </div>
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item"><u>Categoría</u>: {{ publicacion.categoria }}</li>
                         <li class="list-group-item"><u>Estado</u>: {{ publicacion.estado }}</li>
                         <li class="list-group-item"><u>Punto de encuentro</u>: {{ publicacion.punto_encuentro }}</li>
                         <!-- <li class="list-group-item"><u>Dueño</u>: {{ publicacion.usuario_nombre }}</li> esto lo pondria en ver publicacion-->
+                        <li class="list-group-item">
+                            <a href="{% url 'ver_publicacion' publicacion.id %}"
+                                class="btn btn-primary d-block mb-2">Ver
+                                publicacion</a>
+                            <a href="#" class="btn btn-primary d-block">Intercambiar</a>
+                        </li>
                     </ul>
-                    <div class="card-body">
-                        <a href="{% url 'ver_publicacion' publicacion.id %}" class="btn btn-primary d-block mb-2">Ver
-                            publicacion</a>
-                        <a href="#" class="btn btn-primary d-block btn-custom">Intercambiar</a>
-                    </div>
                 </div>
             </div>
             {% endfor %}
