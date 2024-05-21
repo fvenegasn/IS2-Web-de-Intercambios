@@ -22,7 +22,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'jmfdesarrollos@gmail.com'
-#TODO: ver como encriptar para no dejar en el codigo
+# TODO: ver como encriptar para no dejar en el codigo
 EMAIL_HOST_PASSWORD = 'jjqd kolz bqaj hiit'
 EMAIL_PORT = 587
 
@@ -144,8 +144,6 @@ STATICFILES_DIRS = [
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-
-# LOGIN_ATTEMPTS_LIMIT = 3 # establece cantidad máxima de intentos para iniciar sesión
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

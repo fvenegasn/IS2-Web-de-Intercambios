@@ -49,7 +49,7 @@
                                 <div class="col-md-6 mb-4 pb-2">
                                     <div data-mdb-input-init class="form-outline">
                                         <label class="form-label" for="direccion">Dirección</label>
-                                        <input type="text" id="direccion" name="direccion" value="{{ d }}"
+                                        <input type="text" id="direccion" name="direccion" value="{{ dir }}"
                                             class="form-control form-control-lg" required />
                                     </div>
                                 </div>
@@ -77,17 +77,17 @@
                                     </div>
                                 </div>
                             </div>
-                            {% for message in messages %} <!-- TODO: buscar nueva forma de mostrar avisos -->
-                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                                <strong>Message:</strong> {{ message }}
-                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
+                            <button type="submit" class="btn btn-primary btn-block">Confirmar</button>
+                            {% if messages %}
+                            {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show m-2 p-1"
+                                role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close m-0 p-2" data-bs-dismiss="alert"
+                                    aria-label="Close"></button>
                             </div>
                             {% endfor %}
-                            {{error}}
-
-                            <button type="submit" class="btn btn-primary btn-block">Confirmar</button>
+                            {% endif %}
                         </form>
                     </div>
                 </div>

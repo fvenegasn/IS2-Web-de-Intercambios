@@ -33,16 +33,21 @@ def register(request):
 
         # Evaluo condiciones de registro
         if Usuario.objects.filter(username=dni):
-            return render(request, "authentication/register.html", {"error": "El DNI ya está registrado", "n": nombre, "a": apellido, "d": dni, "t": telefono, "dir": direccion, "nac": nacimiento, "e": email})
+            messages.warning(request, "El DNI ya está registrado.")
+            return render(request, "authentication/register.html", {"n": nombre, "a": apellido, "d": dni, "t": telefono, "dir": direccion, "nac": nacimiento, "e": email})
 
         if Usuario.objects.filter(email=email):
-            return render(request, "authentication/register.html", {"error": "El email ya se encuentra registrado", "n": nombre, "a": apellido, "d": dni, "t": telefono, "dir": direccion, "nac": nacimiento, "e": email})
+            messages.warning(request, "El email ya se encuentra registrado.")
+            return render(request, "authentication/register.html", {"n": nombre, "a": apellido, "d": dni, "t": telefono, "dir": direccion, "nac": nacimiento, "e": email})
 
         if len(dni) > 8 or len(dni) < 8:
-            return render(request, "authentication/register.html", {"error": "El DNI debe contener 8 dígitos", "n": nombre, "a": apellido, "d": dni, "t": telefono, "dir": direccion, "nac": nacimiento, "e": email})
+            messages.warning(request, "El DNI debe contener 8 dígitos.")
+            return render(request, "authentication/register.html", {"n": nombre, "a": apellido, "d": dni, "t": telefono, "dir": direccion, "nac": nacimiento, "e": email})
 
         if len(password) < 8:
-            return render(request, "authentication/register.html", {"error": "La contraseña debe tener, al menos, 8 caracteres", "n": nombre, "a": apellido, "d": dni, "t": telefono, "dir": direccion, "nac": nacimiento, "e": email})
+            messages.warning(
+                request, "La contraseña debe tener, al menos, 8 caracteres.")
+            return render(request, "authentication/register.html", {"n": nombre, "a": apellido, "d": dni, "t": telefono, "dir": direccion, "nac": nacimiento, "e": email})
 
         # lo voy a poner mas lindo cuando tengamos un helpers.py
         now = datetime.datetime.now()
@@ -52,7 +57,9 @@ def register(request):
             ((now.month, now.day) < (nacimiento_parseado.month, nacimiento_parseado.day))
 
         if edad < 18:
-            return render(request, "authentication/register.html", {"error": "Debe ser mayor de 18 años para registrarse en este sitio", "n": nombre, "a": apellido, "d": dni, "t": telefono, "dir": direccion, "nac": nacimiento, "e": email})
+            messages.warning(
+                request, "Debe ser mayor de 18 años para registrarse.")
+            return render(request, "authentication/register.html", {"n": nombre, "a": apellido, "d": dni, "t": telefono, "dir": direccion, "nac": nacimiento, "e": email})
 
         # Si las validaciones estan OK (no entra en ningun if), crea usuario
         nuevo_usuario = Usuario.objects.create_user(
@@ -72,7 +79,6 @@ def register(request):
         # Lleva al home
         messages.success(request, "Cuenta creada con éxito!")
         return redirect('home')
-        """ redirecciono al login, no al home """
 
     return render(request, "authentication/register.html")
 
@@ -125,10 +131,11 @@ def crear_publicacion(request):
             publicacion.usuario_dni = request.user.username
             publicacion.usuario_nombre = request.user.first_name
             publicacion.save()
-            messages.success(request, "Publicación creada con éxito!")
+            messages.success(request, "Publicación creada exitosamente!")
             return redirect('home')
         else:
-            messages.error(request, "Publicación no creada")
+            messages.warning(request, "Publicación no creada")
+            """ TODO: y en que momento se mostraria este error? creo que no falla nunca """
     return render(request, 'publicacion/crear_publicacion.html', {'form': form})
 
 
