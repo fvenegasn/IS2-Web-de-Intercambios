@@ -1,58 +1,112 @@
 {% extends 'layouts/base.html' %}
 <!-- esto es para que se herede la estructura html y estilos del archivo base -->
-{% block title %}Publicar Producto{% endblock %}
+{% block title %}Registro Intercambios Caritas{% endblock %}
 <!-- titulo personalizado -->
 
 {% block content %}
-{% include 'layouts/navbar.html' %}
-<!-- esto es para que se vea el navbar  -->
+<section class="min-vh-100 d-flex flex-column">
+    {% include 'layouts/navbar.html' %}
+    <div class="d-flex align-items-center mt-auto mb-auto">
+        <div class="container py-3">
+            <div class="row justify-content-center align-items-center">
+                <div class="col-12 col-lg-9 col-xl-7">
+                    <div class="card shadow-2-strong card-registration" style="border-radius: 15px;">
+                        <div class="card-body p-4 p-md-4">
+                            <h1 class="text-center">Intercambios Caritas</h1>
+                            <h2 class="mb-3 text-center">Publicar un producto</h2>
+                            <form action="/crear_publicacion" method="post" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <div data-mdb-input-init class="form-outline">
+                                            <label class="form-label mb-1" for="nombre">Nombre</label>
+                                            <input type="text" id="nombre" name="nombre"
+                                                class="form-control form-control-lg" required />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <div data-mdb-input-init class="form-outline">
+                                            <label class="form-label mb-1" for="estado">Estado</label>
+                                            <select id="estado" name="estado" class="form-control form-control-lg"
+                                                required>
+                                                <option value="" disabled selected>-- Seleccione --</option>
+                                                <option value="Nuevo">Nuevo</option>
+                                                <option value="Usado">Usado</option>
+                                            </select>
+                                        </div>
+                                        <!-- TODO: esto antes era asi, que fran vea si funca igual -->
+                                        <!-- <label for="estado">Estado:</label>
+                                    <input type="radio" id="nuevo" name="estado" value="Nuevo">
+                                    <label for="Nuevo">Nuevo</label>
+                                    <input type="radio" id="usado" name="estado" value="Usado">
+                                    <label for="Usado">Usado</label><br><br> -->
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="mb-3">
+                                        <div data-mdb-input-init class="form-outline">
+                                            <label class="form-label mb-1" for="descripcion">Descripción</label>
+                                            <textarea id="descripcion" name="descripcion"
+                                                class="form-control form-control-lg"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <div data-mdb-input-init class="form-outline">
+                                            <label class="form-label mb-1" for="categoria">Categoría</label>
+                                            <select id="categoria" name="categoria" class="form-control form-control-lg"
+                                                required>
+                                                <option value="" disabled selected>-- Seleccione --</option>
+                                                <option value="Ropa">Ropa</option>
+                                                <option value="Alimentos">Alimentos</option>
+                                                <option value="Utiles escolares">Útiles escolares</option>
+                                                <option value="Artículos de limpieza">Artículos de limpieza</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <div data-mdb-input-init class="form-outline">
+                                            <label class="form-label mb-1" for="punto_encuentro">Punto de
+                                                encuentro</label>
+                                            <select id="punto_encuentro" name="punto_encuentro"
+                                                class="form-control form-control-lg" required>
+                                                <option value="" disabled selected>-- Seleccione --</option>
+                                                <option value="La Plata">La Plata</option>
+                                                <option value="CABA">CABA</option>
+                                                <option value="Quilmes">Quilmes</option>
+                                                <option value="Temperley">Temperley</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
 
-{% if messages %}
-{% for message in messages %}
-<div class="alert alert-{{ message.tags }} alert-dismissible fade show m-2 p-1" role="alert">
-    {{ message }}
-    <button type="button" class="btn-close m-0 p-2" data-bs-dismiss="alert" aria-label="Close"></button>
-</div>
-{% endfor %}
-{% endif %}
-
-<h1>Publicar un producto</h1>
-
-<form action="/crear_publicacion" method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    <label for="nombre">Nombre:</label>
-    <input type="text" id="nombre" name="nombre" required><br><br>
-
-    <label for="descripcion">Descripción:</label>
-    <textarea id="descripcion" name="descripcion"></textarea><br><br>
-
-    <label for="categoria">Categoría:</label>
-    <select id="categoria" name="categoria" required>
-        <option value="" disabled selected>-- Seleccione --</option>
-        <option value="Ropa">Ropa</option>
-        <option value="Alimentos">Alimentos</option>
-        <option value="Utiles escolares">Útiles escolares</option>
-        <option value="Artículos de limpieza">Artículos de limpieza</option>
-    </select><br><br>
-
-    <label for="imagen">Imagen:</label>
-    <input type="file" id="imagen" name="imagen" required><br><br>
-
-    <label for="estado">Estado:</label>
-    <input type="radio" id="nuevo" name="estado" value="Nuevo">
-    <label for="Nuevo">Nuevo</label>
-    <input type="radio" id="usado" name="estado" value="Usado">
-    <label for="Usado">Usado</label><br><br>
-
-    <label for="punto_encuentro">Punto de encuentro:</label>
-    <select id="punto_encuentro" name="punto_encuentro">
-        <option value="La Plata">La Plata</option>
-        <option value="CABA">CABA</option>
-        <option value="Quilmes">Quilmes</option>
-        <option value="Temperley">Temperley</option>
-    </select><br><br>
-
-    <input type="submit" value="Crear">
-</form>
-
+                                <div class="row">
+                                    <div class="mb-3">
+                                        <div data-mdb-input-init class="form-outline">
+                                            <label class="form-label mb-1" for="imagen">Imagen</label>
+                                            <input type="file" id="imagen" name="imagen"
+                                                class="form-control form-control-lg" required />
+                                        </div>
+                                    </div>
+                                </div>
+                                {% if messages %}<!-- TODO: creo que esto nunca se va a activar en crear publicacion -->
+                                {% for message in messages %}
+                                <div class="alert alert-{{ message.tags }} alert-dismissible fade show mb-2 p-1"
+                                    role="alert">
+                                    {{ message }}
+                                    <button type="button" class="btn-close m-0 p-2" data-bs-dismiss="alert"
+                                        aria-label="Close"></button>
+                                </div>
+                                {% endfor %}
+                                {% endif %}
+                                <button type="submit" class="btn btn-primary btn-block mt-2 p-2">Crear</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 {% endblock %}

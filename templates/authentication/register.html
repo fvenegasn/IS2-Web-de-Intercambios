@@ -9,78 +9,78 @@
         <div class="row justify-content-center align-items-center">
             <div class="col-12 col-lg-9 col-xl-7">
                 <div class="card shadow-2-strong card-registration" style="border-radius: 15px;">
-                    <div class="card-body p-4 p-md-5">
-                        <h3 class="mb-4 pb-2 pb-md-0 mb-md-5">Registro Intercambios Caritas</h3>
+                    <div class="card-body p-4 p-md-4">
+                        <h1 class="text-center">Intercambios Caritas</h1>
+                        <h2 class="mb-3 text-center">Registrar cuenta</h2>
                         <form action="/register" method="post">
                             {% csrf_token %}
                             <div class="row">
-                                <div class="col-md-6 mb-4">
+                                <div class="col-md-6 mb-3">
                                     <div data-mdb-input-init class="form-outline">
-                                        <label class="form-label" for="nombre">Nombre</label>
+                                        <label class="form-label mb-1" for="nombre">Nombre</label>
                                         <input type="text" id="nombre" name="nombre" value="{{ n }}"
                                             class="form-control form-control-lg" required />
                                     </div>
                                 </div>
-                                <div class="col-md-6 mb-4">
+                                <div class="col-md-6 mb-3">
                                     <div data-mdb-input-init class="form-outline">
-                                        <label class="form-label" for="apellido">Apellido</label>
+                                        <label class="form-label mb-1" for="apellido">Apellido</label>
                                         <input type="text" id="apellido" name="apellido" value="{{ a }}"
                                             class="form-control form-control-lg" required />
                                     </div>
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-md-6 mb-4">
+                                <div class="col-md-6 mb-3">
                                     <div data-mdb-input-init class="form-outline">
-                                        <label class="form-label" for="mail">Mail</label>
+                                        <label class="form-label mb-1" for="mail">Mail</label>
                                         <input type="email" id="mail" name="mail" value="{{ e }}"
                                             class="form-control form-control-lg" required />
                                     </div>
                                 </div>
-                                <div class="col-md-6 mb-4">
+                                <div class="col-md-6 mb-3">
                                     <div data-mdb-input-init class="form-outline datepicker w-100">
-                                        <label for="nacimiento" class="form-label">Nacimiento</label>
+                                        <label for="nacimiento" class="form-label mb-1">Nacimiento</label>
                                         <input type="date" id="nacimiento" name="nacimiento" value="{{ nac }}"
                                             class="form-control form-control-lg" required />
                                     </div>
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-md-6 mb-4 pb-2">
+                                <div class="col-md-6 mb-3">
                                     <div data-mdb-input-init class="form-outline">
-                                        <label class="form-label" for="direccion">Dirección</label>
+                                        <label class="form-label mb-1" for="direccion">Dirección</label>
                                         <input type="text" id="direccion" name="direccion" value="{{ dir }}"
                                             class="form-control form-control-lg" required />
                                     </div>
                                 </div>
-                                <div class="col-md-6 mb-4 pb-2">
+                                <div class="col-md-6 mb-3">
                                     <div data-mdb-input-init class="form-outline">
-                                        <label class="form-label" for="telefono">Teléfono</label>
+                                        <label class="form-label mb-1" for="telefono">Teléfono</label>
                                         <input type="number" id="telefono" name="telefono" value="{{ t }}"
                                             class="form-control form-control-lg" required />
                                     </div>
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-md-6 mb-4 pb-2">
+                                <div class="col-md-6 mb-3">
                                     <div data-mdb-input-init class="form-outline">
-                                        <label class="form-label" for="dni">Nro Dni</label>
+                                        <label class="form-label mb-1" for="dni">Nro Dni</label>
                                         <input type="number" id="dni" name="dni" value="{{ d }}"
                                             class="form-control form-control-lg" required />
                                     </div>
                                 </div>
-                                <div class="col-md-6 mb-4 pb-2">
+                                <div class="col-md-6 mb-3">
                                     <div data-mdb-input-init class="form-outline">
-                                        <label class="form-label" for="password">Contraseña</label>
+                                        <label class="form-label mb-1" for="password">Contraseña</label>
                                         <input type="password" id="password" name="password"
                                             class="form-control form-control-lg" required />
                                     </div>
                                 </div>
                             </div>
-                            <button type="submit" class="btn btn-primary btn-block">Confirmar</button>
                             {% if messages %}
                             {% for message in messages %}
-                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show m-2 p-1"
+                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show mb-2 p-1"
                                 role="alert">
                                 {{ message }}
                                 <button type="button" class="btn-close m-0 p-2" data-bs-dismiss="alert"
@@ -88,6 +88,7 @@
                             </div>
                             {% endfor %}
                             {% endif %}
+                            <button type="submit" class="btn btn-primary btn-block mt-2 p-2">Confirmar</button>
                         </form>
                     </div>
                 </div>
