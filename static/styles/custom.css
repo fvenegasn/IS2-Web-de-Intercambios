@@ -88,8 +88,8 @@ label {
 
 input,
 select {
-    margin-bottom: 15px;
-    padding: 10px;
+    /* margin-bottom: 15px;
+    padding: 10px; */
     border: 1px solid #ddd;
     border-radius: 4px;
     font-size: 16px;
@@ -120,6 +120,10 @@ footer {
 }
 
 .navbar-custom {
+    background: #004684;
+}
+
+.dropdown-menu {
     background: #004684;
 }
 

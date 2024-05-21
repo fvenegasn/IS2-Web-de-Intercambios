@@ -4,8 +4,16 @@
 {% include 'layouts/navbar.html' %}
 <!-- esto es para que se vea el navbar  -->
 
-
+{% if messages %}
+{% for message in messages %}
+<div class="alert alert-{{ message.tags }} alert-dismissible fade show m-2 p-1" role="alert">
+    {{ message }}
+    <button type="button" class="btn-close m-0 p-2" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{% endfor %}
+{% endif %}
 <h1 class="d-flex justify-content-center align-items-center custom-h1-bg"> Bienvenido a Intercambios Caritas</h1>
+
 <!--
 <div id="carouselExampleInterval" class="carousel slide mb-4 custom-carousel-bg" data-bs-ride="carousel">
     <div class="carousel-inner">
@@ -57,32 +65,34 @@
     <div class="col-md-9">
         <div class="row">
             {% if publicaciones %}
-                {% for publicacion in publicaciones %}
-                <div class="col-md-4">
-                    <div class="card">
-                        <div class="ratio ratio-4x3">
-                            <img src="{{ publicacion.imagen.url }}" class="card-img-top" style="object-fit: cover;"
-                                alt="Imagen de la publicación">
-                        </div>
-                        <div class="card-body">
-                            <h5 class="card-title">{{ publicacion.nombre }}</h5>
-                            <p class="card-text">{{ publicacion.descripcion }}</p>
-                        </div>
-                        <ul class="list-group list-group-flush">
-                            <li class="list-group-item"><u>Categoría</u>: {{ publicacion.categoria }}</li>
-                            <li class="list-group-item"><u>Estado</u>: {{ publicacion.estado }}</li>
-                            <li class="list-group-item"><u>Punto de encuentro</u>: {{ publicacion.punto_encuentro }}</li>
-                            <!-- <li class="list-group-item"><u>Dueño</u>: {{ publicacion.usuario_nombre }}</li> esto lo pondria en ver publicacion-->
-                        </ul>
-                        <div class="card-body">
-                            <a href="{% url 'ver_publicacion' publicacion.id %}" class="btn btn-primary d-block mb-2">Ver publicacion</a>
-                            <a href="#" class="btn btn-primary d-block btn-custom">Intercambiar</a>
-                        </div>
+            {% for publicacion in publicaciones %}
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="ratio ratio-4x3">
+                        <img src="{{ publicacion.imagen.url }}" class="card-img-top" style="object-fit: cover;"
+                            alt="Imagen de la publicación">
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">{{ publicacion.nombre }}</h5>
+                        <p class="card-text">{{ publicacion.descripcion }}</p>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item"><u>Categoría</u>: {{ publicacion.categoria }}</li>
+                        <li class="list-group-item"><u>Estado</u>: {{ publicacion.estado }}</li>
+                        <li class="list-group-item"><u>Punto de encuentro</u>: {{ publicacion.punto_encuentro }}</li>
+                        <!-- <li class="list-group-item"><u>Dueño</u>: {{ publicacion.usuario_nombre }}</li> esto lo pondria en ver publicacion-->
+                    </ul>
+                    <div class="card-body">
+                        <a href="{% url 'ver_publicacion' publicacion.id %}" class="btn btn-primary d-block mb-2">Ver
+                            publicacion</a>
+                        <a href="#" class="btn btn-primary d-block btn-custom">Intercambiar</a>
                     </div>
                 </div>
-                {% endfor %}
+            </div>
+            {% endfor %}
             {% else %}
-                <p style="font-size: 1.2rem; color: #555; text-align: center; margin-top: 20px;">No hay publicaciones en este momento.</p>
+            <p style="font-size: 1.2rem; color: #555; text-align: center; margin-top: 20px;">No hay publicaciones en
+                este momento.</p>
             {% endif %}
         </div>
     </div>

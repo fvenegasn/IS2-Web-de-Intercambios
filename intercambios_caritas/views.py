@@ -91,19 +91,19 @@ def signin(request):
         # Si autentica OK
         if user is not None:  # equivalente a null
             login(request, user)
+            messages.success(request, "Sesión iniciada exitosamente!")
             return redirect('home')
         # Si no autentica OK
         else:
-            messages.error(
-                request, "El DNI o la contraseña ingresadas son incorrectas")
-
-        """ return redirect("signin")""" """ TODO: ver por que funciona ese ultimo else sin el redirect """
+            messages.warning(request, "Usuario o contraseña incorrectos!")
+            return render(request, "authentication/login.html", {"d": dni})
 
     return render(request, "authentication/login.html")
 
 
 def signout(request):
     logout(request)
+    messages.warning(request, "Sesión cerrada exitosamente!")
     return redirect('home')
     """ con redirect muestra las publicaciones, con render(request, "authentication/index.html") parece que no y con return home(request) el url no cambia queda /logout"""
 
@@ -137,6 +137,8 @@ def mis_publicaciones(request):
     publicaciones = Publicacion.objects.filter(usuario_dni=usuario_actual)
     # si le pasas index anda
     return render(request, 'publicacion/mis_publicaciones.html', {'publicaciones': publicaciones})
-def ver_publicacion(request,publicacion_id):
+
+
+def ver_publicacion(request, publicacion_id):
     publicacion = get_object_or_404(Publicacion, pk=publicacion_id)
     return render(request, 'publicacion/ver_publicacion.html', {'publicacion': publicacion})

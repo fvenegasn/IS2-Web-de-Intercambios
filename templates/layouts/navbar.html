@@ -29,10 +29,11 @@
                         aria-expanded="false">
                         Mi Perfil
                     </a>
-                    <ul class="dropdown-menu bg-dark">
-                        <li><a class="nav-link" href="{% url 'mi_perfil' %}">Ver mi perfil</a></li>
-                        <li><a class="nav-link" href="{% url 'mis_publicaciones' %}">Mis publicaciones</a></li>
-                        <li><a class="nav-link" href="#">Mis Intercambios</a></li>
+                    <ul class="dropdown-menu">
+                        <li class="nav-item"><a class="nav-link" href="{% url 'mi_perfil' %}">Ver mi perfil</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'mis_publicaciones' %}">Mis
+                                publicaciones</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#">Mis Intercambios</a></li>
                     </ul>
                 </li>
                 <li class="nav-item">
@@ -50,58 +51,3 @@
         </div>
     </div>
 </nav>
-
-
-<!-- viejo navbar para no olvidarme (borrar despues) -->
-<!-- 
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container">
-
-        <a class="navbar-brand" href="{% url 'home' %}"><img src='media\logosCaritas\caritas_logo2.png' width=100></a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
-                {% if user.is_authenticated %}
-                <li class="nav-item">
-                    <a href="{% url 'crear_publicacion' %}" class="nav-link">Publicar Producto</a>
-                </li>
-                <li class="nav-item">
-                    <a href="{% url 'mis_publicaciones' %}" class="nav-link">Mis publicaciones</a>
-                </li>
-                {% else %}
-                <li class="nav-item">
-                    <a href="{% url 'signin' %}" class="nav-link">Publicar Producto</a>
-                </li>
-                <li class="nav-item">
-                    <a href="{% url 'signin' %}" class="nav-link">Mis publicaciones</a>
-                </li>
-                {% endif %}
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'home' %}">Mis Intercambios</a>
-                   
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'quienes_somos' %}">Quienes Somos</a>
-                </li>
-                {% if user.is_authenticated %}
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'mi_perfil' %}">Mi perfil</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/logout">Cerrar sesión</a>
-                </li>
-                {% else %}
-                <li class="nav-item">
-                    <a class="nav-link" href="/register">Registrarse</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/login">Iniciar sesión</a>
-                </li>
-                {% endif %}
-            </ul>
-        </div>
-    </div>
-</nav> -->

@@ -14,25 +14,27 @@
             </div>
             <form action="/login" method="post">
                 {% csrf_token %}
-                <div class="mb-3">
+                <div class="m-2">
                     <label for="dni" class="form-label">DNI</label>
                     <input type="text" id="dni" name="dni" value="{{ d }}" class="form-control"
                         placeholder="Ingrese su DNI" required>
                 </div>
-                <div class="mb-3">
+                <div class="m-2">
                     <label for="password" class="form-label">Contraseña</label>
                     <input type="password" id="password" name="password" class="form-control"
                         placeholder="Ingrese su contraseña" required>
                 </div>
-                {% if alerta %}
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    {{ alerta }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <button type="submit" class="btn btn-primary btn-block m-2">Confirmar</button>
+                {% if messages %}
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show m-2 p-1" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close m-0 p-2" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
+                {% endfor %}
                 {% endif %}
-                <button type="submit" class="btn btn-primary btn-block">Confirmar</button>
             </form>
-            <div class="text-center mt-3">
+            <div class="text-center m-2">
                 <a href="{% url 'reset_password' %}">¿Olvidaste tu contraseña?</a><br>
                 <a href="{% url 'register' %}">¿Nuevo en el sistema?</a>
             </div>
