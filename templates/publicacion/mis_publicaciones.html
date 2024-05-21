@@ -17,6 +17,10 @@
                         <p class="card-text"><u>Descripción</u>: {{ publicacion.descripcion }}</p>
                         <p class="card-text"><u>Estado:</u> {{ publicacion.estado }}</p>
                         <p class="card-text"><u>Punto de encuentro</u>: {{ publicacion.punto_encuentro }}</p>
+                        <div class="card-body">
+                            <a href="{% url 'ver_publicacion' publicacion.id %}" class="btn btn-primary d-block mb-2">Ver
+                                publicacion</a>
+                        </div>
                         <!-- Agrega más campos según tus necesidades -->
                     </div>
                 </div>
