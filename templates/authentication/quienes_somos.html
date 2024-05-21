@@ -4,9 +4,26 @@
 <!-- titulo personalizado -->
 
 {% block content %}
-{% include 'layouts/navbar.html' %}
+
 <!-- esto es para que se vea el navbar  -->
 
-<h1>hola mundo, caritas es una ong que etc etc.</h1>
+<div class="d-flex flex-column" style="min-height: 100vh;">
+    {% include 'layouts/navbar.html' %}
+    <div class="flex-grow-1 d-flex justify-content-center align-items-center">
+        <div class="card" style="width: 40rem;">
+            <div class="card-body">
+                <div class="text-center">
+                    <h1>Intercambios Cáritas</h1>
+                    <h2>Quienes Somos</h2>
+                </div>
+                <p class="card-text">
+                    Somos una organización sin fines de lucro que busca fomentar la economía circular y la solidaridad entre
+                    las personas. Nuestro objetivo es que puedas intercambiar productos que ya no uses por otros que te
+                    interesen, sin necesidad de gastar dinero. De esta forma, contribuimos a la reducción de la basura y
+                    promovemos el consumo responsable. ¡Únete a nuestra comunidad! </p>
+            </div>
+        </div>
+    </div>
+</div>
 
 {% endblock %}
