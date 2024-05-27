@@ -134,8 +134,7 @@ def crear_publicacion(request):
             messages.success(request, "Publicación creada exitosamente!")
             return redirect('home')
         else:
-            messages.warning(request, "Publicación no creada")
-            """ TODO: y en que momento se mostraria este error? creo que no falla nunca """
+            messages.warning(request, "Error, Publicación no creada.")
     return render(request, 'publicacion/crear_publicacion.html', {'form': form})
 
 
