@@ -12,7 +12,7 @@
 </div>
 {% endfor %}
 {% endif %}
-<h1 class="text-center custom-h1-bg mb-2"> Bienvenido a Intercambios Caritas</h1>
+<h1 class="text-center custom-h1-bg mb-2">Bienvenido a Intercambios Caritas</h1>
 
 <!--
 <div id="carouselExampleInterval" class="carousel slide mb-4 custom-carousel-bg" data-bs-ride="carousel">
@@ -81,18 +81,18 @@
                     </div>
                     <div class="card-body flex-grow-1">
                         <h5 class="card-title">{{ publicacion.nombre }}</h5>
-                        <p class="card-text" style="max-height: 4.1rem; overflow: auto">{{ publicacion.descripcion }}</p>
+                        <p class="card-text" style="max-height: 4.1rem; overflow: auto">{{ publicacion.descripcion }}
+                        </p>
                     </div>
                     <ul class="list-group list-group-flush">
-                        <li class="list-group-item"><u>Categoría</u>: {{ publicacion.categoria }}</li>
                         <li class="list-group-item"><u>Estado</u>: {{ publicacion.estado }}</li>
-                        <li class="list-group-item"><u>Punto de encuentro</u>: {{ publicacion.punto_encuentro }}</li>
+                        <li class="list-group-item"><u>Categoría</u>: {{ publicacion.categoria }}</li>
+                        <li class="list-group-item"><u>Punto de encuentro</u>: {{ publicacion.punto_encuentro }}
+                        </li>
                         <!-- <li class="list-group-item"><u>Dueño</u>: {{ publicacion.usuario_nombre }}</li> esto lo pondria en ver publicacion-->
                         <li class="list-group-item">
-                            <a href="{% url 'ver_publicacion' publicacion.id %}"
-                                class="btn btn-primary d-block mb-2">Ver
+                            <a href="{% url 'ver_publicacion' publicacion.id %}" class="btn btn-primary d-block">Ver
                                 publicacion</a>
-                            <a href="#" class="btn btn-primary d-block">Intercambiar</a>
                         </li>
                     </ul>
                 </div>

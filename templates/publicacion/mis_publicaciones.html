@@ -4,33 +4,41 @@
 {% include 'layouts/navbar.html' %}
 <!-- esto es para que se vea el navbar  -->
 
-<h1 class="d-flex justify-content-center align-items-center"> Mis publicaciones</h1>
-    <div class="row">
-        {% if publicaciones %}
-            {% for publicacion in publicaciones %}
-            <div class="col-md-4">
-                <div class="card">
-                    <img src="{{ publicacion.imagen.url }}" class="card-img-top" alt="Imagen de la publicación">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ publicacion.nombre }}</h5>
-                        <p class="card-text"><u>Categoría</u>: {{ publicacion.categoria }}</p>
-                        <p class="card-text"><u>Descripción</u>: {{ publicacion.descripcion }}</p>
-                        <p class="card-text"><u>Estado:</u> {{ publicacion.estado }}</p>
-                        <p class="card-text"><u>Punto de encuentro</u>: {{ publicacion.punto_encuentro }}</p>
-                        <div class="card-body">
-                            <a href="{% url 'ver_publicacion' publicacion.id %}" class="btn btn-primary d-block mb-2">Ver
-                                publicacion</a>
-                        </div>
-                        <!-- Agrega más campos según tus necesidades -->
-                    </div>
-                </div>
+<h1 class="text-center custom-h1-bg mb-2">Mis publicaciones</h1>
+<div class="row">
+    {% if publicaciones %}
+    {% for publicacion in publicaciones %}
+    <div class="col-lg-4 col-md-6 mb-3 d-flex align-items-stretch">
+        <div class="card flex-column d-flex w-100">
+            <div class="ratio ratio-4x3">
+                <img src="{{ publicacion.imagen.url }}" class="card-img-top" style="object-fit: cover;"
+                    alt="Imagen de la publicación">
             </div>
-            {% endfor %}
-        {% else %}
-        <div class="container text-center">
-            <p style="font-size: 1.2rem; color: #555; text-align: center; margin-top: 20px;">No hay publicaciones en este momento.</p>
+            <div class="card-body flex-grow-1">
+                <h5 class="card-title">{{ publicacion.nombre }}</h5>
+                <p class="card-text" style="max-height: 4.1rem; overflow: auto">{{ publicacion.descripcion }}
+                </p>
+            </div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item"><u>Estado</u>: {{ publicacion.estado }}</li>
+                <li class="list-group-item"><u>Categoría</u>: {{ publicacion.categoria }}</li>
+                <li class="list-group-item"><u>Punto de encuentro</u>: {{ publicacion.punto_encuentro }}
+                </li>
+                <!-- <li class="list-group-item"><u>Dueño</u>: {{ publicacion.usuario_nombre }}</li> esto lo pondria en ver publicacion-->
+                <li class="list-group-item">
+                    <a href="{% url 'ver_publicacion' publicacion.id %}" class="btn btn-primary d-block">Ver
+                        publicacion</a>
+                </li>
+            </ul>
         </div>
-        {% endif %}
+    </div>
+    {% endfor %}
+    {% else %}
+    <div class="container text-center">
+        <p style="font-size: 1.2rem; color: #555; text-align: center; margin-top: 20px;">No hay publicaciones en este
+            momento.</p>
+    </div>
+    {% endif %}
 </div>
 </div>
 
