@@ -29,6 +29,10 @@ class Usuario(AbstractUser):
         return self.username
 
 
+def get_default_user():
+    return Usuario.objects.first().id
+
+
 class Publicacion(models.Model):
     """ opciones validas que se pueden elegir en el formulario de publicacion
     de ser necesario estas listas podrian ser otra tabla en la base de datos 
@@ -48,6 +52,7 @@ class Publicacion(models.Model):
         ('Artículos de limpieza', 'Artículos de limpieza'),
     ]
     ESTADOS = [
+        ('Sin especificar', 'Sin especificar'),
         ('Usado', 'Usado'),
         ('Nuevo', 'Nuevo'),
     ]
@@ -63,8 +68,8 @@ class Publicacion(models.Model):
     punto_encuentro = models.CharField(
         max_length=50, blank=False, null=False, choices=PUNTOS_ENC, default=PUNTOS_ENC[0][0])
     # TODO -> ver como integrar con models.ForeignKey
-    usuario_dni = models.CharField(max_length=150, default="")
-    usuario_nombre = models.CharField(max_length=150, default="")
+    usuario = models.ForeignKey(
+        Usuario, on_delete=models.CASCADE, default=get_default_user)
 
     def __str__(self):
         return self.nombre

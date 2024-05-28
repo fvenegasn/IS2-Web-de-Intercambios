@@ -28,7 +28,11 @@
                                         <label class="form-label mb-1" for="estado">Estado</label>
                                         <select id="estado" name="estado" class="form-select form-select-lg" required>
                                             {% for value, display in form.fields.estado.choices %}
+                                            {% if forloop.first %}
+                                            <option value="{{ value }}">-- Seleccione --</option>
+                                            {% else %}
                                             <option value="{{ value }}">{{ display }}</option>
+                                            {% endif %}
                                             {% endfor %}
                                         </select>
                                     </div>
@@ -49,6 +53,7 @@
                                         <label class="form-label mb-1" for="categoria">Categoría</label>
                                         <select id="categoria" name="categoria" class="form-select form-select-lg"
                                             required>
+                                            <option value="" selected disabled>-- Seleccione --</option>
                                             {% for value, display in form.fields.categoria.choices %}
                                             <option value="{{ value }}">{{ display }}</option>
                                             {% endfor %}
@@ -61,6 +66,7 @@
                                             encuentro</label>
                                         <select id="punto_encuentro" name="punto_encuentro"
                                             class="form-select form-select-lg" required>
+                                            <option value="" selected disabled>-- Seleccione --</option>
                                             {% for value, display in form.fields.punto_encuentro.choices %}
                                             <option value="{{ value }}">{{ display }}</option>
                                             {% endfor %}
