@@ -129,7 +129,12 @@ def crear_publicacion(request):
         if form.is_valid():
             publicacion = form.save(commit=False)
             publicacion.usuario = request.user
+            inicio = form.cleaned_data.get('franja_horaria_inicio')
+            fin = form.cleaned_data.get('franja_horaria_fin')
+            if inicio and fin:
+                publicacion.franja_horaria = f"entre las {inicio.strftime('%H:%M')} y las {fin.strftime('%H:%M')}"
             publicacion.save()
+            print (publicacion)
             messages.success(request, "Publicación creada exitosamente!")
             return redirect('home')
         else:
