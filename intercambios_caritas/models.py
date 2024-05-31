@@ -67,7 +67,6 @@ class Publicacion(models.Model):
         max_length=50, blank=False, null=False, choices=ESTADOS, default=ESTADOS[0][0])
     punto_encuentro = models.CharField(
         max_length=50, blank=False, null=False, choices=PUNTOS_ENC, default=PUNTOS_ENC[0][0])
-    # TODO -> ver como integrar con models.ForeignKey
     usuario = models.ForeignKey(
         Usuario, on_delete=models.CASCADE, default=get_default_user)
 
