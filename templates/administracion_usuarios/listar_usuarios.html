@@ -18,7 +18,6 @@
           <th scope="col">Fecha Registro</th>
           <th scope="col">Mail</th>
           <th scope="col">Rol</th>
-          <th scope="col">Activo</th>
           <th scope="col"> </th>
         </tr>
       </thead>
@@ -33,7 +32,6 @@
             <td>{{ usuario.date_joined }}</td>
             <td>{{ usuario.email }}</td>
             <td>tbd</td>
-            <td>{% if usuario.is_active %}✅{% else %}❌{% endif %}</td>
             <td>🖋️</td>
         </tr>
         {% endfor %}
