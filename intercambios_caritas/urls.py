@@ -37,4 +37,6 @@ urlpatterns = [
     path('crear_publicacion', views.crear_publicacion,name="crear_publicacion"),
     path('mis_publicaciones', views.mis_publicaciones, name="mis_publicaciones"),
     path('ver_publicacion/<int:publicacion_id>/', views.ver_publicacion, name="ver_publicacion"),
+
+    path('listar_usuarios', views.listar_usuarios, name="listar_usuarios"),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

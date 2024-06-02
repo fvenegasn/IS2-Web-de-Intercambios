@@ -152,3 +152,9 @@ def mis_publicaciones(request):
 def ver_publicacion(request, publicacion_id):
     publicacion = get_object_or_404(Publicacion, pk=publicacion_id)
     return render(request, 'publicacion/ver_publicacion.html', {'publicacion': publicacion})
+
+
+def listar_usuarios(request):
+    usuarios = Usuario.objects.all()
+    # si le pasas index anda
+    return render(request, 'administracion_usuarios/listar_usuarios.html', {'usuarios': usuarios})

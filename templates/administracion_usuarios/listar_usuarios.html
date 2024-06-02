@@ -1,0 +1,58 @@
+{% extends 'layouts/base.html' %}
+<!-- esto es para que se herede la estructura html y estilos del archivo base -->
+{% block content %}
+{% include 'layouts/navbar.html' %}
+<!-- esto es para que se vea el navbar  -->
+<!-- TODO: agregar logica para que solo lo vean los admins -->
+<h1 class="text-center custom-h1-bg mb-2">Listado de Usuarios</h1>
+  <!-- Default panel contents -->
+  <div class="panel-heading">Usuarios Activos</div>
+  <div class="table-responsive">
+
+  <table class="table table-striped table-hover table-bordered border-secondary table-sm">
+    <thead class = "table-dark" >
+        <tr>
+          <th scope="col">Nombre</th>
+          <th scope="col">Apellido</th>
+          <th scope="col">DNI</th>
+          <th scope="col">Fecha Nacimiento</th> <!--reemplazar por edad?-->
+          <th scope="col">Fecha Registro</th>
+          <th scope="col">Mail</th>
+          <th scope="col">Rol</th>
+          <th scope="col"> </th>
+        </tr>
+      </thead>
+      <tbody>
+        {% if usuarios %}
+        {% for usuario in usuarios %}
+        <tr scope="row">
+            <td>{{ usuario.first_name }}</td>
+            <td>{{ usuario.last_name }}</td>
+            <td>{{ usuario.username }}</td>
+            <td>{{ usuario.nacimiento }}</td>
+            <td>{{ usuario.date_joined }}</td>
+            <td>{{ usuario.email }}</td>
+            <td>tbd</td>
+            <td>🖋️</td>
+        </tr>
+        {% endfor %}
+        {% else %}
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        {% endif %}
+      </tbody>
+  </table>
+</div>
+</div>
+
+
+{% endblock %}
+
