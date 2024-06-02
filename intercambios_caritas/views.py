@@ -143,8 +143,8 @@ def crear_publicacion(request):
 
 
 def mis_publicaciones(request):
-    usuario_actual = request.user.username
-    publicaciones = Publicacion.objects.filter(usuario_dni=usuario_actual)
+    usuario_actual = request.user
+    publicaciones = Publicacion.objects.filter(usuario=usuario_actual)
     # si le pasas index anda
     return render(request, 'publicacion/mis_publicaciones.html', {'publicaciones': publicaciones})
 
