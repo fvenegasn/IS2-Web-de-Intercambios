@@ -3,6 +3,8 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.forms import ValidationError
 from multiselectfield import MultiSelectField
+from django.utils import timezone
+
 
 # Create your models here.
 # aca iria el back ¿
@@ -91,3 +93,21 @@ class Publicacion(models.Model):
 
     def __str__(self):
         return self.nombre
+
+class Intercambio(models.Model):
+    publicacion_ofertante = models.ForeignKey('Publicacion', related_name='ofertas_realizadas', on_delete=models.CASCADE)
+    publicacion_demandada = models.ForeignKey('Publicacion', related_name='ofertas_recibidas', on_delete=models.CASCADE)
+    centro_encuentro = models.CharField(max_length=50, choices=Publicacion.PUNTOS_ENC)
+    dias_convenientes = MultiSelectField(choices=Publicacion.DIAS_SEMANA, blank=True, max_length=100)
+    franja_horaria_inicio = models.TimeField()
+    franja_horaria_fin = models.TimeField()
+    fecha_creacion = models.DateTimeField(default=timezone.now)
+    aceptada = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"Intercambio de {self.publicacion_ofertante.nombre} por {self.publicacion_demandada.nombre}"
+
+    def es_valida(self):
+        return (self.publicacion_ofertante.categoria == self.publicacion_demandada.categoria and
+                self.publicacion_ofertante.usuario != self.publicacion_demandada.usuario and
+                not Intercambio.objects.filter(publicacion_demandada=self.publicacion_demandada, aceptada=True).exists())

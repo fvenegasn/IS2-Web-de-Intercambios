@@ -2,7 +2,7 @@ import datetime
 import django
 from django.http import HttpResponse
 from django.shortcuts import redirect, render, get_object_or_404
-from intercambios_caritas.forms import PublicacionForm
+from intercambios_caritas.forms import IntercambioForm, PublicacionForm
 from intercambios_caritas.models import Usuario, Publicacion
 from . import views
 # from django.contrib.auth.models import User
@@ -158,3 +158,27 @@ def listar_usuarios(request):
     usuarios = Usuario.objects.all()
     # si le pasas index anda
     return render(request, 'administracion_usuarios/listar_usuarios.html', {'usuarios': usuarios})
+
+def crear_oferta(request, publicacion_id):
+    publicacion_demandada = Publicacion.objects.get(id=publicacion_id)
+
+    if request.method == "POST":
+        form = IntercambioForm(request.POST)
+        if form.is_valid():
+            propuesta = form.save(commit=False)
+            propuesta.publicacion_demandada = publicacion_demandada
+            propuesta.publicacion_ofertante = Publicacion.objects.get(id=form.cleaned_data['publicacion_ofertante'])
+            if propuesta.es_valida():
+                propuesta.save()
+                messages.success(request, "Propuesta de intercambio creada exitosamente.")
+                return redirect('detalle_publicacion', publicacion_id=publicacion_id)
+            else:
+                messages.error(request, "Propuesta de intercambio inválida.")
+    else:
+        form = IntercambioForm()
+
+    context = {
+        'form': form,
+        'publicacion_demandada': publicacion_demandada
+    }
+    return render(request, 'publicacion/crear_oferta.html', context)

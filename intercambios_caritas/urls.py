@@ -39,4 +39,5 @@ urlpatterns = [
     path('ver_publicacion/<int:publicacion_id>/', views.ver_publicacion, name="ver_publicacion"),
 
     path('listar_usuarios', views.listar_usuarios, name="listar_usuarios"),
+    path('crear_oferta/<int:publicacion_id>/', views.crear_oferta, name='crear_oferta'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

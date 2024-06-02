@@ -16,7 +16,7 @@
                 <li class="list-group-item"><u>Real Dueño</u>: id:{{publicacion.usuario}}, nomyap:{{publicacion.usuario.get_full_name}}</li>
             </ul>
             <a href="{% url 'home' %}" class="btn btn-primary">Volver al menu</a>
-            <a href="#" class="btn btn-primary">Intercambiar</a>
+            <a href="{% url 'crear_oferta' publicacion.id %}" class="btn btn-primary">Intercambiar</a>
         </div>
         <!-- Parte derecha -->
         <div class="col-md-6">

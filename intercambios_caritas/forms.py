@@ -1,5 +1,5 @@
 from django import forms
-from .models import Publicacion
+from .models import Publicacion, Intercambio
 
 class PublicacionForm(forms.ModelForm):
     dias_convenientes = forms.MultipleChoiceField(
@@ -39,3 +39,15 @@ class PublicacionForm(forms.ModelForm):
             raise forms.ValidationError("Debe especificar tanto la hora de inicio como la de finalización.")
 
         return cleaned_data
+
+class IntercambioForm(forms.ModelForm):
+    publicacion_ofertante = forms.ModelChoiceField(queryset=Publicacion.objects.all())
+
+    class Meta:
+        model = Intercambio
+        fields = ['publicacion_ofertante', 'centro_encuentro', 'dias_convenientes', 'franja_horaria_inicio', 'franja_horaria_fin']
+        widgets = {
+            'dias_convenientes': forms.CheckboxSelectMultiple,
+            'franja_horaria_inicio': forms.TimeInput(format='%H:%M'),
+            'franja_horaria_fin': forms.TimeInput(format='%H:%M'),
+        }

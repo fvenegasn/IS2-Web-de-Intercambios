@@ -1,0 +1,37 @@
+{% extends 'layouts/base.html' %}
+{% block title %}Crear Propuesta de Intercambio{% endblock %}
+{% block content %}
+{% include 'layouts/navbar.html' %}
+
+<div class="container">
+    <h1>Crear Propuesta de Intercambio para "{{ publicacion_demandada.nombre }}"</h1>
+    <form method="post">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="publicacion_ofertante" class="form-label">Producto Ofertante</label>
+                {{ form.publicacion_ofertante }}
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="centro_encuentro" class="form-label">Centro de Encuentro</label>
+                {{ form.centro_encuentro }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <label for="dias_convenientes" class="form-label">Días Convenientes</label>
+                {{ form.dias_convenientes }}
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="franja_horaria_inicio" class="form-label">Franja Horaria Inicio</label>
+                {{ form.franja_horaria_inicio }}
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="franja_horaria_fin" class="form-label">Franja Horaria Fin</label>
+                {{ form.franja_horaria_fin }}
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Crear Propuesta</button>
+    </form>
+</div>
+{% endblock %}
