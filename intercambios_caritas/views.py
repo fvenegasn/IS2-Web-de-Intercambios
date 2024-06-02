@@ -163,7 +163,7 @@ def crear_oferta(request, publicacion_id):
     publicacion_demandada = Publicacion.objects.get(id=publicacion_id)
 
     if request.method == "POST":
-        form = IntercambioForm(request.POST)
+        form = IntercambioForm(request.POST, user=request.user)
         if form.is_valid():
             propuesta = form.save(commit=False)
             propuesta.publicacion_demandada = publicacion_demandada
@@ -171,11 +171,11 @@ def crear_oferta(request, publicacion_id):
             if propuesta.es_valida():
                 propuesta.save()
                 messages.success(request, "Propuesta de intercambio creada exitosamente.")
-                return redirect('detalle_publicacion', publicacion_id=publicacion_id)
+                return redirect('home')
             else:
                 messages.error(request, "Propuesta de intercambio inválida.")
     else:
-        form = IntercambioForm()
+        form = IntercambioForm(user=request.user)
 
     context = {
         'form': form,

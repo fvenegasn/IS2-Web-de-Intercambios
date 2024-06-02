@@ -41,7 +41,7 @@ class PublicacionForm(forms.ModelForm):
         return cleaned_data
 
 class IntercambioForm(forms.ModelForm):
-    publicacion_ofertante = forms.ModelChoiceField(queryset=Publicacion.objects.all())
+    publicacion_ofertante = forms.ModelChoiceField(queryset=Publicacion.objects.none())
 
     class Meta:
         model = Intercambio
@@ -51,3 +51,8 @@ class IntercambioForm(forms.ModelForm):
             'franja_horaria_inicio': forms.TimeInput(format='%H:%M'),
             'franja_horaria_fin': forms.TimeInput(format='%H:%M'),
         }
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user')
+        super(IntercambioForm, self).__init__(*args, **kwargs)
+        self.fields['publicacion_ofertante'].queryset = Publicacion.objects.filter(usuario=user)
