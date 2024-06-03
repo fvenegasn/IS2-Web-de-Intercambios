@@ -1,0 +1,21 @@
+{% extends 'layouts/base.html' %}
+{% block title %}Ofertas Realizadas{% endblock %}
+{% block content %}
+{% include 'layouts/navbar.html' %}
+
+<div class="container">
+    <h1>Ofertas Realizadas</h1>
+    <ul>
+        {% for oferta in ofertas_realizadas %}
+            <li>
+                <strong>{{ oferta.publicacion_ofertante.nombre }}</strong> ofrecido por <strong>{{ oferta.publicacion_demandada.nombre }}</strong>
+                <p>Centro de encuentro: {{ oferta.centro_encuentro }}</p>
+                <p>Días convenientes: {{ oferta.dias_convenientes }}</p>
+                <p>Franja horaria: {{ oferta.franja_horaria_inicio }} - {{ oferta.franja_horaria_fin }}</p>
+                <p>Fecha de creación: {{ oferta.fecha_creacion }}</p>
+                <p>Aceptada: {{ oferta.aceptada }}</p>
+            </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

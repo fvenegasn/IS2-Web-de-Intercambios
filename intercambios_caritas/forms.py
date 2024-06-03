@@ -43,6 +43,17 @@ class PublicacionForm(forms.ModelForm):
 class IntercambioForm(forms.ModelForm):
     publicacion_ofertante = forms.ModelChoiceField(queryset=Publicacion.objects.none())
 
+    franja_horaria_inicio = forms.TimeField(
+        widget=forms.TimeInput(format='%H:%M', attrs={'placeholder': 'HH:MM'}),
+        required=False,
+        label='Franja horaria inicio'
+    )
+    franja_horaria_fin = forms.TimeField(
+        widget=forms.TimeInput(format='%H:%M', attrs={'placeholder': 'HH:MM'}),
+        required=False,
+        label='Franja horaria fin'
+    )
+
     class Meta:
         model = Intercambio
         fields = ['publicacion_ofertante', 'centro_encuentro', 'dias_convenientes', 'franja_horaria_inicio', 'franja_horaria_fin']
@@ -54,5 +65,22 @@ class IntercambioForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user')
+        dias = kwargs.pop('dias')
+        punto = kwargs.pop('punto')
         super(IntercambioForm, self).__init__(*args, **kwargs)
         self.fields['publicacion_ofertante'].queryset = Publicacion.objects.filter(usuario=user)
+        self.fields['dias_convenientes'].choices = [(dia, dia) for dia in dias]
+        self.fields['centro_encuentro'].choices = [(punto, punto)]
+
+    def clean(self):
+        cleaned_data = super().clean()
+        franja_horaria_inicio = cleaned_data.get("franja_horaria_inicio")
+        franja_horaria_fin = cleaned_data.get("franja_horaria_fin")
+
+        if franja_horaria_inicio and franja_horaria_fin:
+            if franja_horaria_inicio >= franja_horaria_fin:
+                raise forms.ValidationError("La hora de inicio debe ser antes que la hora de finalización.")
+        elif franja_horaria_inicio or franja_horaria_fin:
+            raise forms.ValidationError("Debe especificar tanto la hora de inicio como la de finalización.")
+
+        return cleaned_data

@@ -3,6 +3,15 @@
 {% block content %}
 {% include 'layouts/navbar.html' %}
 
+{% if messages %}
+{% for message in messages %}
+<div class="alert alert-{{ message.tags }} alert-dismissible fade show m-2 p-1" role="alert">
+    {{ message }}
+    <button type="button" class="btn-close m-0 p-2" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{% endfor %}
+{% endif %}
+
 <div class="container">
     <h1>Crear Propuesta de Intercambio para "{{ publicacion_demandada.nombre }}"</h1>
     <form method="post">

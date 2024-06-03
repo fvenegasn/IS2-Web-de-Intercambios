@@ -3,7 +3,7 @@ import django
 from django.http import HttpResponse
 from django.shortcuts import redirect, render, get_object_or_404
 from intercambios_caritas.forms import IntercambioForm, PublicacionForm
-from intercambios_caritas.models import Usuario, Publicacion
+from intercambios_caritas.models import Intercambio, Usuario, Publicacion
 from . import views
 # from django.contrib.auth.models import User
 from django.contrib import messages
@@ -163,22 +163,33 @@ def crear_oferta(request, publicacion_id):
     publicacion_demandada = Publicacion.objects.get(id=publicacion_id)
 
     if request.method == "POST":
-        form = IntercambioForm(request.POST, user=request.user)
+        form = IntercambioForm(request.POST, user=request.user, dias=publicacion_demandada.dias_convenientes, punto=publicacion_demandada.punto_encuentro)
         if form.is_valid():
             propuesta = form.save(commit=False)
             propuesta.publicacion_demandada = publicacion_demandada
-            propuesta.publicacion_ofertante = Publicacion.objects.get(id=form.cleaned_data['publicacion_ofertante'])
+            propuesta.publicacion_ofertante = form.cleaned_data['publicacion_ofertante']
             if propuesta.es_valida():
                 propuesta.save()
                 messages.success(request, "Propuesta de intercambio creada exitosamente.")
                 return redirect('home')
             else:
                 messages.error(request, "Propuesta de intercambio inválida.")
+                print ("publi invalida")
+        else:
+            messages.error(request, "Invalid shit.")
     else:
-        form = IntercambioForm(user=request.user)
+        form = IntercambioForm(user=request.user, dias=publicacion_demandada.dias_convenientes, punto=publicacion_demandada.punto_encuentro)
 
     context = {
         'form': form,
         'publicacion_demandada': publicacion_demandada
     }
     return render(request, 'publicacion/crear_oferta.html', context)
+
+def ver_ofertas_realizadas(request):
+    ofertas_realizadas = Intercambio.objects.filter(publicacion_ofertante__usuario=request.user)
+    return render(request, 'publicacion/ofertas_realizadas.html', {'ofertas_realizadas': ofertas_realizadas})
+
+def ver_ofertas_recibidas(request):
+    ofertas_recibidas = Intercambio.objects.filter(publicacion_demandada__usuario=request.user)
+    return render(request, 'publicacion/ofertas_recibidas.html', {'ofertas_recibidas': ofertas_recibidas})

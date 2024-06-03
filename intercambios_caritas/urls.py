@@ -40,4 +40,6 @@ urlpatterns = [
 
     path('listar_usuarios', views.listar_usuarios, name="listar_usuarios"),
     path('crear_oferta/<int:publicacion_id>/', views.crear_oferta, name='crear_oferta'),
+    path('ofertas_realizadas', views.ver_ofertas_realizadas, name='ver_ofertas_realizadas'),
+    path('ofertas_recibidas', views.ver_ofertas_recibidas, name='ver_ofertas_recibidas'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
