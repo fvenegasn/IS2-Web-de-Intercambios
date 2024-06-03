@@ -163,7 +163,11 @@ def crear_oferta(request, publicacion_id):
     publicacion_demandada = Publicacion.objects.get(id=publicacion_id)
 
     if request.method == "POST":
-        form = IntercambioForm(request.POST, user=request.user, dias=publicacion_demandada.dias_convenientes, punto=publicacion_demandada.punto_encuentro)
+        form = IntercambioForm(request.POST, 
+                               user=request.user, 
+                               dias=publicacion_demandada.dias_convenientes, 
+                               punto=publicacion_demandada.punto_encuentro,
+                               categoria=publicacion_demandada.categoria)
         if form.is_valid():
             propuesta = form.save(commit=False)
             propuesta.publicacion_demandada = publicacion_demandada
@@ -178,7 +182,10 @@ def crear_oferta(request, publicacion_id):
         else:
             messages.error(request, "Invalid shit.")
     else:
-        form = IntercambioForm(user=request.user, dias=publicacion_demandada.dias_convenientes, punto=publicacion_demandada.punto_encuentro)
+        form = IntercambioForm(user=request.user, 
+                               dias=publicacion_demandada.dias_convenientes,
+                               punto=publicacion_demandada.punto_encuentro,
+                               categoria=publicacion_demandada.categoria)
 
     context = {
         'form': form,

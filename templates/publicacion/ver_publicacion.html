@@ -13,15 +13,19 @@
                 <li class="list-group-item"><u>Categoría</u>: {{ publicacion.categoria }}</li>
                 <li class="list-group-item"><u>Estado</u>: {{ publicacion.estado }}</li>
                 <li class="list-group-item"><u>Punto de encuentro</u>: {{ publicacion.punto_encuentro }}</li>
-                <li class="list-group-item"><u>Real Dueño</u>: id:{{publicacion.usuario}}, nomyap:{{publicacion.usuario.get_full_name}}</li>
+                <li class="list-group-item"><u>Real Dueño</u>: {{publicacion.usuario.get_full_name}}</li>
                 <li class="list-group-item"><u>Dias convenientes</u>: {{ publicacion.dias_convenientes }}</li>
                 <li class="list-group-item"><u>Franja horaria</u>: {{ publicacion.franja_horaria }}</li>
             </ul>
             <a href="{% url 'home' %}" class="btn btn-primary">Volver al menu</a>
             {% if user.is_authenticated %}
-            <a href="{% url 'crear_oferta' publicacion.id %}" class="btn btn-primary">Intercambiar</a>
+                {% if user == publicacion.usuario %}
+                    <button class="btn btn-primary" disabled>Intercambiar</button>
+                {% else %}
+                    <a href="{% url 'crear_oferta' publicacion.id %}" class="btn btn-primary">Intercambiar</a>
+                {% endif %}
             {% else %}
-            <a href="{% url 'signin' %}" class="btn btn-primary">Intercambiar</a>
+                <a href="{% url 'signin' %}" class="btn btn-primary">Intercambiar</a>
             {% endif %}
         </div>
         <!-- Parte derecha -->

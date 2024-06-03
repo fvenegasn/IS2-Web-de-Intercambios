@@ -67,10 +67,18 @@ class IntercambioForm(forms.ModelForm):
         user = kwargs.pop('user')
         dias = kwargs.pop('dias')
         punto = kwargs.pop('punto')
+        categoria = kwargs.pop('categoria')
         super(IntercambioForm, self).__init__(*args, **kwargs)
-        self.fields['publicacion_ofertante'].queryset = Publicacion.objects.filter(usuario=user)
+        self.fields['publicacion_ofertante'].queryset = Publicacion.objects.filter(usuario=user, categoria=categoria)
         self.fields['dias_convenientes'].choices = [(dia, dia) for dia in dias]
-        self.fields['centro_encuentro'].choices = [(punto, punto)]
+
+        puntos_encuentro_final = [(clave,valor) for clave, valor in Publicacion.PUNTOS_ENC if clave != "Negociable"]
+
+        if punto == "Negociable":
+            self.fields['centro_encuentro'].widget = forms.Select(choices=puntos_encuentro_final)
+        else:
+            self.fields['centro_encuentro'].initial = punto
+            self.fields['centro_encuentro'].widget = forms.HiddenInput()
 
     def clean(self):
         cleaned_data = super().clean()
