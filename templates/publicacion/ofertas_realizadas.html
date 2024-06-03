@@ -3,29 +3,65 @@
 {% block content %}
 {% include 'layouts/navbar.html' %}
 
-<div class="container">
-    <h1>Ofertas Realizadas</h1>
-    <ul>
-        {% if ofertas_realizadas %}
-        {% for oferta in ofertas_realizadas %}
-            <li>
-                <div class="row">
-                    <div class="col-md-8">
-                        <strong>{{ oferta.publicacion_ofertante.nombre }}</strong> ofrecido por <strong>{{ oferta.publicacion_demandada.nombre }}</strong>
-                        <p>Centro de encuentro: {{ oferta.centro_encuentro }}</p>
-                        <p>Días convenientes: {{ oferta.dias_convenientes }}</p>
-                        <p>Franja horaria: {{ oferta.franja_horaria_inicio }} - {{ oferta.franja_horaria_fin }}</p>
-                        <p>Fecha de creación: {{ oferta.fecha_creacion }}</p>
+
+<h1 class="text-center custom-h1-bg mb-2">Ofertas Realizadas</h1>
+<ul>
+    {% if ofertas_realizadas %}
+    {% for oferta in ofertas_realizadas %}
+    <li>
+        <div class="card text-center">
+            <div class="card-header">
+                <p>Oferta Realizada:</p>
+                <p>Esperando respuesta de
+                    {{oferta.publicacion_demandada.usuario.get_full_name}} {{oferta.publicacion_demandada.usuario}}.
+                </p>
+                <p>Fecha de creación: {{ oferta.fecha_creacion }}</p>
+            </div>
+            <div class="card-body">
+                <div class="row d-flex align-items-center justify-content-end">
+                    <div class="col-md-4 text-center">
+                        <p>Producto de
+                            {{oferta.publicacion_ofertante.usuario.get_full_name}}
+                            {{oferta.publicacion_ofertante.usuario}}:</p>
+                        <p>{{ oferta.publicacion_ofertante.nombre }}</p>
+                        <div class="embed-responsive embed-responsive-4by3 my-2">
+                            <img src="{{ oferta.publicacion_ofertante.imagen.url}}" alt=""
+                                class="img-fluid embed-responsive-item">
+                        </div>
+                        <a href="{% url 'ver_publicacion' oferta.publicacion_ofertante.id %}"
+                            class="btn btn-primary d-block">Ver publicacion</a>
                     </div>
-                    <div class="col-md-4 d-flex align-items-center justify-content-end">
-                        <button class="btn btn-danger">Cancelar ✖</button>
+                    <div class="col-md-4 text-center my-2">
+                        <p class="my-2 p-2" style="background-color: #f0f8ff">Solicitud de intercambio el dia
+                            {{ oferta.dias_convenientes }} a las {{oferta.franja_horaria_inicio}} -
+                            {{oferta.franja_horaria_fin }}
+                            en la filial {{ oferta.centro_encuentro }}.</p>
+                    </div>
+                    <div class="col-md-4 text-center">
+                        <p>Producto de
+                            {{oferta.publicacion_demandada.usuario.get_full_name}}
+                            {{oferta.publicacion_demandada.usuario}}:
+                        </p>
+                        <p>{{oferta.publicacion_demandada.nombre}}</p>
+                        <div class="embed-responsive embed-responsive-4by3 my-2">
+                            <img src="{{ oferta.publicacion_demandada.imagen.url}}" alt=""
+                                class="img-fluid embed-responsive-item">
+                        </div>
+                        <a href="{% url 'ver_publicacion' oferta.publicacion_demandada.id %}"
+                            class="btn btn-primary d-block">Ver publicacion</a>
                     </div>
                 </div>
-            </li>
-        {% endfor %}
-        {% else %}
-        <p style="font-size: 1.2rem; color: #555; text-align: center; margin-top: 20px;">Usted no realizó ninguna oferta</p>
-        {% endif %}
-    </ul>
-</div>
+            </div>
+            <div class="card-footer">
+                <button class="btn btn-danger">Cancelar oferta ✖</button>
+            </div>
+        </div>
+    </li>
+    {% endfor %}
+    {% else %}
+    <p style="font-size: 1.2rem; color: #555; text-align: center; margin-top: 20px;">Usted no realizó ninguna oferta
+    </p>
+    {% endif %}
+</ul>
+
 {% endblock %}
