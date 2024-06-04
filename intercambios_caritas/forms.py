@@ -68,17 +68,23 @@ class IntercambioForm(forms.ModelForm):
         dias = kwargs.pop('dias')
         punto = kwargs.pop('punto')
         categoria = kwargs.pop('categoria')
+        franja_horaria_inicio = kwargs.pop('franja_horaria_inicio')
+        franja_horaria_fin = kwargs.pop('franja_horaria_fin')
         super(IntercambioForm, self).__init__(*args, **kwargs)
         self.fields['publicacion_ofertante'].queryset = Publicacion.objects.filter(usuario=user, categoria=categoria)
         self.fields['dias_convenientes'].choices = [(dia, dia) for dia in dias]
 
-        puntos_encuentro_final = [(clave,valor) for clave, valor in Publicacion.PUNTOS_ENC if clave != "Negociable"]
+        puntos_encuentro_final = [(clave, valor) for clave, valor in Publicacion.PUNTOS_ENC if clave != "Negociable"]
 
         if punto == "Negociable":
             self.fields['centro_encuentro'].widget = forms.Select(choices=puntos_encuentro_final)
         else:
             self.fields['centro_encuentro'].initial = punto
             self.fields['centro_encuentro'].widget = forms.HiddenInput()
+
+        # Guardar las franjas horarias de la publicación demandada para validación
+        self.franja_horaria_inicio_publicacion = franja_horaria_inicio
+        self.franja_horaria_fin_publicacion = franja_horaria_fin
 
     def clean(self):
         cleaned_data = super().clean()
@@ -88,6 +94,9 @@ class IntercambioForm(forms.ModelForm):
         if franja_horaria_inicio and franja_horaria_fin:
             if franja_horaria_inicio >= franja_horaria_fin:
                 raise forms.ValidationError("La hora de inicio debe ser antes que la hora de finalización.")
+            # Validar que las franjas horarias estén dentro del rango permitido por la publicación demandada
+            if not (self.franja_horaria_inicio_publicacion <= franja_horaria_inicio <= self.franja_horaria_fin_publicacion) or not (self.franja_horaria_inicio_publicacion <= franja_horaria_fin <= self.franja_horaria_fin_publicacion):
+                raise forms.ValidationError(f"Las horas deben estar dentro del rango {self.franja_horaria_inicio_publicacion} y {self.franja_horaria_fin_publicacion}.")
         elif franja_horaria_inicio or franja_horaria_fin:
             raise forms.ValidationError("Debe especificar tanto la hora de inicio como la de finalización.")
 

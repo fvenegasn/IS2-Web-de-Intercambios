@@ -4,7 +4,8 @@ from django.contrib.auth.models import AbstractUser
 from django.forms import ValidationError
 from multiselectfield import MultiSelectField
 from django.utils import timezone
-
+from abc import ABC, abstractmethod
+import datetime
 
 # Create your models here.
 # aca iria el back ¿
@@ -74,6 +75,8 @@ class Publicacion(models.Model):
     estado = models.CharField(max_length=50, blank=False, null=False, choices=ESTADOS, default=ESTADOS[0][0])
     punto_encuentro = models.CharField(max_length=50, blank=False, null=False, choices=PUNTOS_ENC, default=PUNTOS_ENC[0][0])
     dias_convenientes = MultiSelectField(choices=DIAS_SEMANA, blank=True, max_length=100)
+    franja_horaria_inicio = models.TimeField(default=datetime.time(9,0,0)) # 9 AM?
+    franja_horaria_fin = models.TimeField(default=datetime.time(18,0,0)) # 6 PM?
     franja_horaria = models.CharField(max_length=50, blank=True, null=True)
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE, default=get_default_user)
     
@@ -94,6 +97,43 @@ class Publicacion(models.Model):
     def __str__(self):
         return self.nombre
 
+class EstadoIntercambio(ABC):
+    #ABC es lo que te permite indicar que se trata de una clase abstracta
+    @abstractmethod
+    def obtener_estado(self):
+        pass
+
+class Aceptada(EstadoIntercambio):
+    """
+    Un usuario acepta una oferta recibida.
+    Equivale a "pendiente acción de moderador"
+    """
+    def obtener_estado(self):
+        return "Aceptada"
+
+class Rechazada(EstadoIntercambio):
+    """
+    Un usuario rechaza una oferta recibida
+    """
+    def obtener_estado(self):
+        return "Rechazada"
+    
+class Cancelada(EstadoIntercambio):
+    """
+    Un usuario cancela una oferta realizada
+    """
+    def obtener_estado(self):
+        return "Cancelada"
+    
+class Pendiente(EstadoIntercambio):
+    """
+    Estado inicial: Quien recibe puede decidir si acepta o rechaza 
+                    y quien realiza si cancela
+    """
+    def obtener_estado(self):
+        return "Pendiente"
+    
+
 class Intercambio(models.Model):
     publicacion_ofertante = models.ForeignKey('Publicacion', related_name='ofertas_realizadas', on_delete=models.CASCADE)
     publicacion_demandada = models.ForeignKey('Publicacion', related_name='ofertas_recibidas', on_delete=models.CASCADE)
@@ -102,6 +142,7 @@ class Intercambio(models.Model):
     franja_horaria_inicio = models.TimeField()
     franja_horaria_fin = models.TimeField()
     fecha_creacion = models.DateTimeField(default=timezone.now)
+    #estado = models.CharField(max_length=50,default=Pendiente())
     aceptada = models.BooleanField(default=False)
 
     def __str__(self):

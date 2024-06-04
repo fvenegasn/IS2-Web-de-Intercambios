@@ -133,6 +133,8 @@ def crear_publicacion(request):
             fin = form.cleaned_data.get('franja_horaria_fin')
             if inicio and fin:
                 publicacion.franja_horaria = f"entre las {inicio.strftime('%H:%M')} y las {fin.strftime('%H:%M')}"
+                publicacion.franja_horaria_inicio = inicio
+                publicacion.franja_horaria_fin = fin
             publicacion.save()
             print (publicacion)
             messages.success(request, "Publicación creada exitosamente!")
@@ -163,11 +165,15 @@ def crear_oferta(request, publicacion_id):
     publicacion_demandada = Publicacion.objects.get(id=publicacion_id)
 
     if request.method == "POST":
-        form = IntercambioForm(request.POST, 
-                               user=request.user, 
-                               dias=publicacion_demandada.dias_convenientes, 
-                               punto=publicacion_demandada.punto_encuentro,
-                               categoria=publicacion_demandada.categoria)
+        form = IntercambioForm(
+            request.POST,
+            user=request.user,
+            dias=publicacion_demandada.dias_convenientes,
+            punto=publicacion_demandada.punto_encuentro,
+            categoria=publicacion_demandada.categoria,
+            franja_horaria_inicio=publicacion_demandada.franja_horaria_inicio,
+            franja_horaria_fin=publicacion_demandada.franja_horaria_fin
+        )
         if form.is_valid():
             propuesta = form.save(commit=False)
             propuesta.publicacion_demandada = publicacion_demandada
@@ -177,15 +183,18 @@ def crear_oferta(request, publicacion_id):
                 messages.success(request, "Propuesta de intercambio creada exitosamente.")
                 return redirect('home')
             else:
-                messages.error(request, "Propuesta de intercambio inválida.")
-                print ("publi invalida")
+                messages.error(request, "Propuesta de intercambio inválida.") # aca entra cuando no cumple con las RDN
         else:
-            messages.error(request, "Invalid shit.")
+            messages.error(request, "Verifique los datos ingresados.") # aca entra cuando directamente manda el formulario y hay algun dato mal
     else:
-        form = IntercambioForm(user=request.user, 
-                               dias=publicacion_demandada.dias_convenientes,
-                               punto=publicacion_demandada.punto_encuentro,
-                               categoria=publicacion_demandada.categoria)
+        form = IntercambioForm(
+            user=request.user,
+            dias=publicacion_demandada.dias_convenientes,
+            punto=publicacion_demandada.punto_encuentro,
+            categoria=publicacion_demandada.categoria,
+            franja_horaria_inicio=publicacion_demandada.franja_horaria_inicio,
+            franja_horaria_fin=publicacion_demandada.franja_horaria_fin
+        )
 
     context = {
         'form': form,
