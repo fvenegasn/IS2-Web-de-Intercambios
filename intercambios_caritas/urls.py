@@ -33,7 +33,8 @@ urlpatterns = [
     path('reset_password_complete/',
          auth_views.PasswordResetCompleteView.as_view(template_name='authentication\password_reset_done.html'), 
          name="password_reset_complete"), # contraseña cambiada exitosamente
-    path('mi_pefil', views.ver_perfil ,name = "mi_perfil"),
+    path('mi_pefil', views.mi_perfil ,name = "mi_perfil"),
+    path('perfil/<str:username>/', views.ver_perfil, name='ver_perfil'),
     path('crear_publicacion', views.crear_publicacion,name="crear_publicacion"),
     path('mis_publicaciones', views.mis_publicaciones, name="mis_publicaciones"),
     path('ver_publicacion/<int:publicacion_id>/', views.ver_publicacion, name="ver_publicacion"),

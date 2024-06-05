@@ -1,0 +1,53 @@
+{% extends 'layouts/base.html' %}
+<!-- esto es para que se herede la estructura html y estilos del archivo base -->
+{% block title %}Mi Perfil{% endblock %}
+<!-- titulo personalizado -->
+{% block content %}
+{% include 'layouts/navbar.html' %}
+<!-- esto es para que se vea el navbar  -->
+<h1 class="text-center custom-h1-bg mb-2">Perfil de {{ user.first_name }} {{ user.last_name }}</h1>
+<div class="d-flex justify-content-center align-items-center">
+    <div class="card" style="width: 40rem;">
+        <div class="card-body">
+            <div class="text-center">
+                <h2><u>Información General</u></h2>
+                <p><b>Nombre:</b> {{ user.first_name }} {{ user.last_name }}</p>
+                <p><b>DNI:</b> {{ user.username}}</p>
+                <p><b>Fecha Nacimiento:</b> {{ user.nacimiento}}</p>
+                <p><b>Fecha de Registro:</b> {{ user.date_joined}}</p>
+                <h2><u>Datos de Contacto</u></h2>
+                <p><b>Mail:</b> {{ user.email}}</p>
+                <p><b>Dirección:</b> {{ user.direccion}}</p>
+                <p><b>Teléfono:</b> {{ user.telefono}}</p>
+            </div>
+            <div>
+                <form action="" method="post">
+                    {% csrf_token %}
+                    <label class="form-label mb-1" for="rol">Cambiar rol:</label>
+                    <select name="rol" id="rol" class="form-select form-select-lg" required>
+                        {% if user.is_staff %}
+                        <option value="admin" selected>Administrador (rol actual)</option>
+                        <option value="user">Usuario</option>
+                        <option value="moderator">Moderador</option>
+                        {% else %}
+                        <option value="user" selected>Usuario (rol actual)</option>
+                        <option value="admin">Administrador</option>
+                        <option value="moderator">Moderador</option>
+                        {% endif %}
+                    </select>
+                    {% if messages %}
+                    {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show m-2 p-1" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close m-0 p-2" data-bs-dismiss="alert"
+                            aria-label="Close"></button>
+                    </div>
+                    {% endfor %}
+                    {% endif %}
+                    <button type="submit" class="btn btn-primary btn-block mt-2 p-2">Cambiar rol</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

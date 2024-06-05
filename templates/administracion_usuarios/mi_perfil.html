@@ -5,17 +5,22 @@
 {% block content %}
 {% include 'layouts/navbar.html' %}
 <!-- esto es para que se vea el navbar  -->
-
-<h1>Mi Perfil </h1>
-<h2>{{ user.first_name }} {{ user.last_name }}</h2>
-<h3><u>Información General</u></h3>
-<p><b>Fecha Nacimiento:</b> {{ user.nacimiento}}</p>
-<p><b>Fecha de Registro:</b> {{ user.date_joined}}</p>
-<p><b>DNI:</b>{{ user.username}}</p>
-
-<h3><u>Datos de Contacto</u></h3>
-<p><b>Mail:</b> {{ user.email}}</p>
-<p><b>Dirección:</b> {{ user.direccion}}</p>
-<p><b>Teléfono:</b> {{ user.telefono}}</p>
-
+<h1 class="text-center custom-h1-bg mb-2">Mi Perfil </h1>
+<div class="d-flex justify-content-center align-items-center">
+    <div class="card" style="width: 40rem;">
+        <div class="card-body">
+            <div class="text-center">
+                <h2><u>Información General</u></h2>
+                <p><b>Nombre:</b> {{ user.first_name }} {{ user.last_name }}</p>
+                <p><b>DNI:</b> {{ user.username}}</p>
+                <p><b>Fecha Nacimiento:</b> {{ user.nacimiento}}</p>
+                <p><b>Fecha de Registro:</b> {{ user.date_joined}}</p>
+                <h2><u>Datos de Contacto</u></h2>
+                <p><b>Mail:</b> {{ user.email}}</p>
+                <p><b>Dirección:</b> {{ user.direccion}}</p>
+                <p><b>Teléfono:</b> {{ user.telefono}}</p>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

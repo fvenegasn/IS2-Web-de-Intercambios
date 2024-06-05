@@ -118,8 +118,12 @@ def quienes_somos(request):
     return render(request, 'authentication/quienes_somos.html')
 
 
-def ver_perfil(request):
+def mi_perfil(request):
     return render(request, 'administracion_usuarios/mi_perfil.html')
+
+def ver_perfil(request, username):
+    user = get_object_or_404(Usuario, username=username)
+    return render(request, 'administracion_usuarios/perfil.html', {'user': user})
 
 
 def crear_publicacion(request):
