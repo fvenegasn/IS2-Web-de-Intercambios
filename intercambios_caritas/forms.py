@@ -1,3 +1,4 @@
+from django.utils import timezone
 from django import forms
 from .models import Publicacion, Intercambio
 
@@ -40,14 +41,19 @@ class PublicacionForm(forms.ModelForm):
 
         if franja_horaria_inicio and franja_horaria_fin:
             if franja_horaria_inicio >= franja_horaria_fin:
+                self.add_error('franja_horaria_inicio', "La hora de inicio debe ser antes que la hora de finalización.")
+                self.add_error('franja_horaria_fin', "La hora de inicio debe ser antes que la hora de finalización.")
                 raise forms.ValidationError("La hora de inicio debe ser antes que la hora de finalización.")
         elif franja_horaria_inicio or franja_horaria_fin:
+            self.add_error('franja_horaria_inicio', "Debe especificar tanto la hora de inicio como la de finalización.")
+            self.add_error('franja_horaria_fin', "Debe especificar tanto la hora de inicio como la de finalización.")
             raise forms.ValidationError("Debe especificar tanto la hora de inicio como la de finalización.")
 
         return cleaned_data
 
 class IntercambioForm(forms.ModelForm):
     publicacion_ofertante = forms.ModelChoiceField(queryset=Publicacion.objects.none())
+    fecha_intercambio = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}), required=True)
 
     franja_horaria_inicio = forms.TimeField(
         widget=forms.TimeInput(format='%H:%M', attrs={'placeholder': 'HH:MM'}),
@@ -62,35 +68,54 @@ class IntercambioForm(forms.ModelForm):
 
     class Meta:
         model = Intercambio
-        fields = ['publicacion_ofertante', 'centro_encuentro', 'dias_convenientes', 'franja_horaria_inicio', 'franja_horaria_fin']
+        fields = ['publicacion_ofertante', 'punto_encuentro', 'fecha_intercambio', 'franja_horaria_inicio', 'franja_horaria_fin']
         widgets = {
-            'dias_convenientes': forms.CheckboxSelectMultiple,
             'franja_horaria_inicio': forms.TimeInput(format='%H:%M'),
-            'franja_horaria_fin': forms.TimeInput(format='%H:%M'),
+            'franja_horaria_fin': forms.TimeInput(format='%H:%M')
         }
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user')
         dias = kwargs.pop('dias')
-        punto = kwargs.pop('punto')
+        puntos = kwargs.pop('puntos')
         categoria = kwargs.pop('categoria')
         franja_horaria_inicio = kwargs.pop('franja_horaria_inicio')
         franja_horaria_fin = kwargs.pop('franja_horaria_fin')
         super(IntercambioForm, self).__init__(*args, **kwargs)
         self.fields['publicacion_ofertante'].queryset = Publicacion.objects.filter(usuario=user, categoria=categoria)
-        self.fields['dias_convenientes'].choices = [(dia, dia) for dia in dias]
+        # self.fields['dias_convenientes'].choices = [(dia, dia) for dia in dias]
 
-        puntos_encuentro_final = [(clave, valor) for clave, valor in Publicacion.PUNTOS_ENC if clave != "Negociable"]
+        self.fields['punto_encuentro'].choices = [(p, p) for p in puntos]
 
-        if punto == "Negociable":
-            self.fields['centro_encuentro'].widget = forms.Select(choices=puntos_encuentro_final)
-        else:
-            self.fields['centro_encuentro'].initial = punto
-            self.fields['centro_encuentro'].widget = forms.HiddenInput()
-
-        # Guardar las franjas horarias de la publicación demandada para validación
         self.franja_horaria_inicio_publicacion = franja_horaria_inicio
         self.franja_horaria_fin_publicacion = franja_horaria_fin
+
+        self.fields['fecha_intercambio'].widget.attrs['min'] = timezone.now().strftime('%Y-%m-%d')
+        self.dias_disponibles = dias
+
+    def clean_fecha_intercambio(self):
+        fecha_intercambio = self.cleaned_data.get('fecha_intercambio')
+        dias_convenientes = self.dias_disponibles
+
+        # Diccionario de traducción de días de la semana
+        dias_espanol = {
+            'Monday': 'Lunes',
+            'Tuesday': 'Martes',
+            'Wednesday': 'Miércoles',
+            'Thursday': 'Jueves',
+            'Friday': 'Viernes',
+            'Saturday': 'Sábado',
+            'Sunday': 'Domingo'
+        }
+
+        # Obtener el nombre del día en español
+        dia_semana = fecha_intercambio.strftime('%A')
+        dia_semana_espanol = dias_espanol.get(dia_semana)
+
+        # Verificar si el día de la semana está en la lista de días convenientes
+        if fecha_intercambio and dia_semana_espanol not in dias_convenientes:
+            raise forms.ValidationError(f"La fecha seleccionada debe ser un {', '.join(dias_convenientes)}.")
+        return fecha_intercambio
 
     def clean(self):
         cleaned_data = super().clean()

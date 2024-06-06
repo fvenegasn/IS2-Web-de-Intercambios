@@ -169,11 +169,12 @@ def crear_oferta(request, publicacion_id):
     publicacion_demandada = Publicacion.objects.get(id=publicacion_id)
 
     if request.method == "POST":
+        print (request.POST)
         form = IntercambioForm(
             request.POST,
             user=request.user,
             dias=publicacion_demandada.dias_convenientes,
-            punto=publicacion_demandada.punto_encuentro,
+            puntos=publicacion_demandada.punto_encuentro,
             categoria=publicacion_demandada.categoria,
             franja_horaria_inicio=publicacion_demandada.franja_horaria_inicio,
             franja_horaria_fin=publicacion_demandada.franja_horaria_fin
@@ -189,12 +190,13 @@ def crear_oferta(request, publicacion_id):
             else:
                 messages.error(request, "Propuesta de intercambio inválida.") # aca entra cuando no cumple con las RDN
         else:
+            print("Errores del formulario:", form.errors)
             messages.error(request, "Verifique los datos ingresados.") # aca entra cuando directamente manda el formulario y hay algun dato mal
     else:
         form = IntercambioForm(
             user=request.user,
             dias=publicacion_demandada.dias_convenientes,
-            punto=publicacion_demandada.punto_encuentro,
+            puntos=publicacion_demandada.punto_encuentro,
             categoria=publicacion_demandada.categoria,
             franja_horaria_inicio=publicacion_demandada.franja_horaria_inicio,
             franja_horaria_fin=publicacion_demandada.franja_horaria_fin

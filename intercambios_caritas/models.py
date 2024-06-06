@@ -8,7 +8,6 @@ from abc import ABC, abstractmethod
 import datetime
 
 # Create your models here.
-# aca iria el back ¿
 
 
 class Usuario(AbstractUser):
@@ -150,8 +149,10 @@ class Pendiente(EstadoIntercambio):
 class Intercambio(models.Model):
     publicacion_ofertante = models.ForeignKey('Publicacion', related_name='ofertas_realizadas', on_delete=models.CASCADE)
     publicacion_demandada = models.ForeignKey('Publicacion', related_name='ofertas_recibidas', on_delete=models.CASCADE)
-    centro_encuentro = models.CharField(max_length=50, choices=Publicacion.PUNTOS_ENC)
-    dias_convenientes = MultiSelectField(choices=Publicacion.DIAS_SEMANA, blank=True, max_length=100)
+    punto_encuentro = models.CharField(max_length=50, choices=Publicacion.PUNTOS_ENC) # 1 solo respecto de lo seleccionado en publicacion_demandada
+    #dias_convenientes = MultiSelectField(choices=Publicacion.DIAS_SEMANA, blank=True, max_length=100) #N/A
+    fecha_intercambio = models.DateField(default=datetime.datetime(2024,6,12)) # representa una fecha calendario sobre los días convenientes
+    # La franja horaria debe representar 1 hora dentro del rango previamente seleccionado por el usuario
     franja_horaria_inicio = models.TimeField(default=datetime.time(9,0,0))
     franja_horaria_fin = models.TimeField(default=datetime.time(18,0,0))
     fecha_creacion = models.DateTimeField(default=timezone.now)

@@ -18,26 +18,32 @@
         {% csrf_token %}
         <div class="row">
             <div class="col-md-6 mb-3">
-                <label for="publicacion_ofertante" class="form-label">Producto a ofertar</label>
-                {{ form.publicacion_ofertante }}
+                <div data-mdb-input-init class="form-outline">
+                    <label for="publicacion_ofertante" class="form-label">Producto Ofertante</label>
+                    {{ form.publicacion_ofertante }}
+                </div>
             </div>
-            {% if form.centro_encuentro.field.widget.is_hidden %}
-            <div class="col-md-6 mb-3" style="display: flex; align-items: center;">
-                <label class="form-label" style="margin-right: 10px;">Centro de Encuentro:</label> <p>{{ form.centro_encuentro.initial }}</p>
+            <div class="col-md-6 mb-3">
+                <div data-mdb-input-init class="form-outline">
+                    <label class="form-label mb-1" for="punto_encuentro">Punto de encuentro</label>
+                    <select id="punto_encuentro" name="punto_encuentro"
+                        class="form-select form-select-lg" required>
+                        <option value="" selected disabled>-- Seleccione --</option>
+                        {% for value, display in form.fields.punto_encuentro.choices %}
+                        <option value="{{ value }}">{{ display }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
             </div>
-            {% else %}
-            <div class="col-md-6 mb-3" style="display: flex; align-items: center;">
-                <label for="centro_encuentro" class="form-label" style="margin-right: 10px;">Centro de Encuentro:</label> {{ form.centro_encuentro }}
-            </div>
-            {% endif %}
         </div>
-        
-        
-        
+
         <div class="row">
             <div class="col-md-4 mb-3">
-                <label for="dias_convenientes" class="form-label">Días Convenientes</label>
-                {{ form.dias_convenientes }}
+                <div data-mdb-input-init class="form-outline datepicker w-100">
+                    <label for="fecha_intercambio" class="form-label mb-1">Fecha de intercambio</label>
+                    <input type="date" id="fecha_intercambio" name="fecha_intercambio" value="{{ nac }}"
+                        class="form-control form-control-lg" required />
+                </div>
             </div>
             <div class="col-md-4 mb-3">
                 <label for="franja_horaria_inicio" class="form-label">Franja Horaria Inicio</label>
