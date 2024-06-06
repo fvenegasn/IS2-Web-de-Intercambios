@@ -168,11 +168,17 @@ def listar_usuarios(request):
 def crear_oferta(request, publicacion_id):
     publicacion_demandada = Publicacion.objects.get(id=publicacion_id)
 
+    usuario_actual = request.user
+    publicaciones_del_usuario = Publicacion.objects.filter(usuario=usuario_actual, categoria=publicacion_demandada.categoria)
+    if len(publicaciones_del_usuario) == 0:
+        messages.error(request,"Usted no posee publicaciones de esta categoría")
+        return redirect("home")
+
     if request.method == "POST":
         print (request.POST)
         form = IntercambioForm(
             request.POST,
-            user=request.user,
+            user=usuario_actual,
             dias=publicacion_demandada.dias_convenientes,
             puntos=publicacion_demandada.punto_encuentro,
             categoria=publicacion_demandada.categoria,
@@ -194,7 +200,7 @@ def crear_oferta(request, publicacion_id):
             messages.error(request, "Verifique los datos ingresados.") # aca entra cuando directamente manda el formulario y hay algun dato mal
     else:
         form = IntercambioForm(
-            user=request.user,
+            user=usuario_actual,
             dias=publicacion_demandada.dias_convenientes,
             puntos=publicacion_demandada.punto_encuentro,
             categoria=publicacion_demandada.categoria,
