@@ -7,6 +7,11 @@ class PublicacionForm(forms.ModelForm):
         widget=forms.CheckboxSelectMultiple,
         required=False
     )
+    punto_encuentro = forms.MultipleChoiceField(
+        choices=Publicacion.PUNTOS_ENC,
+        widget=forms.CheckboxSelectMultiple,
+        required=False
+    )
     franja_horaria_inicio = forms.TimeField(
         widget=forms.TimeInput(format='%H:%M', attrs={'placeholder': 'HH:MM'}),
         required=False,
@@ -23,6 +28,7 @@ class PublicacionForm(forms.ModelForm):
         fields = ['nombre', 'descripcion', 'imagen', 'categoria', 'estado', 'punto_encuentro', 'dias_convenientes', 'franja_horaria_inicio', 'franja_horaria_fin']
         widgets = {
             'dias_convenientes': forms.CheckboxSelectMultiple,
+            'punto_encuentro': forms.CheckboxSelectMultiple,
             'franja_horaria_inicio': forms.TimeInput(format='%H:%M'),
             'franja_horaria_fin': forms.TimeInput(format='%H:%M'),
         }

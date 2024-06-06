@@ -40,24 +40,33 @@ def get_default_user():
 
 
 class Publicacion(models.Model):
+    """
+    Define la estructura inicial para todas las publicaciones
+    """
+
+    # Puntos de encuentro posibles
     PUNTOS_ENC = [
-        ('Negociable', 'Negociable'),
         ('La Plata', 'La Plata'),
         ('CABA', 'CABA'),
         ('Quilmes', 'Quilmes'),
         ('Temperley', 'Temperley'),
     ]
+
+    # Categorías posibles
     CATEGORIAS = [
         ('Alimentos', 'Alimentos'),
         ('Ropa', 'Ropa'),
         ('Utiles escolares', 'Utiles escolares'),
         ('Artículos de limpieza', 'Artículos de limpieza'),
     ]
+
+    # Estados posibles
     ESTADOS = [
         ('Sin especificar', 'Sin especificar'),
         ('Usado', 'Usado'),
         ('Nuevo', 'Nuevo'),
     ]
+
     DIAS_SEMANA = [
         ('Lunes', 'Lunes'),
         ('Martes', 'Martes'),
@@ -68,21 +77,25 @@ class Publicacion(models.Model):
         ('Domingo', 'Domingo'),
     ]
 
+    # Campos de una publicación
     nombre = models.CharField(max_length=50, blank=False, null=False)
     descripcion = models.CharField(max_length=280, blank=True, null=False, default="Sin descripción")
     imagen = models.ImageField()
     categoria = models.CharField(max_length=50, blank=False, null=False, choices=CATEGORIAS, default="Otros")
     estado = models.CharField(max_length=50, blank=False, null=False, choices=ESTADOS, default=ESTADOS[0][0])
-    punto_encuentro = models.CharField(max_length=50, blank=False, null=False, choices=PUNTOS_ENC, default=PUNTOS_ENC[0][0])
+    punto_encuentro = MultiSelectField(choices=PUNTOS_ENC, blank=True, max_length=100)
     dias_convenientes = MultiSelectField(choices=DIAS_SEMANA, blank=True, max_length=100)
-    franja_horaria_inicio = models.TimeField(default=datetime.time(9,0,0)) # 9 AM?
-    franja_horaria_fin = models.TimeField(default=datetime.time(18,0,0)) # 6 PM?
+    franja_horaria_inicio = models.TimeField(default=datetime.time(9,0,0)) # 9 AM
+    franja_horaria_fin = models.TimeField(default=datetime.time(18,0,0)) # 6 PM
     franja_horaria = models.CharField(max_length=50, blank=True, null=True)
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE, default=get_default_user)
     
     FRANJA_HORARIA_REGEX = r'^entre las (\d{2}):(\d{2}) y las (\d{2}):(\d{2})$'
 
     def clean(self):
+        """
+        Valida la franja horaria seleccionada
+        """
         super().clean()
         if self.franja_horaria:
             match = re.match(self.FRANJA_HORARIA_REGEX, self.franja_horaria)
@@ -139,8 +152,8 @@ class Intercambio(models.Model):
     publicacion_demandada = models.ForeignKey('Publicacion', related_name='ofertas_recibidas', on_delete=models.CASCADE)
     centro_encuentro = models.CharField(max_length=50, choices=Publicacion.PUNTOS_ENC)
     dias_convenientes = MultiSelectField(choices=Publicacion.DIAS_SEMANA, blank=True, max_length=100)
-    franja_horaria_inicio = models.TimeField()
-    franja_horaria_fin = models.TimeField()
+    franja_horaria_inicio = models.TimeField(default=datetime.time(9,0,0))
+    franja_horaria_fin = models.TimeField(default=datetime.time(18,0,0))
     fecha_creacion = models.DateTimeField(default=timezone.now)
     #estado = models.CharField(max_length=50,default=Pendiente())
     aceptada = models.BooleanField(default=False)
