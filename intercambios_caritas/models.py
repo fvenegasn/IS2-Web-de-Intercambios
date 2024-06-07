@@ -18,6 +18,15 @@ class Usuario(AbstractUser):
     direccion = models.CharField(max_length=100, blank=True, null=True)
     nacimiento = models.DateField(blank=True, null=True)
 
+    class Types(models.TextChoices):
+        Administrador = "Administrador", "Administrador"
+        Usuario = "Usuario", "Usuario"
+        Moderador = "Moderador", "Moderador"
+
+    rol = models.CharField(
+        max_length=20, choices=Types.choices, default=Types.Usuario
+    )
+
     def __init__(self, *args, **kwargs):
         telefono = kwargs.pop('telefono', None)
         direccion = kwargs.pop('direccion', None)
@@ -32,6 +41,18 @@ class Usuario(AbstractUser):
 
     def __str__(self):
         return self.username
+    
+    def isAdmin(self):
+        return self.rol.upper() == 'ADMINISTRADOR'
+    
+    def isUser(self):
+        return self.rol.upper() == 'USUARIO'
+    
+    def isModerador(self):
+        return self.rol.upper() == 'MODERADOR'
+    
+    def getRol(self):
+        return self.rol
 
 
 def get_default_user():

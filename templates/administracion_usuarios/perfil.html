@@ -25,14 +25,18 @@
                     {% csrf_token %}
                     <label class="form-label mb-1" for="rol">Cambiar rol:</label>
                     <select name="rol" id="rol" class="form-select form-select-lg" required>
-                        {% if user.is_staff %}
-                        <option value="admin" selected>Administrador (rol actual)</option>
-                        <option value="user">Usuario</option>
-                        <option value="moderator">Moderador</option>
+                        {% if user.isUser %}
+                        <option value="Usuario" selected>Usuario (rol actual)</option>
+                        <option value="Moderador">Moderador</option>
+                        <option value="Administrador">Administrador</option>
+                        {% elif user.isModerador %}
+                        <option value="Moderador" selected>Moderador (rol actual)</option>
+                        <option value="Usuario">Usuario</option>
+                        <option value="Administrador">Administrador</option>
                         {% else %}
-                        <option value="user" selected>Usuario (rol actual)</option>
-                        <option value="admin">Administrador</option>
-                        <option value="moderator">Moderador</option>
+                        <option value="Administrador" selected>Administrador (rol actual)</option>
+                        <option value="Usuario">Usuario</option>
+                        <option value="Moderador">Moderador</option>
                         {% endif %}
                     </select>
                     {% if messages %}

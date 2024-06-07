@@ -31,13 +31,7 @@
         <td>{{ usuario.nacimiento }}</td>
         <td>{{ usuario.date_joined }}</td>
         <td>{{ usuario.email }}</td>
-        <td>
-          {% if usuario.is_staff %}
-          Administrador
-          {% else %}
-          Usuario
-          {% endif %}
-        </td>
+        <td>{{ usuario.getRol }}</td>
         <td><a href="{% url 'ver_perfil' usuario.username %}" class="btn btn-primary d-block">🖋️</a></td>
       </tr>
       {% endfor %}

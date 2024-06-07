@@ -69,6 +69,7 @@ def register(request):
         nuevo_usuario.telefono = telefono
         nuevo_usuario.direccion = direccion
         nuevo_usuario.nacimiento = nacimiento
+        nuevo_usuario.rol = 'Usuario' # creo que estoy duplicando con el init de la clase, pero nose si se invoca acá al constructor de la clase madre.
 
         # OPCIONAL? -> activar usuario - min. 01.02.50
 
