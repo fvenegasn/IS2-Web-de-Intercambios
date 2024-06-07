@@ -56,23 +56,17 @@ class IntercambioForm(forms.ModelForm):
     publicacion_ofertante = forms.ModelChoiceField(queryset=Publicacion.objects.none())
     fecha_intercambio = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}), required=True)
 
-    franja_horaria_inicio = forms.TimeField(
+    franja_horaria = forms.TimeField(
         widget=forms.TimeInput(format='%H:%M', attrs={'placeholder': 'HH:MM'}),
         required=True, # NO TOCAR
-        label='Franja horaria inicio'
-    )
-    franja_horaria_fin = forms.TimeField(
-        widget=forms.TimeInput(format='%H:%M', attrs={'placeholder': 'HH:MM'}),
-        required=True, # NO TOCAR
-        label='Franja horaria fin'
+        label='Franja horaria'
     )
 
     class Meta:
         model = Intercambio
-        fields = ['publicacion_ofertante', 'punto_encuentro', 'fecha_intercambio', 'franja_horaria_inicio', 'franja_horaria_fin']
+        fields = ['publicacion_ofertante', 'punto_encuentro', 'fecha_intercambio', 'franja_horaria']
         widgets = {
-            'franja_horaria_inicio': forms.TimeInput(format='%H:%M'),
-            'franja_horaria_fin': forms.TimeInput(format='%H:%M')
+            'franja_horaria': forms.TimeInput(format='%H:%M')
         }
 
     def __init__(self, *args, **kwargs):
@@ -120,17 +114,12 @@ class IntercambioForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super().clean()
-        franja_horaria_inicio = cleaned_data.get("franja_horaria_inicio")
-        franja_horaria_fin = cleaned_data.get("franja_horaria_fin")
+        franja_horaria = cleaned_data.get("franja_horaria")
 
-        if franja_horaria_inicio and franja_horaria_fin:
-            if (datetime.datetime.combine(datetime.date.today(), franja_horaria_fin) - 
-                datetime.datetime.combine(datetime.date.today(), franja_horaria_inicio)).total_seconds() != 3600:
-                raise forms.ValidationError("La franja horaria debe ser exactamente de una hora.")
-            
-            if not (self.franja_horaria_inicio_publicacion <= franja_horaria_inicio < franja_horaria_fin <= self.franja_horaria_fin_publicacion):
-                raise forms.ValidationError(f"Las horas deben estar dentro del rango {self.franja_horaria_inicio_publicacion} y {self.franja_horaria_fin_publicacion}.")
+        if franja_horaria:
+            if not (self.franja_horaria_inicio_publicacion <= franja_horaria <= self.franja_horaria_fin_publicacion):
+                raise forms.ValidationError(f"La hora debe estar dentro del rango {self.franja_horaria_inicio_publicacion} y {self.franja_horaria_fin_publicacion}.")
         else:
-            raise forms.ValidationError("Debe especificar tanto la hora de inicio como la de finalización.")
+            raise forms.ValidationError("Debe especificar la hora del intercambio.")
 
         return cleaned_data
