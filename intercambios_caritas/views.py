@@ -196,8 +196,10 @@ def crear_oferta(request, publicacion_id):
             else:
                 messages.error(request, "Propuesta de intercambio inválida.") # aca entra cuando no cumple con las RDN
         else:
-            print("Errores del formulario:", form.errors)
-            messages.error(request, "Verifique los datos ingresados.") # aca entra cuando directamente manda el formulario y hay algun dato mal
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f"Error: {error}")
+            #messages.error(request, "Verifique los datos ingresados.") # aca entra cuando directamente manda el formulario y hay algun dato mal
     else:
         form = IntercambioForm(
             user=usuario_actual,

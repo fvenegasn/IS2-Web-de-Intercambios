@@ -154,7 +154,7 @@ class Intercambio(models.Model):
     fecha_intercambio = models.DateField(default=datetime.datetime(2024,6,12)) # representa una fecha calendario sobre los días convenientes
     # La franja horaria debe representar 1 hora dentro del rango previamente seleccionado por el usuario
     franja_horaria_inicio = models.TimeField(default=datetime.time(9,0,0))
-    franja_horaria_fin = models.TimeField(default=datetime.time(18,0,0))
+    franja_horaria_fin = models.TimeField(default=datetime.time(10,0,0))
     fecha_creacion = models.DateTimeField(default=timezone.now)
     #estado = models.CharField(max_length=50,default=Pendiente())
     aceptada = models.BooleanField(default=False)
@@ -166,3 +166,9 @@ class Intercambio(models.Model):
         return (self.publicacion_ofertante.categoria == self.publicacion_demandada.categoria and
                 self.publicacion_ofertante.usuario != self.publicacion_demandada.usuario and
                 not Intercambio.objects.filter(publicacion_demandada=self.publicacion_demandada, aceptada=True).exists())
+    
+    def clean(self):
+        super().clean()
+        if (datetime.datetime.combine(datetime.date.today(), self.franja_horaria_fin) - 
+            datetime.datetime.combine(datetime.date.today(), self.franja_horaria_inicio)).total_seconds() != 3600:
+            raise ValidationError("La franja horaria debe ser exactamente de una hora.")

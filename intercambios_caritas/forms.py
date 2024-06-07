@@ -1,3 +1,4 @@
+import datetime
 from django.utils import timezone
 from django import forms
 from .models import Publicacion, Intercambio
@@ -57,12 +58,12 @@ class IntercambioForm(forms.ModelForm):
 
     franja_horaria_inicio = forms.TimeField(
         widget=forms.TimeInput(format='%H:%M', attrs={'placeholder': 'HH:MM'}),
-        required=False,
+        required=True,
         label='Franja horaria inicio'
     )
     franja_horaria_fin = forms.TimeField(
         widget=forms.TimeInput(format='%H:%M', attrs={'placeholder': 'HH:MM'}),
-        required=False,
+        required=True,
         label='Franja horaria fin'
     )
 
@@ -123,12 +124,13 @@ class IntercambioForm(forms.ModelForm):
         franja_horaria_fin = cleaned_data.get("franja_horaria_fin")
 
         if franja_horaria_inicio and franja_horaria_fin:
-            if franja_horaria_inicio >= franja_horaria_fin:
-                raise forms.ValidationError("La hora de inicio debe ser antes que la hora de finalización.")
-            # Validar que las franjas horarias estén dentro del rango permitido por la publicación demandada
-            if not (self.franja_horaria_inicio_publicacion <= franja_horaria_inicio <= self.franja_horaria_fin_publicacion) or not (self.franja_horaria_inicio_publicacion <= franja_horaria_fin <= self.franja_horaria_fin_publicacion):
+            if (datetime.datetime.combine(datetime.date.today(), franja_horaria_fin) - 
+                datetime.datetime.combine(datetime.date.today(), franja_horaria_inicio)).total_seconds() != 3600:
+                raise forms.ValidationError("La franja horaria debe ser exactamente de una hora.")
+            
+            if not (self.franja_horaria_inicio_publicacion <= franja_horaria_inicio < franja_horaria_fin <= self.franja_horaria_fin_publicacion):
                 raise forms.ValidationError(f"Las horas deben estar dentro del rango {self.franja_horaria_inicio_publicacion} y {self.franja_horaria_fin_publicacion}.")
-        elif franja_horaria_inicio or franja_horaria_fin:
+        else:
             raise forms.ValidationError("Debe especificar tanto la hora de inicio como la de finalización.")
 
         return cleaned_data
