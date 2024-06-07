@@ -192,6 +192,7 @@ class Cancelada(EstadoIntercambio):
 class Pendiente(EstadoIntercambio):
     def aceptar(self, intercambio):
         intercambio.estado = 'ACEPTADA'
+        intercambio.cancelar_ofertas_relacionadas()
         intercambio.save()
 
     def rechazar(self, intercambio):
@@ -258,3 +259,12 @@ class Intercambio(models.Model):
 
     def cancelar(self):
         self.estado_clase.cancelar(self)
+
+    def cancelar_ofertas_relacionadas(self):
+        ofertas_relacionadas = Intercambio.objects.filter(
+            publicacion_ofertante=self.publicacion_ofertante,
+            estado='PENDIENTE'
+        )
+        for oferta in ofertas_relacionadas:
+            if oferta != self:  
+                oferta.cancelar()

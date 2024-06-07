@@ -246,7 +246,6 @@ def rechazar_oferta(request, oferta_id):
     oferta = get_object_or_404(Intercambio, id=oferta_id, publicacion_demandada__usuario=request.user)
     try:
         oferta.rechazar()
-
         messages.success(request, "Oferta rechazada exitosamente.")
     except ValueError as e:
         messages.error(request, str(e))
