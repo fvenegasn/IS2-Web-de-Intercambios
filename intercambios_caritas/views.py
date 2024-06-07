@@ -14,8 +14,8 @@ from django.contrib.auth import authenticate, login, logout
 
 
 def home(request):
-    publicaciones = Publicacion.objects.all()
-    return render(request, 'authentication/index.html', {'publicaciones': publicaciones})
+    publicaciones_disponibles = Publicacion.objects.filter(disponible_para_intercambio=True)
+    return render(request, 'authentication/index.html', {'publicaciones': publicaciones_disponibles})
 
 
 def register(request):
@@ -230,6 +230,13 @@ def aceptar_oferta(request, oferta_id):
     oferta = get_object_or_404(Intercambio, id=oferta_id, publicacion_demandada__usuario=request.user)
     try:
         oferta.aceptar()
+
+        oferta.publicacion_ofertante.disponible_para_intercambio = False
+        oferta.publicacion_ofertante.save()
+
+        oferta.publicacion_demandada.disponible_para_intercambio = False
+        oferta.publicacion_demandada.save()
+
         messages.success(request, "Oferta aceptada exitosamente.")
     except ValueError as e:
         messages.error(request, str(e))
@@ -239,6 +246,7 @@ def rechazar_oferta(request, oferta_id):
     oferta = get_object_or_404(Intercambio, id=oferta_id, publicacion_demandada__usuario=request.user)
     try:
         oferta.rechazar()
+
         messages.success(request, "Oferta rechazada exitosamente.")
     except ValueError as e:
         messages.error(request, str(e))

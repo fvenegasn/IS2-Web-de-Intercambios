@@ -20,7 +20,7 @@
         <div class="card text-center">
             <div class="card-header">
                 <p>Oferta Realizada:</p>
-                {% if oferta.estado == 'Pendiente' %}
+                {% if oferta.estado == 'PENDIENTE' %}
                     <p>Esperando respuesta de {{ oferta.publicacion_demandada.usuario.get_full_name }} {{ oferta.publicacion_demandada.usuario }}.</p>
                 {% elif oferta.estado == 'ACEPTADA' %}
                     <p>La oferta fue aceptada.</p>
@@ -67,7 +67,7 @@
                 </div>
             </div>
             <div class="card-footer">
-                {% if oferta.estado == 'Pendiente' %}
+                {% if oferta.estado == 'PENDIENTE' %}
                 <form action="{% url 'cancelar_oferta' oferta.id %}" method="post" style="display: inline-block;">
                     {% csrf_token %}
                     <button type="submit" class="btn btn-danger">Cancelar oferta ✖</button>
