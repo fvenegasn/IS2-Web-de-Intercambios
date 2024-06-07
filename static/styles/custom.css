@@ -181,3 +181,10 @@ footer {
     background-color: #0056b3 !important;
     cursor: pointer !important;
 }
+
+/* Miniatura para ver ofertas realizadas/recibidas */
+.custom-thumbnail {
+    width: 100px; 
+    height: 100px; 
+    object-fit: cover;
+}

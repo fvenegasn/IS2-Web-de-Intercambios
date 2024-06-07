@@ -12,50 +12,62 @@
 {% endfor %}
 {% endif %}
 
-<div class="container">
-    <h1>Crear Propuesta de Intercambio para "{{ publicacion_demandada.nombre }}"</h1>
-    <form method="post">
-        {% csrf_token %}
-        <div class="row">
-            <div class="col-md-6 mb-3">
-                <div data-mdb-input-init class="form-outline">
-                    <label for="publicacion_ofertante" class="form-label">Producto Ofertante</label>
-                    {{ form.publicacion_ofertante }}
-                </div>
-            </div>
-            <div class="col-md-6 mb-3">
-                <div data-mdb-input-init class="form-outline">
-                    <label class="form-label mb-1" for="punto_encuentro">Punto de encuentro</label>
-                    <select id="punto_encuentro" name="punto_encuentro"
-                        class="form-select form-select-lg" required>
-                        <option value="" selected disabled>-- Seleccione --</option>
-                        {% for value, display in form.fields.punto_encuentro.choices %}
-                        <option value="{{ value }}">{{ display }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-            </div>
-        </div>
+<div class="d-flex justify-content-center align-items-center flex-grow-1">
+    <div class="container py-3">
+        <div class="row justify-content-center align-items-center">
+            <div class="col-12 col-lg-9 col-xl-7">
+                <div class="card shadow-2-strong card-registration" style="border-radius: 25px;">
+                    <div class="card-body p-4 p-md-4">
+                        <div class="container">
+                            <h1>Crear Propuesta de Intercambio para "{{ publicacion_demandada.nombre }}"</h1>
+                            <form method="post">
+                                {% csrf_token %}
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <div data-mdb-input-init class="form-outline">
+                                            <label for="publicacion_ofertante" class="form-label">Producto Ofertante</label>
+                                            {{ form.publicacion_ofertante }}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <div data-mdb-input-init class="form-outline">
+                                            <label class="form-label mb-1" for="punto_encuentro">Punto de encuentro</label>
+                                            <select id="punto_encuentro" name="punto_encuentro"
+                                                class="form-select form-select-lg" required>
+                                                <option value="" selected disabled>-- Seleccione --</option>
+                                                {% for value, display in form.fields.punto_encuentro.choices %}
+                                                <option value="{{ value }}">{{ display }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
 
-        <div class="row">
-            <div class="col-md-4 mb-3">
-                <div data-mdb-input-init class="form-outline datepicker w-100">
-                    <label for="fecha_intercambio" class="form-label mb-1">Fecha de intercambio</label>
-                    <input type="date" id="fecha_intercambio" name="fecha_intercambio" value="{{ nac }}"
-                        class="form-control form-control-lg" required />
+                                <div class="row">
+                                    <div class="col-md-4 mb-3">
+                                        <div data-mdb-input-init class="form-outline datepicker w-100">
+                                            <label for="fecha_intercambio" class="form-label mb-1">Fecha de intercambio</label>
+                                            <input type="date" id="fecha_intercambio" name="fecha_intercambio" value="{{ nac }}"
+                                                class="form-control form-control-lg" required />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label for="franja_horaria_inicio" class="form-label">Franja Horaria Inicio</label>
+                                        <input type="time" id="franja_horaria_inicio" name="franja_horaria_inicio" class="form-control form-control-lg"/>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label for="franja_horaria_fin" class="form-label">Franja Horaria Fin</label>
+                                        <input type="time" id="franja_horaria_fin" name="franja_horaria_fin" class="form-control form-control-lg" />
+                                    </div>
+                                </div>
+                                
+                                <button type="submit" class="btn btn-primary">Crear Propuesta</button>
+                            </form>
+                        </div>
+                        {% endblock %}
+                    </div>
                 </div>
             </div>
-            <div class="col-md-4 mb-3">
-                <label for="franja_horaria_inicio" class="form-label">Franja Horaria Inicio</label>
-                <input type="time" id="franja_horaria_inicio" name="franja_horaria_inicio" class="form-control form-control-lg"/>
-            </div>
-            <div class="col-md-4 mb-3">
-                <label for="franja_horaria_fin" class="form-label">Franja Horaria Fin</label>
-                <input type="time" id="franja_horaria_fin" name="franja_horaria_fin" class="form-control form-control-lg" />
-            </div>
         </div>
-        
-        <button type="submit" class="btn btn-primary">Crear Propuesta</button>
-    </form>
+    </div>
 </div>
-{% endblock %}

@@ -43,4 +43,7 @@ urlpatterns = [
     path('crear_oferta/<int:publicacion_id>/', views.crear_oferta, name='crear_oferta'),
     path('ofertas_realizadas', views.ver_ofertas_realizadas, name='ver_ofertas_realizadas'),
     path('ofertas_recibidas', views.ver_ofertas_recibidas, name='ver_ofertas_recibidas'),
+    path('aceptar_oferta/<int:oferta_id>/', views.aceptar_oferta, name='aceptar_oferta'),
+    path('rechazar_oferta/<int:oferta_id>/', views.rechazar_oferta, name='rechazar_oferta'),
+    path('cancelar_oferta/<int:oferta_id>/', views.cancelar_oferta, name='cancelar_oferta'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

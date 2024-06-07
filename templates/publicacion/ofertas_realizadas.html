@@ -3,6 +3,14 @@
 {% block content %}
 {% include 'layouts/navbar.html' %}
 
+{% if messages %}
+{% for message in messages %}
+<div class="alert alert-{{ message.tags }} alert-dismissible fade show m-2 p-1" role="alert">
+    {{ message }}
+    <button type="button" class="btn-close m-0 p-2" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{% endfor %}
+{% endif %}
 
 <h1 class="text-center custom-h1-bg mb-2">Ofertas Realizadas</h1>
 <ul>
@@ -12,9 +20,15 @@
         <div class="card text-center">
             <div class="card-header">
                 <p>Oferta Realizada:</p>
-                <p>Esperando respuesta de
-                    {{oferta.publicacion_demandada.usuario.get_full_name}} {{oferta.publicacion_demandada.usuario}}.
-                </p>
+                {% if oferta.estado == 'Pendiente' %}
+                    <p>Esperando respuesta de {{ oferta.publicacion_demandada.usuario.get_full_name }} {{ oferta.publicacion_demandada.usuario }}.</p>
+                {% elif oferta.estado == 'ACEPTADA' %}
+                    <p>La oferta fue aceptada.</p>
+                {% elif oferta.estado == 'RECHAZADA' %}
+                    <p>La oferta fue rechazada.</p>
+                {% elif oferta.estado == 'CANCELADA' %}
+                    <p>La oferta fue cancelada.</p>
+                {% endif %}
                 <p>Fecha de creación: {{ oferta.fecha_creacion }}</p>
             </div>
             <div class="card-body">
@@ -26,14 +40,14 @@
                         <p>{{ oferta.publicacion_ofertante.nombre }}</p>
                         <div class="embed-responsive embed-responsive-4by3 my-2">
                             <img src="{{ oferta.publicacion_ofertante.imagen.url}}" alt=""
-                                class="img-fluid embed-responsive-item">
+                                class="img-fluid embed-responsive-item" style="width: 200px; height: 200px; object-fit: cover;">
                         </div>
                         <a href="{% url 'ver_publicacion' oferta.publicacion_ofertante.id %}"
                             class="btn btn-primary d-block">Ver publicacion</a>
                     </div>
                     <div class="col-md-4 text-center my-2">
                         <p class="my-2 p-2" style="background-color: #f0f8ff">Solicitud de intercambio el dia
-                            {{ oferta.dias_convenientes }} a las {{oferta.franja_horaria_inicio}} -
+                            {{ oferta.fecha_intercambio }} a las {{oferta.franja_horaria_inicio}} -
                             {{oferta.franja_horaria_fin }}
                             en la filial {{ oferta.punto_encuentro }}.</p>
                     </div>
@@ -45,7 +59,7 @@
                         <p>{{oferta.publicacion_demandada.nombre}}</p>
                         <div class="embed-responsive embed-responsive-4by3 my-2">
                             <img src="{{ oferta.publicacion_demandada.imagen.url}}" alt=""
-                                class="img-fluid embed-responsive-item">
+                                class="img-fluid embed-responsive-item" style="width: 200px; height: 200px; object-fit: cover;">
                         </div>
                         <a href="{% url 'ver_publicacion' oferta.publicacion_demandada.id %}"
                             class="btn btn-primary d-block">Ver publicacion</a>
@@ -53,7 +67,12 @@
                 </div>
             </div>
             <div class="card-footer">
-                <button class="btn btn-danger">Cancelar oferta ✖</button>
+                {% if oferta.estado == 'Pendiente' %}
+                <form action="{% url 'cancelar_oferta' oferta.id %}" method="post" style="display: inline-block;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Cancelar oferta ✖</button>
+                </form>
+                {% endif %}
             </div>
         </div>
     </li>

@@ -199,7 +199,8 @@ def crear_oferta(request, publicacion_id):
         else:
             for field, errors in form.errors.items():
                 for error in errors:
-                    messages.error(request, f"Error: {error}")
+                    if error != "Este campo es obligatorio.":
+                        messages.error(request, f"Error: {error}")
             #messages.error(request, "Verifique los datos ingresados.") # aca entra cuando directamente manda el formulario y hay algun dato mal
     else:
         form = IntercambioForm(
@@ -224,3 +225,30 @@ def ver_ofertas_realizadas(request):
 def ver_ofertas_recibidas(request):
     ofertas_recibidas = Intercambio.objects.filter(publicacion_demandada__usuario=request.user)
     return render(request, 'publicacion/ofertas_recibidas.html', {'ofertas_recibidas': ofertas_recibidas})
+
+def aceptar_oferta(request, oferta_id):
+    oferta = get_object_or_404(Intercambio, id=oferta_id, publicacion_demandada__usuario=request.user)
+    try:
+        oferta.aceptar()
+        messages.success(request, "Oferta aceptada exitosamente.")
+    except ValueError as e:
+        messages.error(request, str(e))
+    return redirect('ver_ofertas_recibidas')
+
+def rechazar_oferta(request, oferta_id):
+    oferta = get_object_or_404(Intercambio, id=oferta_id, publicacion_demandada__usuario=request.user)
+    try:
+        oferta.rechazar()
+        messages.success(request, "Oferta rechazada exitosamente.")
+    except ValueError as e:
+        messages.error(request, str(e))
+    return redirect('ver_ofertas_recibidas')
+
+def cancelar_oferta(request, oferta_id):
+    oferta = get_object_or_404(Intercambio, id=oferta_id, publicacion_ofertante__usuario=request.user)
+    try:
+        oferta.cancelar()
+        messages.success(request, "Oferta cancelada exitosamente.")
+    except ValueError as e:
+        messages.error(request, str(e))
+    return redirect('ver_ofertas_realizadas')

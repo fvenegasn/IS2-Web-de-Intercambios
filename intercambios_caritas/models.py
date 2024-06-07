@@ -131,43 +131,88 @@ class Publicacion(models.Model):
         return self.nombre
 
 class EstadoIntercambio(ABC):
-    #ABC es lo que te permite indicar que se trata de una clase abstracta
+    # ABC indica clase abstracta
+    @abstractmethod
+    def aceptar(self, intercambio):
+        pass
+
+    @abstractmethod
+    def rechazar(self, intercambio):
+        pass
+
+    @abstractmethod
+    def cancelar(self, intercambio):
+        pass
+
     @abstractmethod
     def obtener_estado(self):
         pass
 
 class Aceptada(EstadoIntercambio):
-    """
-    Un usuario acepta una oferta recibida.
-    Equivale a "pendiente acción de moderador"
-    """
+    def aceptar(self, intercambio):
+        raise ValueError("El intercambio ya está aceptado")
+
+    def rechazar(self, intercambio):
+        raise ValueError("No se puede rechazar un intercambio aceptado")
+
+    def cancelar(self, intercambio):
+        intercambio.estado = 'CANCELADA'
+        intercambio.save()
+
     def obtener_estado(self):
         return "Aceptada"
 
 class Rechazada(EstadoIntercambio):
-    """
-    Un usuario rechaza una oferta recibida
-    """
+    def aceptar(self, intercambio):
+        raise ValueError("No se puede aceptar un intercambio rechazado")
+
+    def rechazar(self, intercambio):
+        raise ValueError("El intercambio ya está rechazado")
+    
+    def cancelar(self, intercambio):
+        raise ValueError("No se puede cancelar un intercambio rechazado")
+    
     def obtener_estado(self):
         return "Rechazada"
     
 class Cancelada(EstadoIntercambio):
-    """
-    Un usuario cancela una oferta realizada
-    """
+    def aceptar(self, intercambio):
+        raise ValueError("No se puede aceptar un intercambio cancelado")
+
+    def rechazar(self, intercambio):
+        raise ValueError("No se puede rechazar un intercambio cancelado")
+    
+    def cancelar(self, intercambio):
+        raise ValueError("El intercambio ya está cancelado")
+    
     def obtener_estado(self):
         return "Cancelada"
     
 class Pendiente(EstadoIntercambio):
-    """
-    Estado inicial: Quien recibe puede decidir si acepta o rechaza 
-                    y quien realiza si cancela
-    """
+    def aceptar(self, intercambio):
+        intercambio.estado = 'ACEPTADA'
+        intercambio.save()
+
+    def rechazar(self, intercambio):
+        intercambio.estado = 'RECHAZADA'
+        intercambio.save()
+
+    def cancelar(self, intercambio):
+        intercambio.estado = 'CANCELADA'
+        intercambio.save()
+
     def obtener_estado(self):
         return "Pendiente"
-    
 
 class Intercambio(models.Model):
+
+    ESTADOS = [
+        ('PENDIENTE', 'Pendiente'),
+        ('ACEPTADA', 'Aceptada'),
+        ('RECHAZADA', 'Rechazada'),
+        ('CANCELADA', 'Cancelada'),
+    ]
+
     publicacion_ofertante = models.ForeignKey('Publicacion', related_name='ofertas_realizadas', on_delete=models.CASCADE)
     publicacion_demandada = models.ForeignKey('Publicacion', related_name='ofertas_recibidas', on_delete=models.CASCADE)
     punto_encuentro = models.CharField(max_length=50, choices=Publicacion.PUNTOS_ENC) # 1 solo respecto de lo seleccionado en publicacion_demandada
@@ -177,8 +222,8 @@ class Intercambio(models.Model):
     franja_horaria_inicio = models.TimeField(default=datetime.time(9,0,0))
     franja_horaria_fin = models.TimeField(default=datetime.time(10,0,0))
     fecha_creacion = models.DateTimeField(default=timezone.now)
-    #estado = models.CharField(max_length=50,default=Pendiente())
-    aceptada = models.BooleanField(default=False)
+    estado = models.CharField(max_length=10, choices=ESTADOS, default='PENDIENTE')
+    #aceptada = models.BooleanField(default=False)
 
     def __str__(self):
         return f"Intercambio de {self.publicacion_ofertante.nombre} por {self.publicacion_demandada.nombre}"
@@ -186,10 +231,29 @@ class Intercambio(models.Model):
     def es_valida(self):
         return (self.publicacion_ofertante.categoria == self.publicacion_demandada.categoria and
                 self.publicacion_ofertante.usuario != self.publicacion_demandada.usuario and
-                not Intercambio.objects.filter(publicacion_demandada=self.publicacion_demandada, aceptada=True).exists())
+                not Intercambio.objects.filter(publicacion_demandada=self.publicacion_demandada, estado="ACEPTADA").exists())
     
     def clean(self):
         super().clean()
         if (datetime.datetime.combine(datetime.date.today(), self.franja_horaria_fin) - 
             datetime.datetime.combine(datetime.date.today(), self.franja_horaria_inicio)).total_seconds() != 3600:
             raise ValidationError("La franja horaria debe ser exactamente de una hora.")
+        
+    @property
+    def estado_clase(self):
+        estados = {
+            'ACEPTADA': Aceptada(),
+            'RECHAZADA': Rechazada(),
+            'CANCELADA': Cancelada(),
+            'PENDIENTE': Pendiente(),
+        }
+        return estados.get(self.estado)
+
+    def aceptar(self):
+        self.estado_clase.aceptar(self)
+
+    def rechazar(self):
+        self.estado_clase.rechazar(self)
+
+    def cancelar(self):
+        self.estado_clase.cancelar(self)

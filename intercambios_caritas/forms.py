@@ -58,12 +58,12 @@ class IntercambioForm(forms.ModelForm):
 
     franja_horaria_inicio = forms.TimeField(
         widget=forms.TimeInput(format='%H:%M', attrs={'placeholder': 'HH:MM'}),
-        required=True,
+        required=True, # NO TOCAR
         label='Franja horaria inicio'
     )
     franja_horaria_fin = forms.TimeField(
         widget=forms.TimeInput(format='%H:%M', attrs={'placeholder': 'HH:MM'}),
-        required=True,
+        required=True, # NO TOCAR
         label='Franja horaria fin'
     )
 
