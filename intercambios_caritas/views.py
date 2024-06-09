@@ -5,6 +5,7 @@ from django.shortcuts import redirect, render, get_object_or_404
 from intercambios_caritas.forms import IntercambioForm, PublicacionForm
 from intercambios_caritas.models import Intercambio, Usuario, Publicacion
 from . import views
+from django.contrib.auth.models import User
 # from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
@@ -16,6 +17,8 @@ from django.contrib.auth import authenticate, login, logout
 def home(request):
     publicaciones_disponibles = Publicacion.objects.filter(disponible_para_intercambio=True)
     return render(request, 'authentication/index.html', {'publicaciones': publicaciones_disponibles})
+
+
 
 
 def register(request):
@@ -126,6 +129,25 @@ def ver_perfil(request, username):
     user = get_object_or_404(Usuario, username=username)
     return render(request, 'administracion_usuarios/perfil.html', {'user': user})
 
+def cambiar_rol(request,username=None):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        role = request.POST.get('rol')
+
+        try:
+            user = Usuario.objects.get(username=username)
+            
+            # Update the user's role
+            user.modificarRol(role)
+
+
+            user.save()
+            messages.success(request, "Rol cambiado de manera exitosa!")
+            
+        except Usuario.DoesNotExist:
+            return HttpResponse("User does not exist.", status=404)
+
+    return redirect('listar_usuarios')
 
 def crear_publicacion(request):
     form = PublicacionForm()

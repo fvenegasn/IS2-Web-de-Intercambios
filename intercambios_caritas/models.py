@@ -54,6 +54,9 @@ class Usuario(AbstractUser):
     def getRol(self):
         return self.rol
 
+    def modificarRol(self, nuevoRol):
+        self.rol = nuevoRol
+
 
 def get_default_user():
     return Usuario.objects.first().id

@@ -21,8 +21,9 @@
                 <p><b>Teléfono:</b> {{ user.telefono}}</p>
             </div>
             <div>
-                <form action="" method="post">
+                <form action="{% url 'cambiar_rol' user.username %}" method="post">
                     {% csrf_token %}
+                    <input type="hidden" name="username" id='username' value="{{ user.username }}"> <!--para poder traerme despues el username -->
                     <label class="form-label mb-1" for="rol">Cambiar rol:</label>
                     <select name="rol" id="rol" class="form-select form-select-lg" required>
                         {% if user.isUser %}
