@@ -7,21 +7,21 @@ class PublicacionForm(forms.ModelForm):
     dias_convenientes = forms.MultipleChoiceField(
         choices=Publicacion.DIAS_SEMANA,
         widget=forms.CheckboxSelectMultiple,
-        required=False
+        required=True
     )
     punto_encuentro = forms.MultipleChoiceField(
         choices=Publicacion.PUNTOS_ENC,
         widget=forms.CheckboxSelectMultiple,
-        required=False
+        required=True
     )
     franja_horaria_inicio = forms.TimeField(
         widget=forms.TimeInput(format='%H:%M', attrs={'placeholder': 'HH:MM'}),
-        required=False,
+        required=True,
         label='Franja horaria inicio'
     )
     franja_horaria_fin = forms.TimeField(
         widget=forms.TimeInput(format='%H:%M', attrs={'placeholder': 'HH:MM'}),
-        required=False,
+        required=True,
         label='Franja horaria fin'
     )
 
@@ -92,6 +92,9 @@ class IntercambioForm(forms.ModelForm):
         fecha_intercambio = self.cleaned_data.get('fecha_intercambio')
         dias_convenientes = self.dias_disponibles
 
+        if fecha_intercambio and (datetime.datetime.combine(fecha_intercambio,datetime.time(0,0)) < datetime.datetime.now()):
+            raise forms.ValidationError("La fecha del intercambio no puede ser anterior a hoy.")
+
         # Diccionario de traducción de días de la semana
         dias_espanol = {
             'Monday': 'Lunes',
@@ -111,6 +114,7 @@ class IntercambioForm(forms.ModelForm):
         if fecha_intercambio and dia_semana_espanol not in dias_convenientes:
             raise forms.ValidationError(f"La fecha seleccionada debe ser un {', '.join(dias_convenientes)}.")
         return fecha_intercambio
+        
 
     def clean(self):
         cleaned_data = super().clean()
