@@ -1,5 +1,5 @@
 {% extends 'layouts/base.html' %}
-{% block title %}Ofertas Realizadas{% endblock %}
+{% block title %}Intercambios{% endblock %}
 {% block content %}
 {% include 'layouts/navbar.html' %}
 
@@ -11,28 +11,27 @@
 </div>
 {% endfor %}
 {% endif %}
+{% if user.isModerador %}
+    <h1 class="text-center custom-h1-bg mb-2">Intercambios de filial: {{ user.filial }}</h1>    
+{% else %}
+    <h1 class="text-center custom-h1-bg mb-2">Mis Intercambios</h1>      
+{% endif %}
 
-<h1 class="text-center custom-h1-bg mb-2">Ofertas Realizadas</h1>
 <ul>
-    {% if ofertas_realizadas %}
-    {% for oferta in ofertas_realizadas %}
+    {% if ofertas_recibidas %}
+    {% for oferta in ofertas_recibidas %}
     <li>
         <div class="card text-center">
             <div class="card-header">
-                <p>Oferta Realizada:</p>
-                <p>Estado: 
-                {% if oferta.estado == 'PENDIENTE' %}
-                    Esperando respuesta de {{ oferta.publicacion_demandada.usuario.get_full_name }} {{ oferta.publicacion_demandada.usuario }}.
-                {% elif oferta.estado == 'ACEPTADA' %}
-                    La oferta fue aceptada, intercambio pendiente a realizarse.
-                {% elif oferta.estado == 'RECHAZADA' %}
-                    La oferta fue rechazada.
-                {% elif oferta.estado == 'CANCELADA' %}
-                    La oferta fue cancelada.
+                <p>Intercambio:</p>
+                {% if oferta.estado == 'ACEPTADA' %}
+                    <p>La oferta fue aceptada, intercambio pendiente a realizarse.</p>
+                {% elif oferta.estado == 'CONCRETADA' %}
+                    <p>Intercambio registrado como concretado por moderador.</p>
+                {% elif oferta.estado == 'DESESTIMADA' %}
+                    <p>Intercambio registrado como desestimado por moderador.</p>
                 {% endif %}
-                </p>
                 <p>Fecha de creación: {{ oferta.fecha_creacion }}</p>
-                
             </div>
             <div class="card-body">
                 <div class="row d-flex align-items-center justify-content-end">
@@ -49,9 +48,9 @@
                             class="btn btn-primary d-block">Ver publicacion</a>
                     </div>
                     <div class="col-md-4 text-center my-2">
-                        <p class="my-2 p-2" style="background-color: #f0f8ff">Solicitud de intercambio el dia
+                        <p class="my-2 p-2" style="background-color: #f0f8ff">Intercambio a realizarse el dia
                             {{ oferta.fecha_intercambio }} a las {{oferta.franja_horaria}}
-                            en la filial {{ oferta.punto_encuentro }}.</p>
+                            en la filial {{ oferta.punto_encuentro }} te esperamos!!!</p>
                     </div>
                     <div class="col-md-4 text-center">
                         <p>Producto de
@@ -69,20 +68,26 @@
                 </div>
             </div>
             <div class="card-footer">
-                {% if oferta.estado == 'PENDIENTE' %}
-                <form action="{% url 'cancelar_oferta' oferta.id %}" method="post" style="display: inline-block;">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-danger">Cancelar oferta ✖</button>
-                </form>
+                {% if oferta.estado == 'ACEPTADA' and user.isModerador %}
+                <div class="d-flex align-items-center justify-content-center">
+                    <form action="" method="post" class="me-2">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-success">Confirmar ✅</button>
+                    </form>
+                    <form action="" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">Desestimar ❌</button>
+                    </form>
+                </div>
                 {% endif %}
             </div>
         </div>
     </li>
+
     {% endfor %}
     {% else %}
-    <p style="font-size: 1.2rem; color: #555; text-align: center; margin-top: 20px;">Usted no realizó ninguna oferta
-    </p>
+    <p style="font-size: 1.2rem; color: #555; text-align: center; margin-top: 20px;">No hay intercambios para mostrar</p>
     {% endif %}
 </ul>
-
+</div>
 {% endblock %}

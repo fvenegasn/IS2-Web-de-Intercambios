@@ -36,6 +36,7 @@
                     <ul class="dropdown-menu">
                         <li class="nav-item"><a class="nav-link" href="{% url 'mi_perfil' %}">Ver mi perfil</a></li>
                         <li class="nav-item"><a class="nav-link" href="{% url 'mis_publicaciones' %}">Mis publicaciones</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'ver_mis_intercambios' %}">Mis intercambios</a></li>
                         <li class="nav-item"><a class="nav-link" href="{% url 'ver_ofertas_realizadas' %}">Mis ofertas realizadas</a></li>
                         <li class="nav-item"><a class="nav-link" href="{% url 'ver_ofertas_recibidas' %}">Mis ofertas recibidas</a></li>
                     </ul>
@@ -62,7 +63,7 @@
                         Moderador
                     </a>
                     <ul class="dropdown-menu">
-                        <li class="nav-item"><a class="nav-link" href="">Intercambios Pendientes Filial</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'ver_intercambios_moderador' %}">Intercambios Pendientes Filial</a></li>
                         <li class="nav-item"><a class="nav-link" href=""> -- </a></li>
                         <li class="nav-item"><a class="nav-link" href=""> -- </a></li>
                         <li class="nav-item"><a class="nav-link" href=""> -- </a></li>

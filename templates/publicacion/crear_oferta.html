@@ -19,7 +19,7 @@
                 <div class="card shadow-2-strong card-registration" style="border-radius: 25px;">
                     <div class="card-body p-4 p-md-4">
                         <div class="container">
-                            <h1>Crear Propuesta de Intercambio para "{{ publicacion_demandada.nombre }}"</h1>
+                            <h1 class="mb-3 text-center">Crear Propuesta de Intercambio para "{{ publicacion_demandada.nombre }}"</h1>
                             <form method="post">
                                 {% csrf_token %}
                                 <div class="row">
@@ -52,7 +52,7 @@
                                         </div>
                                     </div>
                                     <div class="col-md-6 mb-3">
-                                        <label for="franja_horaria" class="form-label">Franja Horaria</label>
+                                        <label for="franja_horaria" class="form-label">Hora de intercambio</label>
                                         <input type="time" id="franja_horaria" name="franja_horaria" class="form-control form-control-lg"/>
                                     </div>
                                 </div>
@@ -60,10 +60,12 @@
                                 <button type="submit" class="btn btn-primary">Crear Propuesta</button>
                             </form>
                         </div>
-                        {% endblock %}
+                        
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+{% endblock %}

@@ -249,12 +249,23 @@ def crear_oferta(request, publicacion_id):
     return render(request, 'publicacion/crear_oferta.html', context)
 
 def ver_ofertas_realizadas(request):
-    ofertas_realizadas = Intercambio.objects.filter(publicacion_ofertante__usuario=request.user)
+    ofertas_realizadas = Intercambio.objects.filter(publicacion_ofertante__usuario=request.user).order_by('-fecha_creacion')
     return render(request, 'publicacion/ofertas_realizadas.html', {'ofertas_realizadas': ofertas_realizadas})
 
 def ver_ofertas_recibidas(request):
-    ofertas_recibidas = Intercambio.objects.filter(publicacion_demandada__usuario=request.user)
+    ofertas_recibidas = Intercambio.objects.filter(publicacion_demandada__usuario=request.user).order_by('-fecha_creacion')
     return render(request, 'publicacion/ofertas_recibidas.html', {'ofertas_recibidas': ofertas_recibidas})
+
+def ver_intercambios_moderador(request):
+    inter = Intercambio.objects.filter(estado="ACEPTADA", punto_encuentro=request.user.filial).order_by('-fecha_creacion')
+    return render(request, 'publicacion/ver_intercambios.html', {'ofertas_recibidas': inter})
+
+def ver_mis_intercambios(request):
+    ofertas_realizadas = Intercambio.objects.filter(publicacion_ofertante__usuario=request.user, estado="ACEPTADA")
+    ofertas_recibidas = Intercambio.objects.filter(publicacion_demandada__usuario=request.user, estado="ACEPTADA")
+    inter = ofertas_realizadas.union(ofertas_recibidas).order_by('-fecha_creacion')
+    return render(request, 'publicacion/ver_intercambios.html', {'ofertas_recibidas': inter})
+
 
 def aceptar_oferta(request, oferta_id):
     oferta = get_object_or_404(Intercambio, id=oferta_id, publicacion_demandada__usuario=request.user)
