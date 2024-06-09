@@ -40,9 +40,40 @@
                         <li class="nav-item"><a class="nav-link" href="{% url 'ver_ofertas_recibidas' %}">Mis ofertas recibidas</a></li>
                     </ul>
                 </li>
+                {% if user.isAdmin %}
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                        Administrar
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li class="nav-item"><a class="nav-link" href="{% url 'listar_usuarios' %}">Listar Usuarios</a></li>
+                        <li class="nav-item"><a class="nav-link" href=""> -- </a></li>
+                        <li class="nav-item"><a class="nav-link" href=""> -- </a></li>
+                        <li class="nav-item"><a class="nav-link" href=""> -- </a></li>
+                    </ul>
+                </li>
+                {% endif %}
+
+                {% if user.isModerador %}
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                        Moderador
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li class="nav-item"><a class="nav-link" href="">Intercambios Pendientes Filial</a></li>
+                        <li class="nav-item"><a class="nav-link" href=""> -- </a></li>
+                        <li class="nav-item"><a class="nav-link" href=""> -- </a></li>
+                        <li class="nav-item"><a class="nav-link" href=""> -- </a></li>
+                    </ul>
+                </li>
+                {% endif %}
+
                 <li class="nav-item">
                     <a class="nav-link" href="/logout">Cerrar sesión</a>
                 </li>
+
                 {% else %}
                 <li class="nav-item">
                     <a class="nav-link" href="/register">Registrarse</a>
@@ -51,6 +82,7 @@
                     <a class="nav-link" href="/login">Iniciar sesión</a>
                 </li>
                 {% endif %}
+
             </ul>
         </div>
     </div>

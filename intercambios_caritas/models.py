@@ -27,6 +27,16 @@ class Usuario(AbstractUser):
         max_length=20, choices=Types.choices, default=Types.Usuario
     )
 
+    class Filiales(models.TextChoices):
+        NotApplicable = 'N/A'
+        CABA = 'CABA', 'CABA'
+        Quilmes = 'Quilmes', 'Quilmes'
+        Temperley = 'Temperley', 'Temperley'
+
+    filial = models.CharField(
+        max_length=20, choices=Filiales.choices, default=Filiales.NotApplicable
+    )
+
     def __init__(self, *args, **kwargs):
         telefono = kwargs.pop('telefono', None)
         direccion = kwargs.pop('direccion', None)

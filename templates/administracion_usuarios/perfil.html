@@ -19,6 +19,9 @@
                 <p><b>Mail:</b> {{ user.email}}</p>
                 <p><b>Dirección:</b> {{ user.direccion}}</p>
                 <p><b>Teléfono:</b> {{ user.telefono}}</p>
+                {% if user.isModerador %}
+                <p><b>Filial a Cargo:</b> {{ user.filial}}</p>
+                {% endif %}
             </div>
             <div>
                 <form action="{% url 'cambiar_rol' user.username %}" method="post">
@@ -40,6 +43,19 @@
                         <option value="Moderador">Moderador</option>
                         {% endif %}
                     </select>
+
+        
+                    <div id="filial-selection" style="display: none;">
+                        <label class="form-label mb-1" for="filial-selection">Seleccionar Filial:</label>
+                        <select name="filial-selection" id="filial-selection" class="form-select form-select-lg" required>
+                            <option value="" disabled selected>Seleccione un sitio</option>
+                            {% for choice in user.Filiales.choices %}
+                            <option value="{{ choice.0 }}">{{ choice.1 }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+
                     {% if messages %}
                     {% for message in messages %}
                     <div class="alert alert-{{ message.tags }} alert-dismissible fade show m-2 p-1" role="alert">
@@ -49,10 +65,34 @@
                     </div>
                     {% endfor %}
                     {% endif %}
+
+                    
                     <button type="submit" class="btn btn-primary btn-block mt-2 p-2">Cambiar rol</button>
                 </form>
             </div>
-        </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var rolSelect = document.getElementById('rol');
+        var filialSelection = document.getElementById('filial-selection');
+    
+        function toggleSiteSelection() {
+            if (rolSelect.value === 'Moderador') {
+                filialSelection.style.display = 'block';
+                filialSelection.querySelector('select').required = true;
+            } else {
+                filialSelection.style.display = 'none';
+                filialSelection.querySelector('select').required = false;
+            }
+        }
+    
+        rolSelect.addEventListener('change', toggleSiteSelection);
+        
+        // Initial call to set the correct state based on the initial value
+        toggleSiteSelection();
+    });
+</script>
+
 {% endblock %}

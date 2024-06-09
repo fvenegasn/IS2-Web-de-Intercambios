@@ -19,7 +19,8 @@
         <th scope="col">Fecha Registro</th>
         <th scope="col">Mail</th>
         <th scope="col">Rol</th>
-        <th scope="col">Editar</th>
+        <th scope="col">Activo?</th>
+        <th scope="col">Ver Detalle</th>
       </tr>
     </thead>
     <tbody>
@@ -32,7 +33,8 @@
         <td>{{ usuario.date_joined }}</td>
         <td>{{ usuario.email }}</td>
         <td>{{ usuario.getRol }}</td>
-        <td><a href="{% url 'ver_perfil' usuario.username %}" class="btn btn-primary d-block">🖋️</a></td>
+        <td>{% if usuario.is_active %} ✅{% else %} ❌ {% endif %} </td>
+        <td><a href="{% url 'ver_perfil' usuario.username %}" class="btn btn-secondary d-block">Ver</a></td>
       </tr>
       {% endfor %}
     </tbody>

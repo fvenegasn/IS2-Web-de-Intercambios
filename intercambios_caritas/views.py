@@ -10,6 +10,7 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 # from is2.settings import LOGIN_ATTEMPTS_LIMIT
+from django.urls import reverse
 
 # Create your views here.
 
@@ -129,25 +130,32 @@ def ver_perfil(request, username):
     user = get_object_or_404(Usuario, username=username)
     return render(request, 'administracion_usuarios/perfil.html', {'user': user})
 
-def cambiar_rol(request,username=None):
+def cambiar_rol(request, username=None):
+    user = None  # Assigning a default value to the user variable
     if request.method == 'POST':
         username = request.POST.get('username')
         role = request.POST.get('rol')
-
+        
         try:
             user = Usuario.objects.get(username=username)
-            
+            site = request.POST.get('filial-selection', '')
             # Update the user's role
-            user.modificarRol(role)
-
-
-            user.save()
-            messages.success(request, "Rol cambiado de manera exitosa!")
-            
+            if role != user.getRol:
+                user.modificarRol(role)
+                if role == 'Moderador' and site:
+                    user.filial = site
+                user.save()
+            return redirect(reverse('ver_perfil', kwargs={'username': username}))
         except Usuario.DoesNotExist:
             return HttpResponse("User does not exist.", status=404)
 
-    return redirect('listar_usuarios')
+    filiales_choices = Usuario.Filiales.choices
+    return render(request, 'perfil/<str:username>/cambiar_rol/', {
+        'user': user,
+        'filiales_choices': filiales_choices,
+        'messages': messages.get_messages(request),
+    })
+
 
 def crear_publicacion(request):
     form = PublicacionForm()
