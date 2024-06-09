@@ -8,7 +8,7 @@
 <div class="d-flex justify-content-center align-items-center flex-grow-1">
     <div class="container py-3">
         <div class="row justify-content-center align-items-center">
-            <div class="col-12 col-lg-9 col-xl-7">
+            <div class="col-12 col-lg-10 col-xl-9">
                 <div class="card shadow-2-strong card-registration" style="border-radius: 15px;">
                     <div class="card-body p-4 p-md-4">
                         <h1 class="text-center">Intercambios Caritas</h1>
@@ -16,14 +16,14 @@
                         <form action="/crear_publicacion" method="post" enctype="multipart/form-data">
                             {% csrf_token %}
                             <div class="row">
-                                <div class="col-md-6 mb-3">
+                                <div class="col-md-4 mb-3">
                                     <div data-mdb-input-init class="form-outline">
                                         <label class="form-label mb-1" for="nombre">Nombre</label>
                                         <input type="text" id="nombre" name="nombre"
-                                            class="form-control form-control-lg" required />
+                                            class="form-control form-control-lg" required/>
                                     </div>
                                 </div>
-                                <div class="col-md-6 mb-3">
+                                <div class="col-md-4 mb-3">
                                     <div data-mdb-input-init class="form-outline">
                                         <label class="form-label mb-1" for="estado">Estado</label>
                                         <select id="estado" name="estado" class="form-select form-select-lg" required>
@@ -37,18 +37,7 @@
                                         </select>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="mb-3">
-                                    <div data-mdb-input-init class="form-outline">
-                                        <label class="form-label mb-1" for="descripcion">Descripción</label>
-                                        <textarea id="descripcion" name="descripcion"
-                                            class="form-control form-control-lg"></textarea>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
+                                <div class="col-md-4 mb-3">
                                     <div data-mdb-input-init class="form-outline">
                                         <label class="form-label mb-1" for="categoria">Categoría</label>
                                         <select id="categoria" name="categoria" class="form-select form-select-lg"
@@ -60,21 +49,37 @@
                                         </select>
                                     </div>
                                 </div>
+                            </div>
+                            <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <div data-mdb-input-init class="form-outline">
-                                        <label class="form-label mb-1" for="punto_encuentro">Punto de encuentro</label>
-                                        <select id="punto_encuentro" name="punto_encuentro" class="form-select form-select-lg" required>
-                                            <option value="" selected disabled>-- Seleccione --</option>
-                                            {% for value, display in form.fields.punto_encuentro.choices %}
-                                            <option value="{{ value }}">{{ display }}</option>
-                                            {% endfor %}
-                                        </select>
+                                        <label class="form-label mb-1" for="descripcion">Descripción</label>
+                                        <textarea id="descripcion" name="descripcion" style="height: 16px"
+                                            class="form-control form-control-lg"></textarea>
                                     </div>
                                 </div>
-                                
+                                <div class="col-md-6 mb-3">
+                                    <div data-mdb-input-init class="form-outline">
+                                        <label class="form-label mb-1" for="imagen">Imagen</label>
+                                        <input type="file" id="imagen" name="imagen"
+                                            class="form-control form-control-lg" required />
+                                    </div>
+                                </div>
                             </div>
-
                             <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <div data-mdb-input-init class="form-outline">
+                                        <label class="form-label mb-1" for="punto_encuentro">Punto de encuentro</label>
+                                        <div id="punto_encuentro">
+                                            {% for value, display in form.fields.punto_encuentro.choices %}
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" value="{{ value }}" id="punto_encuentro_{{ forloop.counter0 }}" name="punto_encuentro">
+                                                <label class="form-check-label" for="punto_encuentro_{{ forloop.counter0 }}">{{ display }}</label>
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="col-md-4 mb-3">
                                     <div data-mdb-input-init class="form-outline">
                                         <label class="form-label mb-1" for="dias_convenientes">Días disponibles</label>
@@ -89,26 +94,19 @@
                                     </div>
                                 </div>
                                 <div class="col-md-4 mb-3">
-                                    <div data-mdb-input-init class="form-outline">
-                                        <label class="form-label mb-1" for="franja_horaria_inicio">Desde</label>
-                                        <input type="time" id="franja_horaria_inicio" name="franja_horaria_inicio" class="form-control form-control-lg" required />
-                                    </div>
-                                </div>
-                                <div class="col-md-4 mb-3">
-                                    <div data-mdb-input-init class="form-outline">
-                                        <label class="form-label mb-1" for="franja_horaria_fin">Hasta</label>
-                                        <input type="time" id="franja_horaria_fin" name="franja_horaria_fin" class="form-control form-control-lg" required />
-                                    </div>
-                                </div>
-                            </div>
-                            
-
-                            <div class="row">
-                                <div class="mb-3">
-                                    <div data-mdb-input-init class="form-outline">
-                                        <label class="form-label mb-1" for="imagen">Imagen</label>
-                                        <input type="file" id="imagen" name="imagen"
-                                            class="form-control form-control-lg" required />
+                                    <div class="row">
+                                        <div class="col-12 mb-3">
+                                            <div data-mdb-input-init class="form-outline">
+                                                <label class="form-label mb-1" for="franja_horaria_inicio">Desde</label>
+                                                <input type="time" id="franja_horaria_inicio" name="franja_horaria_inicio" class="form-control form-control-lg" required />
+                                            </div>
+                                        </div>
+                                        <div class="col-12 mb-3">
+                                            <div data-mdb-input-init class="form-outline">
+                                                <label class="form-label mb-1" for="franja_horaria_fin">Hasta</label>
+                                                <input type="time" id="franja_horaria_fin" name="franja_horaria_fin" class="form-control form-control-lg" required />
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
