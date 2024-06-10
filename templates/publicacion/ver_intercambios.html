@@ -26,7 +26,7 @@
                 <p>Intercambio:</p>
                 {% if oferta.estado == 'ACEPTADA' %}
                     <p>La oferta fue aceptada, intercambio pendiente a realizarse.</p>
-                {% elif oferta.estado == 'CONCRETADA' %}
+                {% elif oferta.estado == 'CONFIRMADA' %}
                     <p>Intercambio registrado como concretado por moderador.</p>
                 {% elif oferta.estado == 'DESESTIMADA' %}
                     <p>Intercambio registrado como desestimado por moderador.</p>
@@ -70,11 +70,11 @@
             <div class="card-footer">
                 {% if oferta.estado == 'ACEPTADA' and user.isModerador %}
                 <div class="d-flex align-items-center justify-content-center">
-                    <form action="" method="post" class="me-2">
+                    <form action="{% url 'confirmar_intercambio' oferta.id %}" method="post" class="me-2">
                         {% csrf_token %}
                         <button type="submit" class="btn btn-success">Confirmar ✅</button>
                     </form>
-                    <form action="" method="post">
+                    <form action="{% url 'desestimar_intercambio' oferta.id %}" method="post">
                         {% csrf_token %}
                         <button type="submit" class="btn btn-danger">Desestimar ❌</button>
                     </form>

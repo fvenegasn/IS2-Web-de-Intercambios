@@ -5,6 +5,7 @@ from django.shortcuts import redirect, render, get_object_or_404
 from intercambios_caritas.forms import IntercambioForm, PublicacionForm
 from intercambios_caritas.models import Intercambio, Usuario, Publicacion
 from . import views
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 # from django.contrib.auth.models import User
 from django.contrib import messages
@@ -18,9 +19,6 @@ from django.urls import reverse
 def home(request):
     publicaciones_disponibles = Publicacion.objects.filter(disponible_para_intercambio=True)
     return render(request, 'authentication/index.html', {'publicaciones': publicaciones_disponibles})
-
-
-
 
 def register(request):
     # Si mandaron el formulario
@@ -118,18 +116,19 @@ def signout(request):
     return redirect('home')
     """ con redirect muestra las publicaciones, con render(request, "authentication/index.html") parece que no y con return home(request) el url no cambia queda /logout"""
 
-
 def quienes_somos(request):
     return render(request, 'authentication/quienes_somos.html')
 
-
+@login_required
 def mi_perfil(request):
     return render(request, 'administracion_usuarios/mi_perfil.html')
 
+@login_required
 def ver_perfil(request, username):
     user = get_object_or_404(Usuario, username=username)
     return render(request, 'administracion_usuarios/perfil.html', {'user': user})
 
+@login_required
 def cambiar_rol(request, username=None):
     user = None  # Assigning a default value to the user variable
     if request.method == 'POST':
@@ -156,7 +155,7 @@ def cambiar_rol(request, username=None):
         'messages': messages.get_messages(request),
     })
 
-
+@login_required
 def crear_publicacion(request):
     form = PublicacionForm()
     if request.method == 'POST':
@@ -178,7 +177,7 @@ def crear_publicacion(request):
             messages.warning(request, "Error, Publicación no creada.")
     return render(request, 'publicacion/crear_publicacion.html', {'form': form})
 
-
+@login_required
 def mis_publicaciones(request):
     usuario_actual = request.user
     publicaciones = Publicacion.objects.filter(usuario=usuario_actual)
@@ -190,12 +189,13 @@ def ver_publicacion(request, publicacion_id):
     publicacion = get_object_or_404(Publicacion, pk=publicacion_id)
     return render(request, 'publicacion/ver_publicacion.html', {'publicacion': publicacion})
 
-
+@login_required
 def listar_usuarios(request):
     usuarios = Usuario.objects.all()
     # si le pasas index anda
     return render(request, 'administracion_usuarios/listar_usuarios.html', {'usuarios': usuarios})
 
+@login_required
 def crear_oferta(request, publicacion_id):
     publicacion_demandada = Publicacion.objects.get(id=publicacion_id)
 
@@ -248,25 +248,29 @@ def crear_oferta(request, publicacion_id):
     }
     return render(request, 'publicacion/crear_oferta.html', context)
 
+@login_required
 def ver_ofertas_realizadas(request):
     ofertas_realizadas = Intercambio.objects.filter(publicacion_ofertante__usuario=request.user).order_by('-fecha_creacion')
     return render(request, 'publicacion/ofertas_realizadas.html', {'ofertas_realizadas': ofertas_realizadas})
 
+@login_required
 def ver_ofertas_recibidas(request):
     ofertas_recibidas = Intercambio.objects.filter(publicacion_demandada__usuario=request.user).order_by('-fecha_creacion')
     return render(request, 'publicacion/ofertas_recibidas.html', {'ofertas_recibidas': ofertas_recibidas})
 
+@login_required
 def ver_intercambios_moderador(request):
     inter = Intercambio.objects.filter(estado="ACEPTADA", punto_encuentro=request.user.filial).order_by('-fecha_creacion')
     return render(request, 'publicacion/ver_intercambios.html', {'ofertas_recibidas': inter})
 
+@login_required
 def ver_mis_intercambios(request):
     ofertas_realizadas = Intercambio.objects.filter(publicacion_ofertante__usuario=request.user, estado="ACEPTADA")
     ofertas_recibidas = Intercambio.objects.filter(publicacion_demandada__usuario=request.user, estado="ACEPTADA")
     inter = ofertas_realizadas.union(ofertas_recibidas).order_by('-fecha_creacion')
     return render(request, 'publicacion/ver_intercambios.html', {'ofertas_recibidas': inter})
 
-
+@login_required
 def aceptar_oferta(request, oferta_id):
     oferta = get_object_or_404(Intercambio, id=oferta_id, publicacion_demandada__usuario=request.user)
     try:
@@ -283,6 +287,7 @@ def aceptar_oferta(request, oferta_id):
         messages.error(request, str(e))
     return redirect('ver_ofertas_recibidas')
 
+@login_required
 def rechazar_oferta(request, oferta_id):
     oferta = get_object_or_404(Intercambio, id=oferta_id, publicacion_demandada__usuario=request.user)
     try:
@@ -292,6 +297,7 @@ def rechazar_oferta(request, oferta_id):
         messages.error(request, str(e))
     return redirect('ver_ofertas_recibidas')
 
+@login_required
 def cancelar_oferta(request, oferta_id):
     oferta = get_object_or_404(Intercambio, id=oferta_id, publicacion_ofertante__usuario=request.user)
     try:
@@ -300,3 +306,27 @@ def cancelar_oferta(request, oferta_id):
     except ValueError as e:
         messages.error(request, str(e))
     return redirect('ver_ofertas_realizadas')
+
+@login_required
+def confirmar_intercambio(request, oferta_id):
+    oferta = get_object_or_404(Intercambio, id=oferta_id)
+    try:
+        oferta.confirmar()
+        messages.success(request, "Intercambio confirmado.")
+    except ValueError as e:
+        messages.error(request, str(e))
+    return redirect(ver_intercambios_moderador)
+
+def desestimar_intercambio(request, oferta_id):
+    oferta = get_object_or_404(Intercambio, id=oferta_id)
+    try:
+        oferta.desestimar()
+        oferta.publicacion_ofertante.disponible_para_intercambio = True
+        oferta.publicacion_ofertante.save()
+
+        oferta.publicacion_demandada.disponible_para_intercambio = True
+        oferta.publicacion_demandada.save()
+        messages.success(request, "Intercambio desestimado.")
+    except ValueError as e:
+        messages.error(request, str(e))
+    return redirect(ver_intercambios_moderador)

@@ -138,7 +138,7 @@ class Publicacion(models.Model):
             inicio_hora, inicio_minuto, fin_hora, fin_minuto = match.groups()
             if int(inicio_hora) > int(fin_hora) or (int(inicio_hora) == int(fin_hora) and int(inicio_minuto) >= int(fin_minuto)):
                 raise ValidationError("La hora de inicio debe ser antes que la hora de finalización.")
-            if int(inicio_hora) < 0 or int(fin_hora) > 23 or int(inicio_minuto) < 0 or int(fin_minuto) > 59:
+            if int(inicio_hora) < 8 or int(fin_hora) > 20 or int(inicio_minuto) < 0 or int(fin_minuto) > 59:
                 raise ValidationError("Las horas deben estar entre 00 y 23, y los minutos entre 00 y 59.")
 
     def __str__(self):
@@ -159,6 +159,14 @@ class EstadoIntercambio(ABC):
         pass
 
     @abstractmethod
+    def confirmar(self, intercambio):
+        pass
+
+    @abstractmethod
+    def desestimar(self, intercambio):
+        pass
+
+    @abstractmethod
     def obtener_estado(self):
         pass
 
@@ -170,7 +178,14 @@ class Aceptada(EstadoIntercambio):
         raise ValueError("No se puede rechazar un intercambio aceptado")
 
     def cancelar(self, intercambio):
-        intercambio.estado = 'CANCELADA'
+        raise ValueError("No se puede cancelar un intercambio aceptado")
+
+    def confirmar(self, intercambio):
+        intercambio.estado = 'CONFIRMADA'
+        intercambio.save()
+
+    def desestimar(self, intercambio):
+        intercambio.estado = 'DESESTIMADA'
         intercambio.save()
 
     def obtener_estado(self):
@@ -186,6 +201,12 @@ class Rechazada(EstadoIntercambio):
     def cancelar(self, intercambio):
         raise ValueError("No se puede cancelar un intercambio rechazado")
     
+    def confirmar(self, intercambio):
+        raise ValueError("No se puede confirmar una oferta rechazada")
+
+    def desestimar(self, intercambio):
+        raise ValueError("No se puede desestimar una oferta rechazada")
+    
     def obtener_estado(self):
         return "Rechazada"
     
@@ -199,6 +220,12 @@ class Cancelada(EstadoIntercambio):
     def cancelar(self, intercambio):
         raise ValueError("El intercambio ya está cancelado")
     
+    def confirmar(self, intercambio):
+        raise ValueError("No se puede confirmar una oferta cancelada")
+
+    def desestimar(self, intercambio):
+        raise ValueError("No se puede desestimar una oferta cancelada")
+
     def obtener_estado(self):
         return "Cancelada"
     
@@ -216,16 +243,63 @@ class Pendiente(EstadoIntercambio):
         intercambio.estado = 'CANCELADA'
         intercambio.save()
 
+    def confirmar(self, intercambio):
+        raise ValueError("No se puede confirmar una oferta pendiente")
+
+    def desestimar(self, intercambio):
+        raise ValueError("No se puede desestimar una oferta pendiente")
+
     def obtener_estado(self):
         return "Pendiente"
 
-class Intercambio(models.Model):
+class Confirmada(EstadoIntercambio):
 
+    def aceptar(self, intercambio):
+        raise ValueError("No se puede aceptar una oferta confirmada")
+
+    def rechazar(self, intercambio):
+        raise ValueError("No se puede rechazar una oferta confirmada")
+
+    def cancelar(self, intercambio):
+        raise ValueError("No se puede cancelar una oferta confirmada")
+
+    def confirmar(self, intercambio):
+        raise ValueError("No se puede confirmar una oferta confirmada")
+
+    def desestimar(self, intercambio):
+        raise ValueError("No se puede desestimar una oferta confirmada")
+
+    def obtener_estado(self):
+        return "Confirmada"
+
+class Desestimada(EstadoIntercambio):
+    
+    def aceptar(self, intercambio):
+        raise ValueError("No se puede aceptar una oferta desestimada")
+
+    def rechazar(self, intercambio):
+        raise ValueError("No se puede rechazar una oferta desestimada")
+
+    def cancelar(self, intercambio):
+        raise ValueError("No se puede cancelar una oferta desestimada")
+
+    def confirmar(self, intercambio):
+        raise ValueError("No se puede confirmar una oferta desestimada")
+
+    def desestimar(self, intercambio):
+        raise ValueError("No se puede desestimar una oferta desestimada")
+
+    def obtener_estado(self):
+        return "Confirmada"
+
+class Intercambio(models.Model):
     ESTADOS = [
         ('PENDIENTE', 'Pendiente'),
         ('ACEPTADA', 'Aceptada'),
         ('RECHAZADA', 'Rechazada'),
         ('CANCELADA', 'Cancelada'),
+        ('CONFIRMADA', 'Confirmada'),
+        ('DESESTIMADA', 'Desestimada')
     ]
 
     publicacion_ofertante = models.ForeignKey('Publicacion', related_name='ofertas_realizadas', on_delete=models.CASCADE)
@@ -238,7 +312,7 @@ class Intercambio(models.Model):
     #franja_horaria_fin = models.TimeField(default=datetime.time(10,0,0))
     franja_horaria = models.TimeField(default=datetime.time(9,0,0))
     fecha_creacion = models.DateTimeField(default=timezone.now)
-    estado = models.CharField(max_length=10, choices=ESTADOS, default='PENDIENTE')
+    estado = models.CharField(max_length=12, choices=ESTADOS, default='PENDIENTE')
     #aceptada = models.BooleanField(default=False)
 
     def __str__(self):
@@ -256,6 +330,8 @@ class Intercambio(models.Model):
             'RECHAZADA': Rechazada(),
             'CANCELADA': Cancelada(),
             'PENDIENTE': Pendiente(),
+            'CONFIRMADA': Confirmada(),
+            'DESESTIMADA': Desestimada()
         }
         return estados.get(self.estado)
 
@@ -267,6 +343,13 @@ class Intercambio(models.Model):
 
     def cancelar(self):
         self.estado_clase.cancelar(self)
+
+    def confirmar(self):
+        self.estado_clase.confirmar(self)
+
+    def desestimar(self):
+        self.estado_clase.desestimar(self)
+        # y guardar el mensaje de desestimacion
 
     def cancelar_ofertas_relacionadas(self):
         ofertas_relacionadas = Intercambio.objects.filter(

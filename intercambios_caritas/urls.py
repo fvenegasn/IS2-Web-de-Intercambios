@@ -46,10 +46,12 @@ urlpatterns = [
     path('aceptar_oferta/<int:oferta_id>/', views.aceptar_oferta, name='aceptar_oferta'),
     path('rechazar_oferta/<int:oferta_id>/', views.rechazar_oferta, name='rechazar_oferta'),
     path('cancelar_oferta/<int:oferta_id>/', views.cancelar_oferta, name='cancelar_oferta'),
+    path('confirmar_intercambio/<int:oferta_id>/', views.confirmar_intercambio, name="confirmar_intercambio"),
+    path('desestimar_intercambio/<int:oferta_id>/', views.desestimar_intercambio, name="desestimar_intercambio"),
     path('intercambios', views.ver_mis_intercambios, name='ver_mis_intercambios'),
     path('intercambios/moderador', views.ver_intercambios_moderador, name='ver_intercambios_moderador'),
 
     path('perfil/<str:username>/cambiar_rol/', views.cambiar_rol, name="cambiar_rol"),
 
-    
+
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
