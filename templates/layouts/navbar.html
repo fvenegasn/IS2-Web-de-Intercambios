@@ -1,12 +1,7 @@
 {% load static%}
-<!-- {% load static %} aca para que cargue bien la imagen del navbar porque toma los estilos del base pero no esto -->
+{% comment %} {% load static %} aca para que cargue bien la imagen del navbar porque toma los estilos del base pero no esto {% endcomment %}
 <nav class="navbar navbar-expand-lg navbar-custom">
     <div class="container">
-        <!-- <a class="navbar-brand" href="{% url 'home' %}"><img src='media\logoCaritas.png' width=50></a> -->
-        <!-- <a class="navbar-brand" href="{% url 'home' %}"><img src='media\logoCaritas.png' alt="Logo" width="50"
-            height="50" class="d-inline-block align-text-center">
-        Intercambios Caritas</a> -->
-        <!-- <a class="navbar-brand" href="{% url 'home' %}"><img src='media\logosCaritas\Logo-blanco.png' width=50></a> -->
         <a class="navbar-brand" href="{% url 'home' %}"><img src="{% static 'logosCaritas/Logo-blanco.png' %}"
                 width=50></a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
@@ -15,75 +10,39 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
-                {% if user.is_authenticated %}
-                <li class="nav-item">
-                    <a href="{% url 'crear_publicacion' %}" class="nav-link">Publicar Producto</a>
-                </li>
-                {% else %}
-                <li class="nav-item">
-                    <a href="{% url 'signin' %}" class="nav-link">Publicar Producto</a>
-                </li>
-                {% endif %}
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'home' %}">Quienes Somos</a>
                 </li>
-                {% if user.is_authenticated %}
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                        aria-expanded="false">
-                        Mi Perfil
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li class="nav-item"><a class="nav-link" href="{% url 'mi_perfil' %}">Ver mi perfil</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{% url 'mis_publicaciones' %}">Mis publicaciones</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{% url 'ver_mis_intercambios' %}">Mis intercambios</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{% url 'ver_ofertas_realizadas' %}">Mis ofertas realizadas</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{% url 'ver_ofertas_recibidas' %}">Mis ofertas recibidas</a></li>
-                    </ul>
-                </li>
                 {% if user.isAdmin %}
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                        aria-expanded="false">
-                        Administrar
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li class="nav-item"><a class="nav-link" href="{% url 'listar_usuarios' %}">Listar Usuarios</a></li>
-                        <li class="nav-item"><a class="nav-link" href=""> -- </a></li>
-                        <li class="nav-item"><a class="nav-link" href=""> -- </a></li>
-                        <li class="nav-item"><a class="nav-link" href=""> -- </a></li>
-                    </ul>
-                </li>
-                {% endif %}
-
-                {% if user.isModerador %}
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                        aria-expanded="false">
-                        Moderador
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li class="nav-item"><a class="nav-link" href="{% url 'ver_intercambios_moderador' %}">Intercambios Pendientes Filial</a></li>
-                        <li class="nav-item"><a class="nav-link" href=""> -- </a></li>
-                        <li class="nav-item"><a class="nav-link" href=""> -- </a></li>
-                        <li class="nav-item"><a class="nav-link" href=""> -- </a></li>
-                    </ul>
-                </li>
-                {% endif %}
-
-                <li class="nav-item">
-                    <a class="nav-link" href="/logout">Cerrar sesión</a>
-                </li>
-
+                    {% include 'layouts/navbar_admin.html' %}
+                {% elif user.isModerador %}
+                    {% include 'layouts/navbar_moderador.html' %}
+                {% elif user.is_authenticated %}
+                    <li class="nav-item">
+                        <a href="{% url 'crear_publicacion' %}" class="nav-link">Publicar Producto</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                            aria-expanded="false">Mi Perfil</a>
+                        <ul class="dropdown-menu">
+                            <li class="nav-item"><a class="nav-link" href="{% url 'mi_perfil' %}">Ver mi perfil</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{% url 'mis_publicaciones' %}">Mis publicaciones</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{% url 'ver_mis_intercambios' %}">Mis intercambios</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{% url 'ver_ofertas_realizadas' %}">Mis ofertas realizadas</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{% url 'ver_ofertas_recibidas' %}">Mis ofertas recibidas</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/logout">Cerrar sesión</a>
+                    </li>
                 {% else %}
-                <li class="nav-item">
-                    <a class="nav-link" href="/register">Registrarse</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/login">Iniciar sesión</a>
-                </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/register">Registrarse</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/login">Iniciar sesión</a>
+                    </li>
                 {% endif %}
-
             </ul>
         </div>
     </div>
