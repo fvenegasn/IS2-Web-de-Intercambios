@@ -12,6 +12,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 # from is2.settings import LOGIN_ATTEMPTS_LIMIT
 from django.urls import reverse
+from django.db.models import Q
 
 # Create your views here.
 
@@ -260,13 +261,22 @@ def ver_ofertas_recibidas(request):
 
 @login_required
 def ver_intercambios_moderador(request):
-    inter = Intercambio.objects.filter(estado="ACEPTADA", punto_encuentro=request.user.filial).order_by('-fecha_creacion')
+    inter = Intercambio.objects.filter(
+        Q(punto_encuentro=request.user.filial) & 
+        (Q(estado="ACEPTADA") | Q(estado="CONFIRMADA") | Q(estado="DESESTIMADA"))
+        ).order_by('-fecha_creacion')
     return render(request, 'publicacion/ver_intercambios.html', {'ofertas_recibidas': inter})
 
 @login_required
 def ver_mis_intercambios(request):
-    ofertas_realizadas = Intercambio.objects.filter(publicacion_ofertante__usuario=request.user, estado="ACEPTADA")
-    ofertas_recibidas = Intercambio.objects.filter(publicacion_demandada__usuario=request.user, estado="ACEPTADA")
+    ofertas_realizadas = Intercambio.objects.filter(
+        Q(publicacion_ofertante__usuario=request.user) & 
+        (Q(estado="ACEPTADA") | Q(estado="CONFIRMADA") | Q(estado="DESESTIMADA"))
+    )
+    ofertas_recibidas = Intercambio.objects.filter(
+        Q(publicacion_demandada__usuario=request.user) & 
+        (Q(estado="ACEPTADA") | Q(estado="CONFIRMADA") | Q(estado="DESESTIMADA"))
+    )
     inter = ofertas_realizadas.union(ofertas_recibidas).order_by('-fecha_creacion')
     return render(request, 'publicacion/ver_intercambios.html', {'ofertas_recibidas': inter})
 

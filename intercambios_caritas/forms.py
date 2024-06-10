@@ -77,7 +77,7 @@ class IntercambioForm(forms.ModelForm):
         franja_horaria_inicio = kwargs.pop('franja_horaria_inicio')
         franja_horaria_fin = kwargs.pop('franja_horaria_fin')
         super(IntercambioForm, self).__init__(*args, **kwargs)
-        self.fields['publicacion_ofertante'].queryset = Publicacion.objects.filter(usuario=user, categoria=categoria)
+        self.fields['publicacion_ofertante'].queryset = Publicacion.objects.filter(usuario=user, categoria=categoria, disponible_para_intercambio=True)
         # self.fields['dias_convenientes'].choices = [(dia, dia) for dia in dias]
 
         self.fields['punto_encuentro'].choices = [(p, p) for p in puntos]
