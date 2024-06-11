@@ -331,20 +331,13 @@ def confirmar_intercambio(request, oferta_id):
 @login_required
 def desestimar_intercambio(request, oferta_id):
     oferta = get_object_or_404(Intercambio, id=oferta_id)
-    
-    if oferta.estado == 'ACEPTADA':
-        try:
-            oferta.desestimar("N/A") # "Limpia" el motivo
-            messages.error(request, "Intercambio marcado como desestimado. Por favor indique el motivo")
-        except ValueError as e:
-            messages.error(request, str(e))
 
     if request.method == 'POST':
         motivo = request.POST.get('motivo', '')
-        if oferta.estado == 'DESESTIMADA' and oferta.motivo_desestimacion == 'N/A':
-            if motivo:
-                if not strip_tags(motivo.strip()):  # Verificar si el motivo contiene solo espacios en blanco
-                    messages.error(request, "El motivo no puede estar compuesto únicamente por espacios en blanco.")
+        if motivo:
+            if not strip_tags(motivo.strip()):  # Verificar si el motivo contiene solo espacios en blanco
+                messages.error(request, "El motivo no puede estar compuesto únicamente por espacios en blanco.")
+            else:
                 try:
                     oferta.desestimar(motivo)
                     oferta.publicacion_ofertante.disponible_para_intercambio = True
@@ -354,10 +347,9 @@ def desestimar_intercambio(request, oferta_id):
                     messages.success(request, "Intercambio desestimado.")
                 except ValueError as e:
                     messages.error(request, str(e))
-            else:
-                messages.error(request, "Se requiere un motivo para desestimar el intercambio.")
-                #return HttpResponseRedirect(request.path_info)
         else:
-            messages.error(request, "El intercambio ya ha sido desestimado o no está en el estado correcto.")
-    
+            messages.error(request, "Se requiere un motivo para desestimar el intercambio.")
+    else:
+        messages.error(request, "El intercambio ya ha sido desestimado o no está en el estado correcto.")
+
     return redirect('ver_intercambios_moderador')

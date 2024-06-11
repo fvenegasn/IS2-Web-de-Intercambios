@@ -71,16 +71,16 @@
             <div class="card-footer">
                 {% if oferta.estado == 'PENDIENTE' %}
                 <div class="d-flex align-items-center justify-content-center">
-                    <form action="{% url 'aceptar_oferta' oferta.id %}" method="post" class="me-2">
+                    <form action="{% url 'aceptar_oferta' oferta.id %}" method="post" class="mx-1 w-25">
                         {% csrf_token %}
-                        <button type="submit" class="btn btn-success">Aceptar ✅</button>
+                        <button type="submit" class="btn btn-success w-100">Aceptar</button>
                     </form>
-                    <form action="{% url 'rechazar_oferta' oferta.id %}" method="post">
+                    <form action="{% url 'rechazar_oferta' oferta.id %}" method="post" class="mx-1 w-25">
                         {% csrf_token %}
-                        <button type="submit" class="btn btn-danger">Rechazar ❌</button>
+                        <button type="submit" class="btn btn-danger w-100">Rechazar</button>
                     </form>
-                {% endif %}
                 </div>
+                {% endif %}
             </div>
         </div>
     </li>

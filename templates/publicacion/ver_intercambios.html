@@ -23,8 +23,7 @@
     <li class="mb-3">
         <div class="card text-center">
             <div class="card-header">
-                <p>Intercambio:</p>
-                <p>{{ oferta.publicacion_ofertante.nombre }} por {{oferta.publicacion_demandada.nombre}}</p>
+                <p>Intercambio: {{ oferta.publicacion_ofertante.nombre }} por {{oferta.publicacion_demandada.nombre}}</p>
                 <p>Estado: 
                 {% if oferta.estado == 'ACEPTADA' %}
                     Oferta aceptada, intercambio registrado pendiente de realizarse.
@@ -79,24 +78,17 @@
                 {% if user.isModerador %}
                     {% if oferta.estado == 'ACEPTADA' %}
                         <div class="d-flex align-items-center justify-content-center">
-                            <form action="{% url 'confirmar_intercambio' oferta.id %}" method="post" class="me-2">
+                            <form action="{% url 'confirmar_intercambio' oferta.id %}" method="post" class="mx-1 w-25">
                                 {% csrf_token %}
-                                <button type="submit" class="btn btn-success">Confirmar ✅</button>
+                                <button type="submit" class="btn btn-success">Confirmar</button>
                             </form>
-                            <form action="{% url 'desestimar_intercambio' oferta.id %}" method="post">
+                            <form action="{% url 'desestimar_intercambio' oferta.id %}" method="post" class="w-50">
                                 {% csrf_token %}
-                                <button type="submit" class="btn btn-danger">Desestimar ❌</button>
-                            </form>
-                        </div>
-                    {% elif oferta.estado == 'DESESTIMADA' and oferta.motivo_desestimacion == 'N/A' %}
-                        <div class="d-flex align-items-center justify-content-center">
-                            <form action="{% url 'desestimar_intercambio' oferta.id %}" method="post">
-                                {% csrf_token %}
-                                <div class="mb-3">
-                                    <label for="motivo" class="form-label">Motivo de Desestimación</label>
-                                    <textarea class="form-control" id="motivo" name="motivo" rows="3"></textarea>
+                                <div class="d-flex align-items-center justify-content-center">
+                                    <button type="submit" class="btn btn-danger mx-1 w-50">Desestimar</button>
+                                    <textarea class="form-control mx-1 w-50" id="motivo" name="motivo" rows="1" 
+                                    placeholder="Motivo de desestimacion:" required></textarea>
                                 </div>
-                                <button type="submit" class="btn btn-danger">Enviar Motivo ❌</button>
                             </form>
                         </div>
                     {% endif %}
