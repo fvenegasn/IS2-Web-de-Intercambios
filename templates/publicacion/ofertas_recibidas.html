@@ -32,7 +32,7 @@
                 {% elif oferta.estado == 'CONFIRMADA' %}
                     Intercambio realizado. Muchas gracias por su cooperación.
                 {% elif oferta.estado == 'DESESTIMADA' %}
-                    Intercambio desestimado. Lo lamentamos.
+                    Intercambio desestimado. Lo lamentamos. Motivo: {{oferta.motivo_desestimacion}}
                 {% endif %}
                 </p>
                 <p>Fecha de creación: {{ oferta.fecha_creacion }}</p>

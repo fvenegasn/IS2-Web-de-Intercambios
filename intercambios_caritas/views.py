@@ -1,10 +1,11 @@
 import datetime
 import django
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render, get_object_or_404
 from intercambios_caritas.forms import IntercambioForm, PublicacionForm
 from intercambios_caritas.models import Intercambio, Usuario, Publicacion
 from . import views
+from django.utils.html import strip_tags
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 # from django.contrib.auth.models import User
@@ -329,16 +330,36 @@ def confirmar_intercambio(request, oferta_id):
         messages.error(request, str(e))
     return redirect(ver_intercambios_moderador)
 
+@login_required
 def desestimar_intercambio(request, oferta_id):
     oferta = get_object_or_404(Intercambio, id=oferta_id)
-    try:
-        oferta.desestimar()
-        oferta.publicacion_ofertante.disponible_para_intercambio = True
-        oferta.publicacion_ofertante.save()
+    
+    if oferta.estado == 'ACEPTADA':
+        try:
+            oferta.desestimar("N/A") # "Limpia" el motivo
+            messages.error(request, "Intercambio marcado como desestimado. Por favor indique el motivo")
+        except ValueError as e:
+            messages.error(request, str(e))
 
-        oferta.publicacion_demandada.disponible_para_intercambio = True
-        oferta.publicacion_demandada.save()
-        messages.success(request, "Intercambio desestimado.")
-    except ValueError as e:
-        messages.error(request, str(e))
-    return redirect(ver_intercambios_moderador)
+    if request.method == 'POST':
+        motivo = request.POST.get('motivo', '')
+        if oferta.estado == 'DESESTIMADA' and oferta.motivo_desestimacion == 'N/A':
+            if motivo:
+                if not strip_tags(motivo.strip()):  # Verificar si el motivo contiene solo espacios en blanco
+                    messages.error(request, "El motivo no puede estar compuesto únicamente por espacios en blanco.")
+                try:
+                    oferta.desestimar(motivo)
+                    oferta.publicacion_ofertante.disponible_para_intercambio = True
+                    oferta.publicacion_ofertante.save()
+                    oferta.publicacion_demandada.disponible_para_intercambio = True
+                    oferta.publicacion_demandada.save()
+                    messages.success(request, "Intercambio desestimado.")
+                except ValueError as e:
+                    messages.error(request, str(e))
+            else:
+                messages.error(request, "Se requiere un motivo para desestimar el intercambio.")
+                #return HttpResponseRedirect(request.path_info)
+        else:
+            messages.error(request, "El intercambio ya ha sido desestimado o no está en el estado correcto.")
+    
+    return redirect('ver_intercambios_moderador')

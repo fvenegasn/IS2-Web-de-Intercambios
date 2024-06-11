@@ -163,7 +163,7 @@ class EstadoIntercambio(ABC):
         pass
 
     @abstractmethod
-    def desestimar(self, intercambio):
+    def desestimar(self, intercambio, motivo):
         pass
 
     @abstractmethod
@@ -185,8 +185,8 @@ class Aceptada(EstadoIntercambio):
         intercambio.save()
 
     def desestimar(self, intercambio, motivo):
-        intercambio.estado = 'DESESTIMADA'
         intercambio.motivo_desestimacion = motivo
+        intercambio.estado = 'DESESTIMADA'
         intercambio.save()
 
     def obtener_estado(self):
@@ -205,7 +205,7 @@ class Rechazada(EstadoIntercambio):
     def confirmar(self, intercambio):
         raise ValueError("No se puede confirmar una oferta rechazada")
 
-    def desestimar(self, intercambio):
+    def desestimar(self, intercambio, motivo):
         raise ValueError("No se puede desestimar una oferta rechazada")
     
     def obtener_estado(self):
@@ -224,7 +224,7 @@ class Cancelada(EstadoIntercambio):
     def confirmar(self, intercambio):
         raise ValueError("No se puede confirmar una oferta cancelada")
 
-    def desestimar(self, intercambio):
+    def desestimar(self, intercambio, motivo):
         raise ValueError("No se puede desestimar una oferta cancelada")
 
     def obtener_estado(self):
@@ -247,7 +247,7 @@ class Pendiente(EstadoIntercambio):
     def confirmar(self, intercambio):
         raise ValueError("No se puede confirmar una oferta pendiente")
 
-    def desestimar(self, intercambio):
+    def desestimar(self, intercambio, motivo):
         raise ValueError("No se puede desestimar una oferta pendiente")
 
     def obtener_estado(self):
@@ -267,7 +267,7 @@ class Confirmada(EstadoIntercambio):
     def confirmar(self, intercambio):
         raise ValueError("No se puede confirmar una oferta confirmada")
 
-    def desestimar(self, intercambio):
+    def desestimar(self, intercambio, motivo):
         raise ValueError("No se puede desestimar una oferta confirmada")
 
     def obtener_estado(self):
@@ -287,8 +287,10 @@ class Desestimada(EstadoIntercambio):
     def confirmar(self, intercambio):
         raise ValueError("No se puede confirmar una oferta desestimada")
 
-    def desestimar(self, intercambio):
-        raise ValueError("No se puede desestimar una oferta desestimada")
+    def desestimar(self, intercambio, motivo): # yo se que esto esta re mal
+        intercambio.motivo_desestimacion = motivo
+        intercambio.estado = 'DESESTIMADA'
+        intercambio.save()
 
     def obtener_estado(self):
         return "Confirmada"
@@ -315,7 +317,7 @@ class Intercambio(models.Model):
     fecha_creacion = models.DateTimeField(default=timezone.now)
     estado = models.CharField(max_length=12, choices=ESTADOS, default='PENDIENTE')
     #aceptada = models.BooleanField(default=False)
-    motivo_desestimacion = models.CharField(max_length=280, default="N/A/")
+    motivo_desestimacion = models.CharField(max_length=280, default="N/A")
 
     def __str__(self):
         return f"Intercambio de {self.publicacion_ofertante.nombre} por {self.publicacion_demandada.nombre}"
