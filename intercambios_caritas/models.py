@@ -139,7 +139,7 @@ class Publicacion(models.Model):
             if int(inicio_hora) > int(fin_hora) or (int(inicio_hora) == int(fin_hora) and int(inicio_minuto) >= int(fin_minuto)):
                 raise ValidationError("La hora de inicio debe ser antes que la hora de finalización.")
             if int(inicio_hora) < 8 or int(fin_hora) > 20 or int(inicio_minuto) < 0 or int(fin_minuto) > 59:
-                raise ValidationError("Las horas deben estar entre 00 y 23, y los minutos entre 00 y 59.")
+                raise ValidationError("Las horas deben estar entre 08 y 20, y los minutos entre 00 y 59.")
 
     def __str__(self):
         return self.nombre
@@ -184,8 +184,9 @@ class Aceptada(EstadoIntercambio):
         intercambio.estado = 'CONFIRMADA'
         intercambio.save()
 
-    def desestimar(self, intercambio):
+    def desestimar(self, intercambio, motivo):
         intercambio.estado = 'DESESTIMADA'
+        intercambio.motivo_desestimacion = motivo
         intercambio.save()
 
     def obtener_estado(self):
@@ -314,6 +315,7 @@ class Intercambio(models.Model):
     fecha_creacion = models.DateTimeField(default=timezone.now)
     estado = models.CharField(max_length=12, choices=ESTADOS, default='PENDIENTE')
     #aceptada = models.BooleanField(default=False)
+    motivo_desestimacion = models.CharField(max_length=280, default="N/A/")
 
     def __str__(self):
         return f"Intercambio de {self.publicacion_ofertante.nombre} por {self.publicacion_demandada.nombre}"
@@ -347,8 +349,8 @@ class Intercambio(models.Model):
     def confirmar(self):
         self.estado_clase.confirmar(self)
 
-    def desestimar(self):
-        self.estado_clase.desestimar(self)
+    def desestimar(self, motivo):
+        self.estado_clase.desestimar(self, motivo)
         # y guardar el mensaje de desestimacion
 
     def cancelar_ofertas_relacionadas(self):

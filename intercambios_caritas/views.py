@@ -201,8 +201,10 @@ def crear_oferta(request, publicacion_id):
     publicacion_demandada = Publicacion.objects.get(id=publicacion_id)
 
     usuario_actual = request.user
-    publicaciones_del_usuario = Publicacion.objects.filter(usuario=usuario_actual, categoria=publicacion_demandada.categoria, disponible_para_intercambio=True)
-    if len(publicaciones_del_usuario) == 0 or not publicaciones_del_usuario.disponible_para_intercambio:
+    publicaciones_del_usuario = Publicacion.objects.filter(usuario=usuario_actual, 
+                                                           categoria=publicacion_demandada.categoria, 
+                                                           disponible_para_intercambio=True)
+    if len(publicaciones_del_usuario) == 0:
         messages.error(request,"Usted no posee publicaciones disponibles de esta categoría")
         return redirect("home")
 
