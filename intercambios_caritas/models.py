@@ -29,13 +29,12 @@ class Usuario(AbstractUser):
     )
 
     class Filiales(models.TextChoices):
-        NotApplicable = 'N/A'
         CABA = 'CABA', 'CABA'
         Quilmes = 'Quilmes', 'Quilmes'
         Temperley = 'Temperley', 'Temperley'
 
     filial = models.CharField(
-        max_length=20, choices=Filiales.choices, default=Filiales.NotApplicable
+        max_length=20, choices=Filiales.choices, default=""
     )
 
     def __init__(self, *args, **kwargs):
