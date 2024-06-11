@@ -6,6 +6,7 @@ from multiselectfield import MultiSelectField
 from django.utils import timezone
 from abc import ABC, abstractmethod
 import datetime
+from django.db.models import Q
 
 # Create your models here.
 
@@ -357,7 +358,10 @@ class Intercambio(models.Model):
 
     def cancelar_ofertas_relacionadas(self):
         ofertas_relacionadas = Intercambio.objects.filter(
-            publicacion_ofertante=self.publicacion_ofertante,
+            Q(publicacion_ofertante=self.publicacion_ofertante) | 
+            Q(publicacion_demandada=self.publicacion_ofertante) |
+            Q(publicacion_ofertante=self.publicacion_demandada) |
+            Q(publicacion_demandada=self.publicacion_demandada),
             estado='PENDIENTE'
         )
         for oferta in ofertas_relacionadas:
