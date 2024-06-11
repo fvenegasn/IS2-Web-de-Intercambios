@@ -16,27 +16,22 @@
 <ul>
     {% if ofertas_realizadas %}
     {% for oferta in ofertas_realizadas %}
-    <li>
+    <li class="mb-3">
         <div class="card text-center">
             <div class="card-header">
-                <p>Oferta Realizada:</p>
+                <p>Oferta Realizada {{ oferta.fecha_creacion }}</p>
+                <p>{{ oferta.publicacion_ofertante.nombre }} por {{oferta.publicacion_demandada.nombre}}</p>
                 <p>Estado: 
                 {% if oferta.estado == 'PENDIENTE' %}
-                    Esperando respuesta de {{ oferta.publicacion_demandada.usuario.get_full_name }} {{ oferta.publicacion_demandada.usuario }}.
-                {% elif oferta.estado == 'ACEPTADA' %}
-                    La oferta fue aceptada, intercambio pendiente a realizarse.
+                    Pendiente, esperando respuesta de {{ oferta.publicacion_demandada.usuario.get_full_name }} {{ oferta.publicacion_demandada.usuario }}.
                 {% elif oferta.estado == 'RECHAZADA' %}
-                    La oferta fue rechazada.
+                    Oferta rechazada.
                 {% elif oferta.estado == 'CANCELADA' %}
-                    La oferta fue cancelada.
-                {% elif oferta.estado == 'CONFIRMADA' %}
-                    Intercambio realizado. Muchas gracias por su cooperación.
-                {% elif oferta.estado == 'DESESTIMADA' %}
-                    Intercambio desestimado. Lo lamentamos. Motivo: {{oferta.motivo_desestimacion}}
+                    Oferta cancelada.
+                {% else %}
+                    Oferta aceptada, intercambio registrado pendiente de realizarse.
                 {% endif %}
                 </p>
-                <p>Fecha de creación: {{ oferta.fecha_creacion }}</p>
-                
             </div>
             <div class="card-body">
                 <div class="row d-flex align-items-center justify-content-end">
@@ -53,7 +48,7 @@
                             class="btn btn-primary d-block">Ver publicacion</a>
                     </div>
                     <div class="col-md-4 text-center my-2">
-                        <p class="my-2 p-2" style="background-color: #f0f8ff">Solicitud de intercambio el dia
+                        <p class="my-2 p-2" style="background-color: #f0f8ff">Oferta de intercambio para el dia
                             {{ oferta.fecha_intercambio }} a las {{oferta.franja_horaria}}
                             en la filial {{ oferta.punto_encuentro }}.</p>
                     </div>

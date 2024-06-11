@@ -182,8 +182,7 @@ def crear_publicacion(request):
 @login_required
 def mis_publicaciones(request):
     usuario_actual = request.user
-    publicaciones = Publicacion.objects.filter(usuario=usuario_actual)
-    # si le pasas index anda
+    publicaciones = Publicacion.objects.filter(usuario=usuario_actual, disponible_para_intercambio=True)
     return render(request, 'publicacion/mis_publicaciones.html', {'publicaciones': publicaciones})
 
 

@@ -20,18 +20,20 @@
 <ul>
     {% if ofertas_recibidas %}
     {% for oferta in ofertas_recibidas %}
-    <li>
+    <li class="mb-3">
         <div class="card text-center">
             <div class="card-header">
                 <p>Intercambio:</p>
+                <p>{{ oferta.publicacion_ofertante.nombre }} por {{oferta.publicacion_demandada.nombre}}</p>
+                <p>Estado: 
                 {% if oferta.estado == 'ACEPTADA' %}
-                    <p>La oferta fue aceptada, intercambio pendiente a realizarse.</p>
+                    Oferta aceptada, intercambio registrado pendiente de realizarse.
                 {% elif oferta.estado == 'CONFIRMADA' %}
-                    <p>Intercambio registrado como concretado por moderador.</p>
+                    Intercambio realizado. Muchas gracias por intercambiar.
                 {% elif oferta.estado == 'DESESTIMADA' %}
-                    <p>Intercambio registrado como desestimado por moderador.</p>
+                    Intercambio desestimado por moderador. {% if oferta.motivo_desestimacion != 'N/A' %}Motivo: {{oferta.motivo_desestimacion}}{% endif %}
                 {% endif %}
-                <p>Fecha de creación: {{ oferta.fecha_creacion }}</p>
+                </p>
             </div>
             <div class="card-body">
                 <div class="row d-flex align-items-center justify-content-end">
@@ -48,14 +50,14 @@
                             class="btn btn-primary d-block">Ver publicacion</a>
                     </div>
                     <div class="col-md-4 text-center my-2">
-                        {% if oferta.estado == 'CONFIRMADA' or oferta.estado == 'DESESTIMADA'%}
-                        <p class="my-2 p-2" style="background-color: #f0f8ff">Intercambio a realizarse el dia
+                        {% if oferta.estado == 'ACEPTADA' %}
+                        <p class="my-2 p-2" style="background-color: #f0f8ff">Intercambio el dia
                             {{ oferta.fecha_intercambio }} a las {{oferta.franja_horaria}}
-                            en la filial {{ oferta.punto_encuentro }}</p>
+                            en la filial {{ oferta.punto_encuentro }}. Te esperamos!!!</p>
                         {% else %}
-                        <p class="my-2 p-2" style="background-color: #f0f8ff">Intercambio a realizarse el dia
+                        <p class="my-2 p-2" style="background-color: #f0f8ff">Intercambio el dia
                             {{ oferta.fecha_intercambio }} a las {{oferta.franja_horaria}}
-                            en la filial {{ oferta.punto_encuentro }} te esperamos!!!</p>
+                            en la filial {{ oferta.punto_encuentro }}.</p>
                         {% endif %}
                     </div>
                     <div class="col-md-4 text-center">
@@ -97,18 +99,14 @@
                                 <button type="submit" class="btn btn-danger">Enviar Motivo ❌</button>
                             </form>
                         </div>
-                    {% else %}
-                        <p>El intercambio ha sido desestimado con el siguiente motivo: {{ oferta.motivo_desestimacion }}</p>
                     {% endif %}
                 {% endif %}
             </div>
-            
         </div>
     </li>
-
     {% endfor %}
     {% else %}
-    <p style="font-size: 1.2rem; color: #555; text-align: center; margin-top: 20px;">No hay intercambios para mostrar</p>
+    <p style="font-size: 1.2rem; color: #555; text-align: center; margin-top: 20px;">No hay intercambios para mostrar.</p>
     {% endif %}
 </ul>
 </div>
