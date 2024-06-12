@@ -149,7 +149,7 @@ def cambiar_rol(request, username=None):
             role_changed = False
             filial_changed = False
             intercambios_pendientes = False
-            intercambios = Intercambio.objects.filter(Q(publicacion_ofertante__usuario=request.user) & (Q(estado="ACEPTADA") ))|Intercambio.objects.filter(Q(publicacion_demandada__usuario=request.user) & (Q(estado="ACEPTADA")))
+            intercambios = Intercambio.objects.filter(Q(publicacion_ofertante__usuario=user) & (Q(estado="ACEPTADA") ))|Intercambio.objects.filter(Q(publicacion_demandada__usuario=user) & (Q(estado="ACEPTADA")))
             if role != 'Usuario' and len(intercambios)>0:
                 intercambios_pendientes=True
             elif role != user.getRol():
