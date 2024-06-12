@@ -297,7 +297,7 @@ def ver_ofertas_realizadas(request):
 
 @login_required
 def ver_ofertas_recibidas(request):
-    ofertas_recibidas = Intercambio.objects.filter(publicacion_demandada__usuario=request.user).order_by('-fecha_creacion')
+    ofertas_recibidas = Intercambio.objects.filter(publicacion_demandada__usuario=request.user,publicacion_ofertante__usuario__rol=Usuario.Types.Usuario).order_by('-fecha_creacion')
     return render(request, 'publicacion/ofertas_recibidas.html', {'ofertas_recibidas': ofertas_recibidas})
 
 @login_required
