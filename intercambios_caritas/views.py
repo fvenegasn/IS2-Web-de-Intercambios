@@ -142,8 +142,11 @@ def cambiar_rol(request, username=None):
 
             role_changed = False
             filial_changed = False
-
-            if role != user.getRol():
+            intercambios_pendientes = False
+            intercambios = Intercambio.objects.filter(Q(publicacion_ofertante__usuario=request.user) & (Q(estado="ACEPTADA") ))|Intercambio.objects.filter(Q(publicacion_demandada__usuario=request.user) & (Q(estado="ACEPTADA")))
+            if role != 'Usuario' and len(intercambios)>0:
+                intercambios_pendientes=True
+            elif role != user.getRol():
                 user.modificarRol(role)
                 role_changed = True
                 if role == 'Moderador' and site:
@@ -155,13 +158,14 @@ def cambiar_rol(request, username=None):
                 user.filial = site
                 user.save()
                 filial_changed = True
-
-            if role_changed:
+            if intercambios_pendientes:
+                messages.warning(request, 'El usuario tiene intercambios pendientes, debe resolver los mismos antes de cambiar el rol')
+            elif role_changed:
                 messages.success(request, 'Rol asignado exitosamente')
             elif filial_changed:
                 messages.success(request, 'Filial cambiada exitosamente')
             else:
-                messages.error(request, 'El usuario ya posee el rol seleccionado')
+                messages.warning(request, 'El usuario ya posee el rol seleccionado')
                 
             return redirect(reverse('ver_perfil', kwargs={'username': username}))
 
@@ -174,49 +178,6 @@ def cambiar_rol(request, username=None):
         'filiales_choices': filiales_choices,
     })
 
-"""
-def cambiar_rol(request, username=None):
-    user = None  # Assigning a default value to the user variable
-    if request.method == 'POST':
-        username = request.POST.get('username')
-        role = request.POST.get('rol')
-        
-        try:
-            user = Usuario.objects.get(username=username)
-            site = request.POST.get('filial-selection', '')
-            # Update the user's role
-            if role != user.getRol:
-                if role == 'Moderador' and site:
-                    user.modificarRol(role)
-                    user.filial = site
-                    user.save()
-                    messages.info(request, 'Rol Asignado exitosamente')
-                    return redirect(reverse('ver_perfil', kwargs={'username': username}))
-                if role != 'Moderador':
-                    user.modificarRol(role)
-                    user.filial = ''
-                    user.save()
-                    messages.info(request, 'Rol Asignado exitosamente')
-                    return redirect(reverse('ver_perfil', kwargs={'username': username}))
-            elif role == 'Moderador' and site:
-                if user.filial != site:
-                    user.filial = site
-                    user.save()
-                    messages.info(request, 'Filial cambiada exitosamente')
-                    return redirect(reverse('ver_perfil', kwargs={'username': username}))
-            else:
-                messages.info(request, 'El usuario ya posee el rol seleccionado')
-
-        except Usuario.DoesNotExist:
-            return HttpResponse("User does not exist.", status=404)
-
-    filiales_choices = Usuario.Filiales.choices
-    return render(request, 'perfil/<str:username>/cambiar_rol/', {
-        'user': user,
-        'filiales_choices': filiales_choices,
-        'messages': messages.get_messages(request),
-    })
-"""
 @login_required
 def crear_publicacion(request):
     form = PublicacionForm()

@@ -32,6 +32,7 @@ class Usuario(AbstractUser):
         CABA = 'CABA', 'CABA'
         Quilmes = 'Quilmes', 'Quilmes'
         Temperley = 'Temperley', 'Temperley'
+        LaPlata = 'La Plata', 'La Plata'
 
     filial = models.CharField(
         max_length=20, choices=Filiales.choices, default=""
