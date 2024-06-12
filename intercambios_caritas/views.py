@@ -236,7 +236,19 @@ def crear_publicacion(request):
             messages.success(request, "Publicación creada exitosamente!")
             return redirect('home')
         else:
-            messages.warning(request, "Error, Publicación no creada.")
+            error_messages = {
+                'punto_encuentro': 'No se especificó un punto de encuentro.',
+                'dias_convenientes': 'No se especificó un dia conveniente.',
+                'franja_horaria_inicio': 'La hora de fin no puede ser menor a la hora de inicio.',
+            }
+            generic_error_message = 'Error, Publicación no creada. verificar datos ingresados.'
+            custom_error_found = False
+            for field in form.errors:
+                if field in error_messages:
+                    messages.warning(request, f"Error, Publicación no creada. {error_messages[field]}")
+                    custom_error_found = True
+            if not custom_error_found:
+                messages.warning(request, generic_error_message)
     return render(request, 'publicacion/crear_publicacion.html', {'form': form})
 
 @login_required
