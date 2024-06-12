@@ -70,7 +70,11 @@ class Usuario(AbstractUser):
 
 
 def get_default_user():
-    return Usuario.objects.first().id
+    default_user = Usuario.objects.first()
+    if default_user:
+        return default_user.id
+    else:
+        return None  # en caso que no haya usuarios en la base
 
 
 class Publicacion(models.Model):

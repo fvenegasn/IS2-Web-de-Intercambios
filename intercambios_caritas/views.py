@@ -14,13 +14,19 @@ from django.contrib.auth import authenticate, login, logout
 # from is2.settings import LOGIN_ATTEMPTS_LIMIT
 from django.urls import reverse
 from django.db.models import Q
+from django.db.models import BooleanField, ExpressionWrapper, F
 
 # Create your views here.
 
 
 def home(request):
-    publicaciones_disponibles = Publicacion.objects.filter(disponible_para_intercambio=True)
+    # Filter Publicacion objects where disponible_para_intercambio is True and usuario's role is 'Usuario'
+    publicaciones_disponibles = Publicacion.objects.filter(
+        disponible_para_intercambio=True, usuario__rol=Usuario.Types.Usuario
+    )
     return render(request, 'authentication/index.html', {'publicaciones': publicaciones_disponibles})
+
+
 
 def register(request):
     # Si mandaron el formulario
