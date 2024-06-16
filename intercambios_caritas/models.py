@@ -287,7 +287,9 @@ class Desestimada(EstadoIntercambio):
         raise ValueError("No se puede rechazar una oferta desestimada")
 
     def cancelar(self, intercambio):
-        raise ValueError("No se puede cancelar una oferta desestimada")
+        #raise ValueError("No se puede cancelar una oferta desestimada")
+        intercambio.estado = 'CANCELADA'
+        intercambio.save()
 
     def confirmar(self, intercambio):
         raise ValueError("No se puede confirmar una oferta desestimada")

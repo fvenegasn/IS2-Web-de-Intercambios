@@ -28,6 +28,8 @@
                     Oferta rechazada.
                 {% elif oferta.estado == 'CANCELADA' %}
                     Oferta cancelada.
+                {% elif oferta.estado == 'DESESTIMADA'%}
+                    Oferta Desestimada
                 {% else %}
                     Oferta aceptada, intercambio registrado pendiente de realizarse.
                 {% endif %}

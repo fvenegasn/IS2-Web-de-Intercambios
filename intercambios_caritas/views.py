@@ -20,9 +20,9 @@ from django.db.models import BooleanField, ExpressionWrapper, F
 
 
 def home(request):
-    # Filter Publicacion objects where disponible_para_intercambio is True and usuario's role is 'Usuario'
+    # Filter Publicacion objects where disponible_para_intercambio is True and usuario's role is 'Usuario' y que esté activo
     publicaciones_disponibles = Publicacion.objects.filter(
-        disponible_para_intercambio=True, usuario__rol=Usuario.Types.Usuario
+        disponible_para_intercambio=True, usuario__rol=Usuario.Types.Usuario, usuario__is_active=True
     )
     return render(request, 'authentication/index.html', {'publicaciones': publicaciones_disponibles})
 
@@ -104,13 +104,11 @@ def signin(request):
 
         # Método para autenticar usuario?
         user = authenticate(username=dni, password=password)
-
         # Si autentica OK
         if user is not None:  # equivalente a null
             login(request, user)
             messages.success(request, "Sesión iniciada exitosamente!")
             return redirect('home')
-        # Si no autentica OK
         else:
             messages.warning(request, "Usuario o contraseña incorrectos!")
             return render(request, "authentication/login.html", {"d": dni})
@@ -207,10 +205,22 @@ def toggle_user_status(request, username=None):
         user = Usuario.objects.get(username=username)
         status_changed = user.is_active != status
         if status_changed:
+            # cambia el estado
             user.is_active = status
             user.save()
 
-        
+            # cancela los intercambios pendientes
+
+            Intercambios = Intercambio.objects.filter(Q(publicacion_ofertante__usuario=user) & (Q(estado="ACEPTADA") ))|Intercambio.objects.filter(Q(publicacion_demandada__usuario=user) & (Q(estado="ACEPTADA")))
+
+            if len(Intercambios)>0:
+                for i in Intercambios:
+                        i.desestimar('Usuario Suspendido')
+                        i.publicacion_ofertante.disponible_para_intercambio = True
+                        i.publicacion_ofertante.save()
+                        i.publicacion_demandada.disponible_para_intercambio = True
+                        i.publicacion_demandada.save()
+
     return render(request, 'administracion_usuarios/perfil.html', {'user': user})
 
 @login_required
