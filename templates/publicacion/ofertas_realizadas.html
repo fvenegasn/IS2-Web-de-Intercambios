@@ -27,9 +27,9 @@
                 {% elif oferta.estado == 'RECHAZADA' %}
                     Oferta rechazada.
                 {% elif oferta.estado == 'CANCELADA' %}
-                    Oferta cancelada.
+                    Oferta cancelada. Motivo: {{ oferta.motivo_desestimacion }}
                 {% elif oferta.estado == 'DESESTIMADA'%}
-                    Oferta Desestimada
+                    Oferta Desestimada. Motivo: {{ oferta.motivo_desestimacion }}
                 {% else %}
                     Oferta aceptada, intercambio registrado pendiente de realizarse.
                 {% endif %}

@@ -315,15 +315,11 @@ class Intercambio(models.Model):
     publicacion_ofertante = models.ForeignKey('Publicacion', related_name='ofertas_realizadas', on_delete=models.CASCADE)
     publicacion_demandada = models.ForeignKey('Publicacion', related_name='ofertas_recibidas', on_delete=models.CASCADE)
     punto_encuentro = models.CharField(max_length=50, choices=Publicacion.PUNTOS_ENC) # 1 solo respecto de lo seleccionado en publicacion_demandada
-    #dias_convenientes = MultiSelectField(choices=Publicacion.DIAS_SEMANA, blank=True, max_length=100) #N/A
     fecha_intercambio = models.DateField(default=datetime.datetime(2024,6,12)) # representa una fecha calendario sobre los días convenientes
     # La franja horaria debe representar 1 hora dentro del rango previamente seleccionado por el usuario
-    #franja_horaria_inicio = models.TimeField(default=datetime.time(9,0,0))
-    #franja_horaria_fin = models.TimeField(default=datetime.time(10,0,0))
     franja_horaria = models.TimeField(default=datetime.time(9,0,0))
     fecha_creacion = models.DateTimeField(default=timezone.now)
     estado = models.CharField(max_length=12, choices=ESTADOS, default='PENDIENTE')
-    #aceptada = models.BooleanField(default=False)
     motivo_desestimacion = models.CharField(max_length=280, default="N/A")
 
     def __str__(self):
@@ -370,6 +366,13 @@ class Intercambio(models.Model):
             Q(publicacion_demandada=self.publicacion_demandada),
             estado='PENDIENTE'
         )
+
         for oferta in ofertas_relacionadas:
             if oferta != self:  
                 oferta.cancelar()
+                if oferta.publicacion_demandada.disponible_para_intercambio == False:
+                    oferta.motivo_desestimacion = f"Oferta cancelada porque {oferta.publicacion_demandada.usuario.get_full_name()} aceptó otro intercambio por su {oferta.publicacion_demandada.nombre}"
+                    oferta.save()
+                else:
+                    oferta.motivo_desestimacion = f"Oferta cancelada porque {oferta.publicacion_ofertante.usuario.get_full_name()} aceptó otro intercambio por su {oferta.publicacion_ofertante.nombre}"
+                    oferta.save()
