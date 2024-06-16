@@ -127,3 +127,14 @@ class IntercambioForm(forms.ModelForm):
             raise forms.ValidationError("Debe especificar la hora del intercambio.")
 
         return cleaned_data
+    
+from django import forms
+from django.core.exceptions import ValidationError
+from .models import Usuario
+
+class UserUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Usuario
+        fields = ['first_name', 'last_name', 'email', 'telefono', 'direccion']
+
+        

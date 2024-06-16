@@ -131,6 +131,21 @@ def quienes_somos(request):
 def mi_perfil(request):
     return render(request, 'administracion_usuarios/mi_perfil.html')
 
+from django.shortcuts import render, redirect
+from .forms import UserUpdateForm
+
+@login_required
+def mi_perfil_modificar(request):
+    if request.method == 'POST':
+        form = UserUpdateForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Datos actualizados exitosamente.')
+            return redirect('mi_perfil')
+    else:
+        form = UserUpdateForm(instance=request.user)
+    return render(request, 'administracion_usuarios/mi_perfil_modificar.html', {'form': form})
+
 @login_required
 def ver_perfil(request, username):
     user = get_object_or_404(Usuario, username=username)

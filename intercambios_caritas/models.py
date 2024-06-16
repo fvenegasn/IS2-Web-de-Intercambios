@@ -15,8 +15,8 @@ class Usuario(AbstractUser):
 
     # login_attempts = models.IntegerField(default=0)
 
-    telefono = models.CharField(max_length=20, blank=True, null=True)
-    direccion = models.CharField(max_length=100, blank=True, null=True)
+    telefono = models.CharField(max_length=20, blank=True)
+    direccion = models.CharField(max_length=100, blank=True)
     nacimiento = models.DateField(blank=True, null=True)
 
     class Types(models.TextChoices):

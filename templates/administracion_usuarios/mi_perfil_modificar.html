@@ -1,0 +1,29 @@
+{% extends 'layouts/base.html' %}
+{% block title %}Mi Perfil Modificar{% endblock %}
+{% block content %}
+{% include 'layouts/navbar.html' %}
+<h1 class="text-center custom-h1-bg mb-2">Modificar Mi Perfil</h1>
+<div class="d-flex justify-content-center align-items-center">
+    <div class="card" style="width: 40rem;">
+        <div class="card-body">
+            <div class="text-center">
+                <form method="POST">
+                    {% csrf_token %}
+                    <h2><u>Información General</u></h2>
+                    <p><b>Nombre:</b>{{ form.first_name }}</p>
+                    <p><b>Apellido:</b>{{ form.last_name }}</p>
+                    <p><b>DNI:</b> {{ user.username}}</p>
+                    <p><b>Fecha Nacimiento:</b> {{ user.nacimiento}}</p>
+                    <p><b>Fecha de Registro:</b>{{ user.date_joined}}</p>
+                    <h2><u>Datos de Contacto</u></h2>
+                    <p><b>Mail:</b>{{ form.email }}</p>
+                    <p><b>Teléfono:</b>{{ form.telefono }}</p>
+                    <p><b>Dirección:</b>{{ form.direccion }}</p>
+                    {{ form.errors }}
+                    <button type="submit" class="btn btn-primary">Guardar cambios</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

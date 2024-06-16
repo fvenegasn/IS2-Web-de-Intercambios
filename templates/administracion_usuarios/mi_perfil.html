@@ -1,24 +1,31 @@
 {% extends 'layouts/base.html' %}
-<!-- esto es para que se herede la estructura html y estilos del archivo base -->
 {% block title %}Mi Perfil{% endblock %}
-<!-- titulo personalizado -->
 {% block content %}
 {% include 'layouts/navbar.html' %}
-<!-- esto es para que se vea el navbar  -->
 <h1 class="text-center custom-h1-bg mb-2">Mi Perfil </h1>
 <div class="d-flex justify-content-center align-items-center">
     <div class="card" style="width: 40rem;">
         <div class="card-body">
             <div class="text-center">
                 <h2><u>Información General</u></h2>
-                <p><b>Nombre:</b> {{ user.first_name }} {{ user.last_name }}</p>
+                <p><b>Nombre:</b> {{ user.first_name }} </p>
+                <p><b>Apellido:</b> {{ user.last_name }} </p>
                 <p><b>DNI:</b> {{ user.username}}</p>
                 <p><b>Fecha Nacimiento:</b> {{ user.nacimiento}}</p>
                 <p><b>Fecha de Registro:</b> {{ user.date_joined}}</p>
                 <h2><u>Datos de Contacto</u></h2>
                 <p><b>Mail:</b> {{ user.email}}</p>
-                <p><b>Dirección:</b> {{ user.direccion}}</p>
                 <p><b>Teléfono:</b> {{ user.telefono}}</p>
+                <p><b>Dirección:</b> {{ user.direccion}}</p>
+                {% if messages %}
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show m-2 p-1" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close m-0 p-2" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                {% endfor %}
+                {% endif %}
+                <a class="btn btn-primary d-block" href="{% url 'mi_perfil_modificar' %}">Modificar datos</a>
             </div>
         </div>
     </div>
