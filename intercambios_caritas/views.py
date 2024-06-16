@@ -439,3 +439,9 @@ def ver_metricas_filiales(request):
     #Filiales = Filiales.objects.all() # esto despues hay que modificarlo para que filiales sea una clase por si sola
     return render(request, 'metricas/ver_metricas_filiales.html')
 
+
+@login_required
+def modificar_mi_publicacion(request, publicacion_id):
+    publicacion = get_object_or_404(Publicacion, pk=publicacion_id)
+    return render(request, 'publicacion/modificar_mi_publicacion.html', {'publicacion': publicacion})
+

@@ -1,0 +1,38 @@
+{% extends 'layouts/base.html' %}
+{% block title %}Publicación{% endblock %}
+{% block content %}
+{% include 'layouts/navbar.html' %}
+
+<div class="d-flex justify-content-center align-items-center flex-grow-1">
+    <div class="row">
+        <!-- Parte izquierda -->
+        <div class="col-md-6">
+            <h1>{{ publicacion.nombre }}</h1>
+            <p>{{ publicacion.descripcion }}</p>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item"><u>Categoría</u>: {{ publicacion.categoria }}</li>
+                <li class="list-group-item"><u>Estado</u>: {{ publicacion.estado }}</li>
+                <li class="list-group-item"><u>Punto de encuentro</u>: {{ publicacion.punto_encuentro }}</li>
+                <li class="list-group-item"><u>Real Dueño</u>: {{publicacion.usuario.get_full_name}}</li>
+                <li class="list-group-item"><u>Dias convenientes</u>: {{ publicacion.dias_convenientes }}</li>
+                <li class="list-group-item"><u>Franja horaria</u>: {{ publicacion.franja_horaria }}</li>
+            </ul>
+            <a href="{% url 'home' %}" class="btn btn-primary">Volver al menu</a>
+            {% if user.is_authenticated %}
+                {% if user == publicacion.usuario or publicacion.disponible_para_intercambio == False or user.isModerador or user.isAdmin %}
+                    <button class="btn btn-primary" disabled>Intercambiar</button>
+                {% else %}
+                    <a href="{% url 'crear_oferta' publicacion.id %}" class="btn btn-primary">Intercambiar</a>
+                {% endif %}
+            {% else %}
+                <a href="{% url 'signin' %}" class="btn btn-primary">Intercambiar</a>
+            {% endif %}
+        </div>
+        <!-- Parte derecha -->
+        <div class="col-md-6">
+            <img src="{{ publicacion.imagen.url }}" class="img-fluid" alt="Imagen de la publicación"
+                style="width: 860px; height: 640px; object-fit: cover;">
+        </div>
+    </div>
+</div>
+{% endblock %}
