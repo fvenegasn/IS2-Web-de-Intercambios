@@ -54,5 +54,7 @@ urlpatterns = [
 
     path('perfil/<str:username>/cambiar_rol/', views.cambiar_rol, name="cambiar_rol"),
 
+    path('ver_metricas_filiales', views.ver_metricas_filiales, name="ver_metricas_filiales"),
+
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
