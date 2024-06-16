@@ -156,15 +156,15 @@ def cambiar_rol(request, username=None):
     if request.method == 'POST':
         username = request.POST.get('username')
         role = request.POST.get('rol')
-        
         try:
             user = Usuario.objects.get(username=username)
             site = request.POST.get('filial-selection', '')
-
             role_changed = False
             filial_changed = False
             intercambios_pendientes = False
             intercambios = Intercambio.objects.filter(Q(publicacion_ofertante__usuario=user) & (Q(estado="ACEPTADA") ))|Intercambio.objects.filter(Q(publicacion_demandada__usuario=user) & (Q(estado="ACEPTADA")))
+
+            # acá chequeo los roles
             if role != 'Usuario' and len(intercambios)>0:
                 intercambios_pendientes=True
             elif role != user.getRol():
@@ -198,6 +198,20 @@ def cambiar_rol(request, username=None):
         'user': None if username is None else user,
         'filiales_choices': filiales_choices,
     })
+
+
+def toggle_user_status(request, username=None):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        status = False if request.POST.get('activar_usuario')==None else True
+        user = Usuario.objects.get(username=username)
+        status_changed = user.is_active != status
+        if status_changed:
+            user.is_active = status
+            user.save()
+
+        
+    return render(request, 'administracion_usuarios/perfil.html', {'user': user})
 
 @login_required
 def crear_publicacion(request):
@@ -414,3 +428,4 @@ def ver_metricas_filiales(request):
     # si le pasas index anda
     #Filiales = Filiales.objects.all() # esto despues hay que modificarlo para que filiales sea una clase por si sola
     return render(request, 'metricas/ver_metricas_filiales.html')
+

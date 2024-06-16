@@ -10,9 +10,21 @@
 <div class="d-flex justify-content-center align-items-center">
     <div class="card" style="width: 40rem;">
         <div class="card-body">
-            <div class="text-left">
-                <a href="{% url 'listar_usuarios' %}" class="btn btn-secondary">Volver</a>  
+            <div class="row">
+                <div class="col text-left">
+                    <a href="{% url 'listar_usuarios' %}" class="btn btn-secondary">Volver</a>
+                </div>
+                <form action="{% url 'toggle_user_status' user.username %}" method="post" class="col-2 text-right" style="border: 3px dashed #f0f0f0;">
+                    {% csrf_token %}
+                    <input type="hidden" name="username" id='username' value="{{ user.username }}"> <!-- para traerme el user name -->
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" id="activar_usuario" name="activar_usuario" {% if user.is_active %} checked {% endif %}>
+                        <label class="form-check-label" for="activar_usuario">Activo</label>
+                    </div>
+                    <button type="submit" class="btn btn-primary mt-2">ok</button>
+                </form>
             </div>
+
             <div class="text-center">
                 <h2><u>Información General</u></h2>
                 <p><b>Nombre:</b> {{ user.first_name }} {{ user.last_name }}</p>

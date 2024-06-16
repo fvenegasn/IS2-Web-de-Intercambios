@@ -56,5 +56,7 @@ urlpatterns = [
 
     path('ver_metricas_filiales', views.ver_metricas_filiales, name="ver_metricas_filiales"),
 
+    path('perfil/<str:username>/toggle_user_status/', views.toggle_user_status, name='toggle_user_status'),
+
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
