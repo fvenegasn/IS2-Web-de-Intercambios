@@ -392,3 +392,10 @@ def desestimar_intercambio(request, oferta_id):
         messages.error(request, "El intercambio ya ha sido desestimado o no está en el estado correcto.")
 
     return redirect('ver_intercambios_moderador')
+
+
+@login_required
+def ver_metricas_filiales(request):
+    # si le pasas index anda
+    #Filiales = Filiales.objects.all() # esto despues hay que modificarlo para que filiales sea una clase por si sola
+    return render(request, 'metricas/ver_metricas_filiales.html')
