@@ -45,26 +45,31 @@
     <div class="col-md-3">
         <div class="mb-2" style="background-color: #f0f8ff">
             <h3 class="p-1 mb-2">Filtros de búsqueda:</h3>
-            <form action="/filtrar" method="post" style="display: flex; flex-direction: column;">
+            <form action="/" method="post" style="display: flex; flex-direction: column;">
                 {% csrf_token %}
-                <div class="p-1" style="display: flex; justify-content: space-between;">
-                    <label for="ropa">Ropa.</label>
-                    <input type="checkbox" id="ropa" name="ropa" value="Ropa">
-                </div>
-                <div class="p-1" style="display: flex; justify-content: space-between;">
-                    <label for="alimentos">Alimentos.</label>
-                    <input type="checkbox" id="alimentos" name="alimentos" value="Alimentos">
-                </div>
-                <div class="p-1" style="display: flex; justify-content: space-between;">
-                    <label for="utiles">Útiles escolares.</label>
-                    <input type="checkbox" id="utiles" name="utiles" value="Utiles">
-                </div>
-                <div class="p-1" style="display: flex; justify-content: space-between;">
-                    <label for="limpieza">Artíc. de limpieza.</label>
-                    <input type="checkbox" id="limpieza" name="limpieza" value="Limpieza">
-                </div>
-                <!-- <a href="#" class="btn btn-primary d-block mb-2">Actualizar</a> -->
-                <!-- <button type="submit">Actualizar</button> -->
+                <h5 class="p-1 mb-2">Categoría del Producto</h5>
+                {% for categoria in categorias %}
+                    <div class="p-1" style="display: flex; justify-content: space-between;">
+                        <label for="{{ categoria.0 }}">{{ categoria.1 }}</label>
+                        <input type="checkbox" id="{{ categoria.0 }}" name="categoria" value="{{ categoria.0 }}" {% if categoria.0 in categorias_seleccionadas %}checked{% endif %}>
+                    </div>
+                {% endfor %}
+                <h5 class="p-1 mb-2">Punto de Encuentro</h5>
+                {% for punto in puntos_de_encuentro %}
+                    <div class="p-1" style="display: flex; justify-content: space-between;">
+                        <label for="{{ punto.0 }}">{{ punto.1 }}</label>
+                        <input type="checkbox" id="{{ punto.0 }}" name="punto_encuentro" value="{{ punto.0 }}" {% if punto.0 in puntos_de_encuentro_seleccionados %}checked{% endif %}>
+                    </div>
+                {% endfor %}
+                <h5 class="p-1 mb-2">Estado del Producto</h5>
+                {% for estado in estados %}
+                    <div class="p-1" style="display: flex; justify-content: space-between;">
+                        <label for="{{ estado.0 }}">{{ estado.1 }}</label>
+                        <input type="checkbox" id="{{ estado.0 }}" name="estado" value="{{ estado.0 }}" {% if estado.0 in estados_seleccionados %}checked{% endif %}>
+                    </div>
+                {% endfor %}
+                <button type="submit" class="btn btn-primary d-block mb-2">Filtrar</button>
+                <a href="/" class="btn btn-secondary d-block mb-2">Resetear filtros</a>
             </form>
         </div>
     </div>

@@ -20,11 +20,37 @@ from django.db.models import BooleanField, ExpressionWrapper, F
 
 
 def home(request):
-    # Filter Publicacion objects where disponible_para_intercambio is True and usuario's role is 'Usuario' y que esté activo
+    categorias_seleccionadas = request.POST.getlist('categoria') if 'categoria' in request.POST else []
+    puntos_de_encuentro_seleccionados = request.POST.getlist('punto_encuentro') if 'punto_encuentro' in request.POST else []
+    estados_seleccionados = request.POST.getlist('estado') if 'estado' in request.POST else []
+    
     publicaciones_disponibles = Publicacion.objects.filter(
-        disponible_para_intercambio=True, usuario__is_active=True
+        disponible_para_intercambio=True, 
+        usuario__is_active=True
     )
-    return render(request, 'authentication/index.html', {'publicaciones': publicaciones_disponibles})
+
+    if categorias_seleccionadas:
+        publicaciones_disponibles = publicaciones_disponibles.filter(categoria__in=categorias_seleccionadas)
+
+    if puntos_de_encuentro_seleccionados:
+        filtered_publicaciones = Publicacion.objects.none()
+        for punto in puntos_de_encuentro_seleccionados:
+            filtered_publicaciones |= publicaciones_disponibles.filter(punto_encuentro__contains=punto)
+        publicaciones_disponibles = filtered_publicaciones
+        
+    if estados_seleccionados:
+        publicaciones_disponibles = publicaciones_disponibles.filter(estado__in=estados_seleccionados)
+        
+
+    return render(request, 'authentication/index.html', {
+        'publicaciones': publicaciones_disponibles,
+        'categorias': Publicacion.CATEGORIAS,
+        'puntos_de_encuentro': Publicacion.PUNTOS_ENC,
+        'estados': Publicacion.ESTADOS,
+        'categorias_seleccionadas': categorias_seleccionadas,
+        'puntos_de_encuentro_seleccionados': puntos_de_encuentro_seleccionados,
+        'estados_seleccionados': estados_seleccionados,
+    })
 
 
 
