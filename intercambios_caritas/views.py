@@ -258,6 +258,24 @@ def crear_publicacion(request):
     return render(request, 'publicacion/crear_publicacion.html', {'form': form})
 
 @login_required
+def modificar_mi_publicacion(request, publicacion_id):
+    publicacion = get_object_or_404(Publicacion, id=publicacion_id)
+
+    if request.method == 'POST':
+        form = PublicacionForm(request.POST, request.FILES, instance=publicacion)
+        if form.is_valid():
+            form.save()
+            return redirect('publicacion/mis_publicaciones.html')  
+    else:
+        form = PublicacionForm(instance=publicacion)
+
+    context = {
+        'form': form,
+        'publicacion': publicacion,
+    }
+    return render(request, 'publicacion/modificar_mi_publicacion.html', context)
+
+@login_required
 def mis_publicaciones(request):
     usuario_actual = request.user
     publicaciones = Publicacion.objects.filter(usuario=usuario_actual, disponible_para_intercambio=True)
@@ -440,8 +458,5 @@ def ver_metricas_filiales(request):
     return render(request, 'metricas/ver_metricas_filiales.html')
 
 
-@login_required
-def modificar_mi_publicacion(request, publicacion_id):
-    publicacion = get_object_or_404(Publicacion, pk=publicacion_id)
-    return render(request, 'publicacion/modificar_mi_publicacion.html', {'publicacion': publicacion})
+
 
