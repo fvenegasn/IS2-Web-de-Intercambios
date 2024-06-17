@@ -22,7 +22,7 @@ from django.db.models import BooleanField, ExpressionWrapper, F
 def home(request):
     # Filter Publicacion objects where disponible_para_intercambio is True and usuario's role is 'Usuario' y que esté activo
     publicaciones_disponibles = Publicacion.objects.filter(
-        disponible_para_intercambio=True, usuario__rol=Usuario.Types.Usuario, usuario__is_active=True
+        disponible_para_intercambio=True, usuario__is_active=True
     )
     return render(request, 'authentication/index.html', {'publicaciones': publicaciones_disponibles})
 
@@ -145,6 +145,30 @@ def mi_perfil_modificar(request):
     return render(request, 'administracion_usuarios/mi_perfil_modificar.html', {'form': form})
 
 @login_required
+def mi_perfil_eliminar(request):
+    if request.method == 'POST':
+        user = request.user
+        # Comprobar si el usuario tiene intercambios con estado aceptado
+        intercambios_aceptados = Intercambio.objects.filter(Q(publicacion_ofertante__usuario=user) & (Q(estado="ACEPTADA") ))|Intercambio.objects.filter(Q(publicacion_demandada__usuario=user) & (Q(estado="ACEPTADA")))
+        if intercambios_aceptados:
+            messages.warning(request, 'Tienes intercambios aceptados actualmente, debes resolver los mismos antes de eliminar la cuenta.')
+            return redirect('mi_perfil_eliminar')
+        
+        # Cancelar todos los intercambios pendientes del usuario
+        intercambios_pendientes = Intercambio.objects.filter(Q(publicacion_ofertante__usuario=user, estado='PENDIENTE') | Q(publicacion_demandada__usuario=user, estado='PENDIENTE'))
+        for intercambio in intercambios_pendientes:
+            intercambio.cancelar("Usuario Eliminado")
+        # Establecer disponible_para_intercambio en False para todas las publicaciones del usuario
+        Publicacion.objects.filter(usuario=user, disponible_para_intercambio=True).update(disponible_para_intercambio=False)
+        # si se eliminaran las publicacionese intercambios en cascada, no serían necesarias esas ultimas 3 lineas
+        logout(request) 
+        user.delete()
+        messages.success(request, 'Cuenta eliminada exitosamente.')
+        return redirect('home')
+    else:
+        return render(request, 'administracion_usuarios/mi_perfil_eliminar.html')
+    
+@login_required
 def ver_perfil(request, username):
     user = get_object_or_404(Usuario, username=username)
     return render(request, 'administracion_usuarios/perfil.html', {'user': user})
@@ -159,13 +183,19 @@ def cambiar_rol(request, username=None):
             site = request.POST.get('filial-selection', '')
             role_changed = False
             filial_changed = False
-            intercambios_pendientes = False
+            intercambios_aceptados = False
             intercambios = Intercambio.objects.filter(Q(publicacion_ofertante__usuario=user) & (Q(estado="ACEPTADA") ))|Intercambio.objects.filter(Q(publicacion_demandada__usuario=user) & (Q(estado="ACEPTADA")))
 
             # acá chequeo los roles
             if role != 'Usuario' and len(intercambios)>0:
-                intercambios_pendientes=True
+                intercambios_aceptados=True
             elif role != user.getRol():
+                # Cancelar todos los intercambios pendientes del usuario
+                intercambios_pendientes = Intercambio.objects.filter(Q(publicacion_ofertante__usuario=user, estado='PENDIENTE') | Q(publicacion_demandada__usuario=user, estado='PENDIENTE'))
+                for intercambio in intercambios_pendientes:
+                    intercambio.cancelar()
+                # Establecer disponible_para_intercambio en False para todas las publicaciones del usuario
+                Publicacion.objects.filter(usuario=user, disponible_para_intercambio=True).update(disponible_para_intercambio=False)
                 user.modificarRol(role)
                 role_changed = True
                 if role == 'Moderador' and site:
@@ -177,7 +207,7 @@ def cambiar_rol(request, username=None):
                 user.filial = site
                 user.save()
                 filial_changed = True
-            if intercambios_pendientes:
+            if intercambios_aceptados:
                 messages.warning(request, 'El usuario tiene intercambios pendientes, debe resolver los mismos antes de cambiar el rol')
             elif role_changed:
                 messages.success(request, 'Rol asignado exitosamente')
@@ -354,7 +384,7 @@ def ver_ofertas_realizadas(request):
 
 @login_required
 def ver_ofertas_recibidas(request):
-    ofertas_recibidas = Intercambio.objects.filter(publicacion_demandada__usuario=request.user,publicacion_ofertante__usuario__rol=Usuario.Types.Usuario).order_by('-fecha_creacion')
+    ofertas_recibidas = Intercambio.objects.filter(publicacion_demandada__usuario=request.user).order_by('-fecha_creacion')
     return render(request, 'publicacion/ofertas_recibidas.html', {'ofertas_recibidas': ofertas_recibidas})
 
 @login_required
@@ -397,21 +427,31 @@ def aceptar_oferta(request, oferta_id):
 @login_required
 def rechazar_oferta(request, oferta_id):
     oferta = get_object_or_404(Intercambio, id=oferta_id, publicacion_demandada__usuario=request.user)
-    try:
-        oferta.rechazar()
-        messages.success(request, "Oferta rechazada exitosamente.")
-    except ValueError as e:
-        messages.error(request, str(e))
+    if request.method == 'POST':
+        motivo = request.POST.get('motivo')
+        if motivo:
+            try:
+                oferta.rechazar(motivo)
+                messages.success(request, "Oferta rechazada exitosamente.")
+            except ValueError as e:
+                messages.error(request, str(e))
+        else:
+            messages.error(request, "Debe seleccionar un motivo para rechazar la oferta.")
     return redirect('ver_ofertas_recibidas')
 
 @login_required
 def cancelar_oferta(request, oferta_id):
     oferta = get_object_or_404(Intercambio, id=oferta_id, publicacion_ofertante__usuario=request.user)
-    try:
-        oferta.cancelar()
-        messages.success(request, "Oferta cancelada exitosamente.")
-    except ValueError as e:
-        messages.error(request, str(e))
+    if request.method == 'POST':
+        motivo = request.POST.get('motivo')
+        if motivo:
+            try:
+                oferta.cancelar(motivo)
+                messages.success(request, "Oferta cancelada exitosamente.")
+            except ValueError as e:
+                messages.error(request, str(e))
+        else:
+            messages.error(request, "Debe seleccionar un motivo para cancelar la oferta.")
     return redirect('ver_ofertas_realizadas')
 
 @login_required

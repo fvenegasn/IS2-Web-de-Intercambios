@@ -25,11 +25,11 @@
                 {% if oferta.estado == 'PENDIENTE' %}
                     Pendiente, esperando respuesta de {{ oferta.publicacion_demandada.usuario.get_full_name }} {{ oferta.publicacion_demandada.usuario }}.
                 {% elif oferta.estado == 'RECHAZADA' %}
-                    Oferta rechazada.
+                    Oferta rechazada. Motivo: {{ oferta.motivo_desestimacion }}
                 {% elif oferta.estado == 'CANCELADA' %}
-                    Oferta cancelada.
+                    Oferta cancelada. Motivo: {{ oferta.motivo_desestimacion }}
                 {% elif oferta.estado == 'DESESTIMADA'%}
-                    Oferta Desestimada
+                    Oferta Desestimada. Motivo: {{ oferta.motivo_desestimacion }}
                 {% else %}
                     Oferta aceptada, intercambio registrado pendiente de realizarse.
                 {% endif %}
@@ -73,9 +73,18 @@
                 {% if oferta.estado == 'PENDIENTE' %}
                 <div class="d-flex align-items-center justify-content-center">
                     <form action="{% url 'cancelar_oferta' oferta.id %}" method="post" class="mx-1 w-25">
+                        <button type="submit" class="btn btn-danger w-100 mt-2">Cancelar oferta</button>
                         {% csrf_token %}
-                        <button type="submit" class="btn btn-danger">Cancelar oferta</button>
+                        <div class="form-group">
+                            <select name="motivo" id="motivo" class="form-control">
+                                <option value="" selected disabled>-- Motivo --</option>
+                                {% for value, label in oferta.MOTIVOS_CANCELACION %}
+                                <option value="{{ value }}">{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
                     </form>
+                    
                 </div>
                 {% endif %}
             </div>

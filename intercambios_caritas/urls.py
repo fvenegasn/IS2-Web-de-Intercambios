@@ -35,6 +35,7 @@ urlpatterns = [
          name="password_reset_complete"), # contraseña cambiada exitosamente
     path('perfil/usuario', views.mi_perfil ,name = "mi_perfil"),
     path('perfil/usuario/modificar', views.mi_perfil_modificar ,name = "mi_perfil_modificar"),
+    path('perfil/usuario/eliminar', views.mi_perfil_eliminar ,name = "mi_perfil_eliminar"),
     path('perfil/<str:username>/', views.ver_perfil, name='ver_perfil'),
     path('crear_publicacion', views.crear_publicacion,name="crear_publicacion"),
     path('mis_publicaciones', views.mis_publicaciones, name="mis_publicaciones"),

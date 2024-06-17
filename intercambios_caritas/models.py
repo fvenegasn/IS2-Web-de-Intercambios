@@ -126,7 +126,7 @@ class Publicacion(models.Model):
     franja_horaria_inicio = models.TimeField(default=datetime.time(9,0,0)) # 9 AM
     franja_horaria_fin = models.TimeField(default=datetime.time(18,0,0)) # 6 PM
     franja_horaria = models.CharField(max_length=50, blank=True, null=True)
-    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE, default=get_default_user)
+    usuario = models.ForeignKey(Usuario, on_delete=models.SET_NULL, null=True)
     disponible_para_intercambio = models.BooleanField(default=True)
     
     FRANJA_HORARIA_REGEX = r'^entre las (\d{2}):(\d{2}) y las (\d{2}):(\d{2})$'
@@ -156,11 +156,11 @@ class EstadoIntercambio(ABC):
         pass
 
     @abstractmethod
-    def rechazar(self, intercambio):
+    def rechazar(self, intercambio, motivo):
         pass
 
     @abstractmethod
-    def cancelar(self, intercambio):
+    def cancelar(self, intercambio, motivo):
         pass
 
     @abstractmethod
@@ -179,10 +179,10 @@ class Aceptada(EstadoIntercambio):
     def aceptar(self, intercambio):
         raise ValueError("El intercambio ya está aceptado")
 
-    def rechazar(self, intercambio):
+    def rechazar(self, intercambio, motivo):
         raise ValueError("No se puede rechazar un intercambio aceptado")
 
-    def cancelar(self, intercambio):
+    def cancelar(self, intercambio, motivo):
         raise ValueError("No se puede cancelar un intercambio aceptado")
 
     def confirmar(self, intercambio):
@@ -201,10 +201,10 @@ class Rechazada(EstadoIntercambio):
     def aceptar(self, intercambio):
         raise ValueError("No se puede aceptar un intercambio rechazado")
 
-    def rechazar(self, intercambio):
+    def rechazar(self, intercambio, motivo):
         raise ValueError("El intercambio ya está rechazado")
     
-    def cancelar(self, intercambio):
+    def cancelar(self, intercambio, motivo):
         raise ValueError("No se puede cancelar un intercambio rechazado")
     
     def confirmar(self, intercambio):
@@ -220,10 +220,10 @@ class Cancelada(EstadoIntercambio):
     def aceptar(self, intercambio):
         raise ValueError("No se puede aceptar un intercambio cancelado")
 
-    def rechazar(self, intercambio):
+    def rechazar(self, intercambio, motivo):
         raise ValueError("No se puede rechazar un intercambio cancelado")
     
-    def cancelar(self, intercambio):
+    def cancelar(self, intercambio, motivo):
         raise ValueError("El intercambio ya está cancelado")
     
     def confirmar(self, intercambio):
@@ -241,12 +241,14 @@ class Pendiente(EstadoIntercambio):
         intercambio.cancelar_ofertas_relacionadas()
         intercambio.save()
 
-    def rechazar(self, intercambio):
+    def rechazar(self, intercambio, motivo):
         intercambio.estado = 'RECHAZADA'
+        intercambio.motivo_desestimacion = motivo
         intercambio.save()
 
-    def cancelar(self, intercambio):
+    def cancelar(self, intercambio, motivo):
         intercambio.estado = 'CANCELADA'
+        intercambio.motivo_desestimacion = motivo
         intercambio.save()
 
     def confirmar(self, intercambio):
@@ -263,10 +265,10 @@ class Confirmada(EstadoIntercambio):
     def aceptar(self, intercambio):
         raise ValueError("No se puede aceptar una oferta confirmada")
 
-    def rechazar(self, intercambio):
+    def rechazar(self, intercambio, motivo):
         raise ValueError("No se puede rechazar una oferta confirmada")
 
-    def cancelar(self, intercambio):
+    def cancelar(self, intercambio, motivo):
         raise ValueError("No se puede cancelar una oferta confirmada")
 
     def confirmar(self, intercambio):
@@ -283,10 +285,10 @@ class Desestimada(EstadoIntercambio):
     def aceptar(self, intercambio):
         raise ValueError("No se puede aceptar una oferta desestimada")
 
-    def rechazar(self, intercambio):
+    def rechazar(self, intercambio, motivo):
         raise ValueError("No se puede rechazar una oferta desestimada")
 
-    def cancelar(self, intercambio):
+    def cancelar(self, intercambio, motivo):
         #raise ValueError("No se puede cancelar una oferta desestimada")
         intercambio.estado = 'CANCELADA'
         intercambio.save()
@@ -312,18 +314,28 @@ class Intercambio(models.Model):
         ('DESESTIMADA', 'Desestimada')
     ]
 
+    MOTIVOS_RECHAZO = [
+        ('No me gusta el producto', 'No me gusta el producto'),
+        ('No puedo en ese día/horario', 'No puedo en ese día/horario'),
+        ('No puedo en ese centro', 'No puedo en ese centro'),
+        # motivos según sea necesario
+    ]
+
+    MOTIVOS_CANCELACION = [
+        ('Confundi', 'Me confundi'),
+        ('No puedo en ese día/horario', 'No puedo en ese día/horario'),
+        ('No puedo en ese centro', 'No puedo en ese centro'),
+        # motivos según sea necesario
+    ]
+
     publicacion_ofertante = models.ForeignKey('Publicacion', related_name='ofertas_realizadas', on_delete=models.CASCADE)
     publicacion_demandada = models.ForeignKey('Publicacion', related_name='ofertas_recibidas', on_delete=models.CASCADE)
     punto_encuentro = models.CharField(max_length=50, choices=Publicacion.PUNTOS_ENC) # 1 solo respecto de lo seleccionado en publicacion_demandada
-    #dias_convenientes = MultiSelectField(choices=Publicacion.DIAS_SEMANA, blank=True, max_length=100) #N/A
-    fecha_intercambio = models.DateField(default=datetime.datetime(2024,6,12)) # representa una fecha calendario sobre los días convenientes
+    fecha_intercambio = models.DateField(default=datetime.datetime(2024,7,3)) # representa una fecha calendario sobre los días convenientes
     # La franja horaria debe representar 1 hora dentro del rango previamente seleccionado por el usuario
-    #franja_horaria_inicio = models.TimeField(default=datetime.time(9,0,0))
-    #franja_horaria_fin = models.TimeField(default=datetime.time(10,0,0))
     franja_horaria = models.TimeField(default=datetime.time(9,0,0))
     fecha_creacion = models.DateTimeField(default=timezone.now)
     estado = models.CharField(max_length=12, choices=ESTADOS, default='PENDIENTE')
-    #aceptada = models.BooleanField(default=False)
     motivo_desestimacion = models.CharField(max_length=280, default="N/A")
 
     def __str__(self):
@@ -349,18 +361,17 @@ class Intercambio(models.Model):
     def aceptar(self):
         self.estado_clase.aceptar(self)
 
-    def rechazar(self):
-        self.estado_clase.rechazar(self)
+    def rechazar(self, motivo):
+        self.estado_clase.rechazar(self, motivo)
 
-    def cancelar(self):
-        self.estado_clase.cancelar(self)
+    def cancelar(self, motivo):
+        self.estado_clase.cancelar(self, motivo)
 
     def confirmar(self):
         self.estado_clase.confirmar(self)
 
     def desestimar(self, motivo):
         self.estado_clase.desestimar(self, motivo)
-        # y guardar el mensaje de desestimacion
 
     def cancelar_ofertas_relacionadas(self):
         ofertas_relacionadas = Intercambio.objects.filter(
@@ -370,6 +381,13 @@ class Intercambio(models.Model):
             Q(publicacion_demandada=self.publicacion_demandada),
             estado='PENDIENTE'
         )
+
         for oferta in ofertas_relacionadas:
             if oferta != self:  
                 oferta.cancelar()
+                if oferta.publicacion_demandada.disponible_para_intercambio == False:
+                    oferta.motivo_desestimacion = f"Oferta cancelada porque {oferta.publicacion_demandada.usuario.get_full_name()} aceptó otro intercambio por su {oferta.publicacion_demandada.nombre}"
+                    oferta.save()
+                else:
+                    oferta.motivo_desestimacion = f"Oferta cancelada porque {oferta.publicacion_ofertante.usuario.get_full_name()} aceptó otro intercambio por su {oferta.publicacion_ofertante.nombre}"
+                    oferta.save()
