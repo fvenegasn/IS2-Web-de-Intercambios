@@ -126,7 +126,7 @@ class Publicacion(models.Model):
     franja_horaria_inicio = models.TimeField(default=datetime.time(9,0,0)) # 9 AM
     franja_horaria_fin = models.TimeField(default=datetime.time(18,0,0)) # 6 PM
     franja_horaria = models.CharField(max_length=50, blank=True, null=True)
-    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE, default=get_default_user)
+    usuario = models.ForeignKey(Usuario, on_delete=models.SET_NULL, null=True)
     disponible_para_intercambio = models.BooleanField(default=True)
     
     FRANJA_HORARIA_REGEX = r'^entre las (\d{2}):(\d{2}) y las (\d{2}):(\d{2})$'
