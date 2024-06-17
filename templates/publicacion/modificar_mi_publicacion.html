@@ -1,7 +1,5 @@
 {% extends 'layouts/base.html' %}
-<!-- esto es para que se herede la estructura html y estilos del archivo base -->
-{% block title %}Publicar Producto{% endblock %}
-<!-- titulo personalizado -->
+{% block title %}Modificar Publicación{% endblock %}
 
 {% block content %}
 {% include 'layouts/navbar.html' %}
@@ -12,17 +10,123 @@
                 <div class="card shadow-2-strong card-registration" style="border-radius: 15px;">
                     <div class="card-body p-4 p-md-4">
                         <h1 class="text-center">Intercambios Caritas</h1>
-                        <h2 class="mb-3 text-center">Publicar un producto</h2>
-                            <form action="" method="post">
-                                {% csrf_token %}
-                                <input type="hidden" name="publicacion_id" id='publicacion_id' value="{{ publicacion.id }}"> 
-                                {{ form.as_p }}
-                                 <input type="submit" value="Submit">
-                            </form>
-                        </div>
+                        <h2 class="mb-3 text-center">Modificar Publicación</h2>
+                        <form action="" method="post">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <div data-mdb-input-init class="form-outline">
+                                        <label class="form-label mb-1" for="nombre">Nombre</label>
+                                        <input type="text" id="nombre" name="nombre"
+                                            class="form-control form-control-lg" required value="{{ publicacion.nombre }}"/>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <div data-mdb-input-init class="form-outline">
+                                        <label class="form-label mb-1" for="estado">Estado</label>
+                                        <select id="estado" name="estado" class="form-select form-select-lg" required>
+                                            {% for value, display in form.fields.estado.choices %}
+                                                {% if forloop.first %}
+                                                    <option value="{{ value }}">{{ publicacion.estado }}</option>
+                                                {% else %}
+                                                    <option value="{{ value }}">{{ display }}</option>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <div data-mdb-input-init class="form-outline">
+                                        <label class="form-label mb-1" for="categoria">Categoría</label>
+                                        <select id="categoria" name="categoria" class="form-select form-select-lg"
+                                            required>
+                                            <option value={{ publicacion.categoria }} selected disabled>{{ publicacion.categoria }}</option>
+                                            {% for value, display in form.fields.categoria.choices %}
+                                            <option value="{{ value }}">{{ display }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <div data-mdb-input-init class="form-outline">
+                                        <label class="form-label mb-1" for="descripcion">Descripción</label>
+                                        <textarea id="descripcion" name="descripcion" style="height: 16px"
+                                            class="form-control form-control-lg">{{ publicacion.descripcion }}</textarea>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div data-mdb-input-init class="form-outline">
+                                        <label class="form-label mb-1" for="imagen">Imagen</label>
+                                        <input type="file" id="imagen" name="imagen" value="{{ publicacion.imagen }}"
+                                            class="form-control form-control-lg" required/>Actual: {{ publicacion.imagen }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <div data-mdb-input-init class="form-outline">
+                                        <label class="form-label mb-1" for="punto_encuentro">Punto de encuentro</label>
+                                        <div id="punto_encuentro">
+                                            {% for value, display in form.fields.punto_encuentro.choices %}
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" value="{{ value }}" id="punto_encuentro_{{ forloop.counter0 }}" name="punto_encuentro"
+                                                       {% if value in selected_puntos_encuentro %} checked {% endif %}>
+                                                <label class="form-check-label" for="punto_encuentro_{{ forloop.counter0 }}">{{ display }}</label>
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <div data-mdb-input-init class="form-outline">
+                                        <label class="form-label mb-1" for="dias_convenientes">Días disponibles</label>
+                                        <div id="dias_convenientes">
+                                            {% for value, display in form.fields.dias_convenientes.choices %}
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" value="{{ value }}" id="dias_convenientes_{{ forloop.counter0 }}" name="dias_convenientes"
+                                                       {% if value in selected_dias_disponibles %} checked {% endif %}>
+                                                <label class="form-check-label" for="dias_convenientes_{{ forloop.counter0 }}">{{ display }}</label>
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <div class="row">
+                                        <div class="col-12 mb-3">
+                                            <div data-mdb-input-init class="form-outline">
+                                                <label class="form-label mb-1" for="franja_horaria_inicio">Desde</label>
+                                                <input type="time" id="franja_horaria_inicio" name="franja_horaria_inicio" class="form-control form-control-lg" required />
+                                            </div>
+                                        </div>
+                                        <div class="col-12 mb-3">
+                                            <div data-mdb-input-init class="form-outline">
+                                                <label class="form-label mb-1" for="franja_horaria_fin">Hasta</label>
+                                                <input type="time" id="franja_horaria_fin" name="franja_horaria_fin" class="form-control form-control-lg" required />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% if messages %}
+                            {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show mb-2 p-1"
+                                role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close m-0 p-2" data-bs-dismiss="alert"
+                                    aria-label="Close"></button>
+                            </div>
+                            {% endfor %}
+                            {% endif %}
+                            <button type="submit" class="btn btn-primary btn-block mt-2 p-2">Actualizar
+                                Producto</button>
+                        </form>
                     </div>
                 </div>
             </div>
-         </div>
+        </div>
     </div>
+</div>
 {% endblock %}

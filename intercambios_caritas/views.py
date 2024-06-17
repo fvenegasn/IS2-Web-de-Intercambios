@@ -2,7 +2,7 @@ import datetime
 import django
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render, get_object_or_404
-from intercambios_caritas.forms import IntercambioForm, PublicacionForm
+from intercambios_caritas.forms import IntercambioForm, PublicacionForm, UpdatePublicacionForm
 from intercambios_caritas.models import Intercambio, Usuario, Publicacion
 from . import views
 from django.utils.html import strip_tags
@@ -258,6 +258,7 @@ def crear_publicacion(request):
     form = PublicacionForm()
     if request.method == 'POST':
         form = PublicacionForm(request.POST, request.FILES)
+        
         if form.is_valid():
             publicacion = form.save(commit=False)
             publicacion.usuario = request.user
@@ -268,7 +269,6 @@ def crear_publicacion(request):
                 publicacion.franja_horaria_inicio = inicio
                 publicacion.franja_horaria_fin = fin
             publicacion.save()
-            print (publicacion)
             messages.success(request, "Publicación creada exitosamente!")
             return redirect('home')
         else:
@@ -290,18 +290,23 @@ def crear_publicacion(request):
 @login_required
 def modificar_mi_publicacion(request, publicacion_id):
     publicacion = get_object_or_404(Publicacion, id=publicacion_id)
-
+    selected_puntos_encuentro = publicacion.punto_encuentro
+    selected_dias_disponibles = publicacion.dias_convenientes
     if request.method == 'POST':
-        form = PublicacionForm(request.POST, request.FILES, instance=publicacion)
+        form = UpdatePublicacionForm(request.POST, instance=publicacion)
         if form.is_valid():
             form.save()
-            return redirect('publicacion/mis_publicaciones.html')  
+            messages.success(request, 'Datos actualizados exitosamente.')
+            return redirect('ver_publicacion')
     else:
-        form = PublicacionForm(instance=publicacion)
-
+        form =UpdatePublicacionForm(instance=publicacion)
+    
+    # Render a form or other content in case of GET request
     context = {
-        'form': form,
         'publicacion': publicacion,
+        'form':form,
+        'selected_puntos_encuentro':selected_puntos_encuentro,
+        'selected_dias_disponibles':selected_dias_disponibles,
     }
     return render(request, 'publicacion/modificar_mi_publicacion.html', context)
 

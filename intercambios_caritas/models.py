@@ -141,6 +141,8 @@ class Publicacion(models.Model):
             if not match:
                 raise ValidationError("El formato de la franja horaria debe ser 'entre las HH:MM y las HH:MM'.")
             inicio_hora, inicio_minuto, fin_hora, fin_minuto = match.groups()
+            print(f'Parsed inicio_hora: {inicio_hora}, inicio_minuto: {inicio_minuto}')
+            print(f'Parsed fin_hora: {fin_hora}, fin_minuto: {fin_minuto}')
             if int(inicio_hora) > int(fin_hora) or (int(inicio_hora) == int(fin_hora) and int(inicio_minuto) >= int(fin_minuto)):
                 raise ValidationError("La hora de inicio debe ser antes que la hora de finalización.")
             if int(inicio_hora) < 8 or int(fin_hora) > 20 or int(inicio_minuto) < 0 or int(fin_minuto) > 59:

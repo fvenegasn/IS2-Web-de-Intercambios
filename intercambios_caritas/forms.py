@@ -137,4 +137,40 @@ class UserUpdateForm(forms.ModelForm):
         model = Usuario
         fields = ['first_name', 'last_name', 'email', 'telefono', 'direccion']
 
+
+
+class UpdatePublicacionForm(forms.ModelForm):
+    dias_convenientes = forms.MultipleChoiceField(
+        choices=Publicacion.DIAS_SEMANA,
+        widget=forms.CheckboxSelectMultiple,
+        required=True
+    )
+    punto_encuentro = forms.MultipleChoiceField(
+        choices=Publicacion.PUNTOS_ENC,
+        widget=forms.CheckboxSelectMultiple,
+        required=True
+    )
+    franja_horaria_inicio = forms.TimeField(
+        widget=forms.TimeInput(format='%H:%M', attrs={'placeholder': 'HH:MM'}),
+        required=True,
+        label='Franja horaria inicio'
+    )
+    franja_horaria_fin = forms.TimeField(
+        widget=forms.TimeInput(format='%H:%M', attrs={'placeholder': 'HH:MM'}),
+        required=True,
+        label='Franja horaria fin'
+    )
+
+    class Meta:
+        model = Publicacion
+        fields = ['nombre', 'descripcion', 'imagen', 'categoria', 'estado', 'punto_encuentro', 'dias_convenientes', 'franja_horaria_inicio', 'franja_horaria_fin']
+        widgets = {
+            'dias_convenientes': forms.CheckboxSelectMultiple,
+            'punto_encuentro': forms.CheckboxSelectMultiple,
+            'franja_horaria_inicio': forms.TimeInput(format='%H:%M'),
+            'franja_horaria_fin': forms.TimeInput(format='%H:%M'),
+        }
+    
+
+
         

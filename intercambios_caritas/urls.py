@@ -59,7 +59,7 @@ urlpatterns = [
 
     path('perfil/<str:username>/toggle_user_status/', views.toggle_user_status, name='toggle_user_status'),
 
-    path('modificar_mi_publicacion/<int:publicacion_id>/', views.modificar_mi_publicacion, name="modificar_mi_publicacion"),
+    path('ver_publicacion/<int:publicacion_id>/modificar_mi_publicacion', views.modificar_mi_publicacion, name="modificar_mi_publicacion"),
 
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
