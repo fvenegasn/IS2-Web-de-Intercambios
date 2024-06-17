@@ -3,7 +3,7 @@ import django
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render, get_object_or_404
 from intercambios_caritas.forms import IntercambioForm, PublicacionForm, UpdatePublicacionForm
-from intercambios_caritas.models import Intercambio, Usuario, Publicacion
+from intercambios_caritas.models import Intercambio, Usuario, Publicacion, Categoria
 from . import views
 from django.utils.html import strip_tags
 from django.contrib.auth.decorators import login_required
@@ -130,7 +130,7 @@ def mi_perfil(request):
     return render(request, 'administracion_usuarios/mi_perfil.html')
 
 from django.shortcuts import render, redirect
-from .forms import UserUpdateForm
+from .forms import CategoriaForm, UserUpdateForm
 
 @login_required
 def mi_perfil_modificar(request):
@@ -502,6 +502,28 @@ def ver_metricas_filiales(request):
     #Filiales = Filiales.objects.all() # esto despues hay que modificarlo para que filiales sea una clase por si sola
     return render(request, 'metricas/ver_metricas_filiales.html')
 
+@login_required
+def listar_categorias(request):
 
+    # Me aseguro que sólo entren los admin
+    user = request.user
+    if user.rol != "Administrador":
+        return redirect("home")
 
+    if request.method == 'POST':
+        if 'agregar_categoria' in request.POST:
+            form = CategoriaForm(request.POST)
+            if form.is_valid():
+                form.save()
+                return redirect(reverse('listar_categorias'))
+        elif 'eliminar_categoria' in request.POST:
+            categoria_id = request.POST.get('categoria_id')
+            categoria = Categoria.objects.get(id=categoria_id)
+            categoria.delete()
+            return redirect(reverse('listar_categorias'))
+    else:
+        form = CategoriaForm()
+    
+    categorias = Categoria.objects.all()
+    return render(request, 'publicacion/listar_categorias.html', {'categorias': categorias, 'form': form})
 

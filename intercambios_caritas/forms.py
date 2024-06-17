@@ -1,7 +1,7 @@
 import datetime
 from django.utils import timezone
 from django import forms
-from .models import Publicacion, Intercambio
+from .models import Publicacion, Intercambio, Categoria
 
 class PublicacionForm(forms.ModelForm):
     dias_convenientes = forms.MultipleChoiceField(
@@ -170,7 +170,8 @@ class UpdatePublicacionForm(forms.ModelForm):
             'franja_horaria_inicio': forms.TimeInput(format='%H:%M'),
             'franja_horaria_fin': forms.TimeInput(format='%H:%M'),
         }
-    
 
-
-        
+class CategoriaForm(forms.ModelForm):
+    class Meta:
+        model = Categoria
+        fields = ['nombre']
