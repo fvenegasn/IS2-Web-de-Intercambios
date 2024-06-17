@@ -379,21 +379,31 @@ def aceptar_oferta(request, oferta_id):
 @login_required
 def rechazar_oferta(request, oferta_id):
     oferta = get_object_or_404(Intercambio, id=oferta_id, publicacion_demandada__usuario=request.user)
-    try:
-        oferta.rechazar()
-        messages.success(request, "Oferta rechazada exitosamente.")
-    except ValueError as e:
-        messages.error(request, str(e))
+    if request.method == 'POST':
+        motivo = request.POST.get('motivo')
+        if motivo:
+            try:
+                oferta.rechazar(motivo)
+                messages.success(request, "Oferta rechazada exitosamente.")
+            except ValueError as e:
+                messages.error(request, str(e))
+        else:
+            messages.error(request, "Debe seleccionar un motivo para rechazar la oferta.")
     return redirect('ver_ofertas_recibidas')
 
 @login_required
 def cancelar_oferta(request, oferta_id):
     oferta = get_object_or_404(Intercambio, id=oferta_id, publicacion_ofertante__usuario=request.user)
-    try:
-        oferta.cancelar()
-        messages.success(request, "Oferta cancelada exitosamente.")
-    except ValueError as e:
-        messages.error(request, str(e))
+    if request.method == 'POST':
+        motivo = request.POST.get('motivo')
+        if motivo:
+            try:
+                oferta.cancelar(motivo)
+                messages.success(request, "Oferta cancelada exitosamente.")
+            except ValueError as e:
+                messages.error(request, str(e))
+        else:
+            messages.error(request, "Debe seleccionar un motivo para cancelar la oferta.")
     return redirect('ver_ofertas_realizadas')
 
 @login_required
