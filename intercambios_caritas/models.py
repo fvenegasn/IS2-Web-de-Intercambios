@@ -76,6 +76,10 @@ def get_default_user():
     else:
         return None  # en caso que no haya usuarios en la base
 
+from django.contrib.auth.hashers import make_password
+def get_deleted_user():
+    password = make_password(None)  # Genera una contraseña segura aleatoria
+    return Usuario.objects.get_or_create(username='UsuarioEliminado', defaults={'password': password, 'first_name': "Usuario", 'last_name': "Eliminado", 'email': "UsuarioEliminado@gmail.com"})[0]
 
 class Publicacion(models.Model):
     """
@@ -126,7 +130,7 @@ class Publicacion(models.Model):
     franja_horaria_inicio = models.TimeField(default=datetime.time(9,0,0)) # 9 AM
     franja_horaria_fin = models.TimeField(default=datetime.time(18,0,0)) # 6 PM
     franja_horaria = models.CharField(max_length=50, blank=True, null=True)
-    usuario = models.ForeignKey(Usuario, on_delete=models.SET_NULL, null=True)
+    usuario = models.ForeignKey(Usuario, on_delete=models.SET(get_deleted_user), null=True)
     disponible_para_intercambio = models.BooleanField(default=True)
     
     FRANJA_HORARIA_REGEX = r'^entre las (\d{2}):(\d{2}) y las (\d{2}):(\d{2})$'
