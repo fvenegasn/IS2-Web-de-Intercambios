@@ -60,6 +60,7 @@ urlpatterns = [
     path('perfil/<str:username>/toggle_user_status/', views.toggle_user_status, name='toggle_user_status'),
 
     path('ver_publicacion/<int:publicacion_id>/modificar_mi_publicacion', views.modificar_mi_publicacion, name="modificar_mi_publicacion"),
+    path('ver_publicacion/<int:publicacion_id>/eliminar', views.bajar_mi_publicacion, name="bajar_mi_publicacion"),
 
      path('listar_categorias', views.listar_categorias, name='listar_categorias'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

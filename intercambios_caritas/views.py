@@ -337,6 +337,27 @@ def modificar_mi_publicacion(request, publicacion_id):
     return render(request, 'publicacion/modificar_mi_publicacion.html', context)
 
 @login_required
+def bajar_mi_publicacion(request, publicacion_id):
+    publicacion = get_object_or_404(Publicacion, id=publicacion_id)
+    
+    if request.method == 'POST':
+        # Comprobar si el la publicacion tiene intercambios con estado aceptado
+        intercambios_aceptados = Intercambio.objects.filter(Q(publicacion_ofertante=publicacion) & (Q(estado="ACEPTADA") ))|Intercambio.objects.filter(Q(publicacion_demandada=publicacion) & (Q(estado="ACEPTADA")))
+        if intercambios_aceptados:
+            messages.warning(request, 'Tienes intercambios aceptados actualmente, debes resolver los mismos antes de eliminar la publicacion.')
+            return redirect('bajar_mi_publicacion')
+        # Cancelar todos los intercambios pendientes de la publicacion
+        intercambios_pendientes = Intercambio.objects.filter(Q(publicacion_ofertante=publicacion, estado='PENDIENTE') | Q(publicacion_demandada=publicacion, estado='PENDIENTE'))
+        for intercambio in intercambios_pendientes:
+            intercambio.cancelar("Publicacion eliminada") #esto podria ser mas especifico
+        publicacion.disponible_para_intercambio = False  
+        publicacion.save()
+        messages.success(request, 'Publicacion eliminada exitosamente.')
+        return redirect('mis_publicaciones')
+    else:
+        return render(request, 'publicacion/ver_publicacion_eliminar.html', {'publicacion': publicacion})
+
+@login_required
 def mis_publicaciones(request):
     usuario_actual = request.user
     publicaciones = Publicacion.objects.filter(usuario=usuario_actual, disponible_para_intercambio=True)
