@@ -7,20 +7,79 @@
     <div class="card" style="width: 40rem;">
         <div class="card-body">
             <div class="text-center">
-                <form method="POST">
+                <form method="POST" novalidate>
                     {% csrf_token %}
                     <h2><u>Información General</u></h2>
-                    <p><b>Nombre:</b>{{ form.first_name }}</p>
-                    <p><b>Apellido:</b>{{ form.last_name }}</p>
+                    <div class="d-flex justify-content-center align-items-center gap-2">
+                        <label for="first_name" class="form-label m-0">Nombre:</label>
+                        <div style="">
+                            <input type="text" name="first_name" class="form-control {% if form.first_name.errors %}is-invalid{% endif %}" id="first_name" aria-describedby="first_nameFeedback" required value="{{ form.first_name.value|default_if_none:'' }}">
+                            {% if form.first_name.errors %}
+                            <div id="first_nameFeedback" class="invalid-feedback">
+                                {% for error in form.first_name.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div> 
+                    </div>
+                    <div class="d-flex justify-content-center align-items-center gap-2">
+                        <label for="last_name" class="form-label m-0">Apellido:</label>
+                        <div style="">
+                            <input type="text" name="last_name" class="form-control {% if form.last_name.errors %}is-invalid{% endif %}" id="last_name" aria-describedby="last_nameFeedback" required value="{{ form.last_name.value|default_if_none:'' }}">
+                            {% if form.last_name.errors %}
+                            <div id="last_nameFeedback" class="invalid-feedback">
+                                {% for error in form.last_name.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div> 
+                    </div>
                     <p><b>DNI:</b> {{ user.username}}</p>
                     <p><b>Fecha Nacimiento:</b> {{ user.nacimiento}}</p>
                     <p><b>Fecha de Registro:</b>{{ user.date_joined}}</p>
                     <h2><u>Datos de Contacto</u></h2>
-                    <p><b>Mail:</b>{{ form.email }}</p>
-                    <p><b>Teléfono:</b>{{ form.telefono }}</p>
-                    <p><b>Dirección:</b>{{ form.direccion }}</p>
-                    {{ form.errors }}
-                    <button type="submit" class="btn btn-primary">Guardar cambios</button>
+                    <div class="d-flex justify-content-center align-items-center gap-2">
+                        <label for="email" class="form-label m-0">Mail:</label>
+                        <div style="">
+                            <input type="email" name="email" class="form-control {% if form.email.errors %}is-invalid{% endif %}" id="email" aria-describedby="emailFeedback" required value="{{ form.email.value|default_if_none:'' }}">
+                            {% if form.email.errors %}
+                            <div id="emailFeedback" class="invalid-feedback">
+                                {% for error in form.email.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div> 
+                    </div>       
+                    <div class="d-flex justify-content-center align-items-center gap-2">
+                        <label for="telefono" class="form-label  m-0">Teléfono:</label>
+                        <div style="">
+                            <input type="tel" name="telefono" class="form-control {% if form.telefono.errors %}is-invalid{% endif %}" id="telefono" aria-describedby="telefonoFeedback" required value="{{ form.telefono.value|default_if_none:'' }}">
+                            {% if form.telefono.errors %}
+                            <div id="telefonoFeedback" class="invalid-feedback">
+                                {% for error in form.telefono.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div> 
+                    </div>
+                    <div class="d-flex justify-content-center align-items-center gap-2">
+                        <label for="direccion" class="form-label m-0">Dirección:</label>
+                        <div style="">
+                            <input type="text" name="direccion" class="form-control {% if form.direccion.errors %}is-invalid{% endif %}" id="direccion" aria-describedby="direccionFeedback" required value="{{ form.direccion.value|default_if_none:'' }}">
+                            {% if form.direccion.errors %}
+                            <div id="direccionFeedback" class="invalid-feedback">
+                                {% for error in form.direccion.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div> 
+                    </div>
+                    <button type="submit" class="btn btn-primary mt-2">Guardar cambios</button>
                 </form>
             </div>
         </div>

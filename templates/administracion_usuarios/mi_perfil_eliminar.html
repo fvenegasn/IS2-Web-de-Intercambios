@@ -10,8 +10,8 @@
                 <h2>¿Seguro que quieres eliminar tu perfil?</h2>
                 <form method="POST">
                     {% csrf_token %}
-                    <button type="submit" class="btn btn-danger">Sí, eliminar perfil.</button>
-                    <button type="button" class="btn btn-secondary" onclick="history.back()">No, cancelar y volver.</button>
+                    <button type="submit" class="btn btn-danger mt-3">Sí, eliminar perfil.</button>
+                    <button type="button" class="btn btn-secondary mt-3" onclick="history.back()">No, cancelar y volver.</button>
                 </form>
                 {% if messages %}
                 {% for message in messages %}
