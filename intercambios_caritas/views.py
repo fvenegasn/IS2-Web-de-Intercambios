@@ -20,6 +20,7 @@ from django.db.models import BooleanField, ExpressionWrapper, F
 
 
 def home(request):
+    queryset = request.GET.get('buscar')
     categorias_seleccionadas = request.POST.getlist('categoria') if 'categoria' in request.POST else []
     puntos_de_encuentro_seleccionados = request.POST.getlist('punto_encuentro') if 'punto_encuentro' in request.POST else []
     estados_seleccionados = request.POST.getlist('estado') if 'estado' in request.POST else []
@@ -40,6 +41,12 @@ def home(request):
         
     if estados_seleccionados:
         publicaciones_disponibles = publicaciones_disponibles.filter(estado__in=estados_seleccionados)
+    if queryset:
+        publicaciones_disponibles = publicaciones_disponibles.filter(
+            Q(nombre__icontains=queryset) | 
+            Q(categoria__icontains=queryset)
+        ).distinct()
+
         
 
     return render(request, 'authentication/index.html', {
@@ -50,6 +57,7 @@ def home(request):
         'categorias_seleccionadas': categorias_seleccionadas,
         'puntos_de_encuentro_seleccionados': puntos_de_encuentro_seleccionados,
         'estados_seleccionados': estados_seleccionados,
+        'buscar': queryset
     })
 
 
