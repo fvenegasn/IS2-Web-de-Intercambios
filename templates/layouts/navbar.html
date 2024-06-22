@@ -12,10 +12,10 @@
             <div class="row">
                 {% if request.path != '/login' and request.path != '/register' %}
                     <div class="col-md-9 search">
-                        <form method="get" action="/" class="d-flex">
+                        <form id="search-form" method="get" action="/" class="d-flex">
                             <div id="custom-search-id">
                                 <div class="input-group col-md-9">
-                                    <input type="text" class="form-control form-control-lg me-2" placeholder="Buscar 🔎" name="buscar">
+                                    <input type="text" class="form-control form-control-lg me-2" placeholder="Buscar 🔎" name="buscar" required>
                                     <span class="input-group-list">
                                         <i class="icon icon search"></i>
                                         <button type="submit" class="btn btn-success btn-lg">Buscar</button>
