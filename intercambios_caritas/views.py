@@ -15,6 +15,12 @@ from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse
 from django.db.models import Q
 from django.db.models import BooleanField, ExpressionWrapper, F
+import datetime
+import json
+from django.http import JsonResponse
+from collections import Counter
+from django.db.models import Q, Count
+from django.db.models.functions import TruncMonth
 
 # Create your views here.
 
@@ -599,3 +605,45 @@ def listar_categorias(request):
     categorias = Categoria.objects.all()
     return render(request, 'publicacion/listar_categorias.html', {'categorias': categorias, 'form': form})
 
+
+
+# Sección para visualizacion de metricas
+# ------------------------------------------
+
+def get_intercambios_mes(request):
+    # Filtra con los intercambios que me interesa mostrar
+    # TODO: cambiar la logica para cuando es moderador o admin
+    intercambios = Intercambio.objects.filter(
+        Q(estado="ACEPTADA") | Q(estado="CONFIRMADA") | Q(estado="DESESTIMADA")
+    ).order_by('-fecha_creacion')
+
+    # formatea en año/mes
+    intercambios = intercambios.annotate(year_month=TruncMonth('fecha_intercambio'))
+
+    # cuenta
+    intercambios_counts = intercambios.values('year_month').annotate(total=Count('id')).order_by('-year_month')
+
+    # Cinverte el resultado
+    finalrep = {item['year_month'].strftime("%Y %B"): item['total'] for item in intercambios_counts}
+
+    return JsonResponse({'intercambios_mes': finalrep}, safe=False)
+
+
+
+
+def get_intercambios_estado(request):
+    # Filtra con los intercambios que me interesa mostrar
+    # TODO: cambiar la logica para cuando es moderador o admin
+    intercambios = Intercambio.objects.all()
+
+    # cuenta
+    intercambios_counts = intercambios.values('estado').annotate(total=Count('id'))
+
+    # Cinverte el resultado
+    finalrep = {item['estado']: item['total'] for item in intercambios_counts}
+
+    return JsonResponse({'intercambios_estado': finalrep}, safe=False)
+
+
+
+# ------------------------------------------
