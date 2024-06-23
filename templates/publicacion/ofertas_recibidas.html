@@ -79,14 +79,25 @@
                         {% csrf_token %}
                         <div class="form-group">
                             <button type="submit" class="btn btn-danger w-100 mt-2">Rechazar</button>
-                            <select name="motivo" id="motivo" class="form-control">
+                            <select name="motivo" id="motivo" class="form-control" onchange="toggleOtroCampo(this)">
                                 <option value="" selected disabled>-- Motivo --</option>
                                 {% for value, label in oferta.MOTIVOS_RECHAZO %}
                                 <option value="{{ value }}">{{ label }}</option>
                                 {% endfor %}
                             </select>
+                            <input type="text" name="motivo_otro" id="motivo_otro" class="form-control mt-2" placeholder="Especifique el motivo" style="display:none;">
                         </div>
                     </form>
+                    <script>
+                        function toggleOtroCampo(select) {
+                            var otroCampo = document.getElementById('motivo_otro');
+                            if (select.value === 'Otro') {
+                                otroCampo.style.display = 'block';
+                            } else {
+                                otroCampo.style.display = 'none';
+                            }
+                        }
+                    </script>
                 </div>
                 {% endif %}
             </div>

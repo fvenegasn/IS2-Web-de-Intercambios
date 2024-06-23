@@ -496,7 +496,10 @@ def rechazar_oferta(request, oferta_id):
     oferta = get_object_or_404(Intercambio, id=oferta_id, publicacion_demandada__usuario=request.user)
     if request.method == 'POST':
         motivo = request.POST.get('motivo')
+        motivo_otro = request.POST.get('motivo_otro')
         if motivo:
+            if motivo == 'Otro' and motivo_otro:
+                motivo = motivo_otro
             try:
                 oferta.rechazar(motivo)
                 messages.success(request, "Oferta rechazada exitosamente.")
@@ -511,7 +514,10 @@ def cancelar_oferta(request, oferta_id):
     oferta = get_object_or_404(Intercambio, id=oferta_id, publicacion_ofertante__usuario=request.user)
     if request.method == 'POST':
         motivo = request.POST.get('motivo')
+        motivo_otro = request.POST.get('motivo_otro')
         if motivo:
+            if motivo == 'Otro' and motivo_otro:
+                motivo = motivo_otro
             try:
                 oferta.cancelar(motivo)
                 messages.success(request, "Oferta cancelada exitosamente.")
@@ -536,20 +542,24 @@ def desestimar_intercambio(request, oferta_id):
     oferta = get_object_or_404(Intercambio, id=oferta_id)
 
     if request.method == 'POST':
-        motivo = request.POST.get('motivo', '')
+        motivo = request.POST.get('motivo')
+        motivo_otro = request.POST.get('motivo_otro')
+        #motivo = request.POST.get('motivo', '')
         if motivo:
-            if not strip_tags(motivo.strip()):  # Verificar si el motivo contiene solo espacios en blanco
-                messages.error(request, "El motivo no puede estar compuesto únicamente por espacios en blanco.")
-            else:
-                try:
-                    oferta.desestimar(motivo)
-                    oferta.publicacion_ofertante.disponible_para_intercambio = True
-                    oferta.publicacion_ofertante.save()
-                    oferta.publicacion_demandada.disponible_para_intercambio = True
-                    oferta.publicacion_demandada.save()
-                    messages.success(request, "Intercambio desestimado.")
-                except ValueError as e:
-                    messages.error(request, str(e))
+            if motivo == 'Otro' and motivo_otro:
+                motivo = motivo_otro
+            #if not strip_tags(motivo.strip()):  # Verificar si el motivo contiene solo espacios en blanco
+            #    messages.error(request, "El motivo no puede estar compuesto únicamente por espacios en blanco.")
+            #else:
+            try:
+                oferta.desestimar(motivo)
+                oferta.publicacion_ofertante.disponible_para_intercambio = True
+                oferta.publicacion_ofertante.save()
+                oferta.publicacion_demandada.disponible_para_intercambio = True
+                oferta.publicacion_demandada.save()
+                messages.success(request, "Intercambio desestimado.")
+            except ValueError as e:
+                messages.error(request, str(e))
         else:
             messages.error(request, "Se requiere un motivo para desestimar el intercambio.")
     else:
