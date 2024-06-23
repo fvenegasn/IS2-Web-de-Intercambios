@@ -1,44 +1,42 @@
+const displayChart = (data, labels, puntoEncuentros) => {
+    const colors = [
+        'rgba(255, 99, 132)', 'rgba(54, 162, 235)', 'rgba(255, 206, 86)',
+        'rgba(75, 192, 192)', 'rgba(153, 102, 255)', 'rgba(255, 159, 64)',
+        'rgba(199, 199, 199)', 'rgba(83, 102, 255)', 'rgba(66, 133, 244)',
+        'rgba(219, 68, 55)', 'rgba(244, 180, 0)', 'rgba(15, 157, 88)',
+        'rgba(255, 87, 34)', 'rgba(121, 85, 72)', 'rgba(233, 30, 99)',
+        'rgba(103, 58, 183)', 'rgba(0, 150, 136)', 'rgba(3, 169, 244)',
+        'rgba(255, 235, 59)', 'rgba(96, 125, 139)'
+    ];
 
+    const borderColors = colors.map(color => color.replace('0.2', '1'));
 
-const displayChart = (data, labels) => {
     var ctx_mes = document.getElementById("intercambios_mes").getContext("2d");
-    var barchart_mes = new Chart(ctx_mes,  {
+    var datasets = puntoEncuentros.map((puntoEncuentro, index) => ({
+        label: puntoEncuentro,
+        data: labels.map(label => data[label][puntoEncuentro] || 0),
+        backgroundColor: colors[index % colors.length],
+        borderColor: borderColors[index % borderColors.length],
+        borderWidth: 1
+    }));
+
+    var barchart_mes = new Chart(ctx_mes, {
         type: 'bar',
         data: {
             labels: labels,
-            datasets: [{
-            label: 'Intercambios Por Mes',
-            data: data,
-            backgroundColor: [
-                'rgba(255, 99, 132, 0.2)',
-                'rgba(255, 159, 64, 0.2)',
-                'rgba(255, 205, 86, 0.2)',
-                'rgba(75, 192, 192, 0.2)',
-                'rgba(54, 162, 235, 0.2)',
-                'rgba(153, 102, 255, 0.2)',
-                'rgba(201, 203, 207, 0.2)'
-            ],
-            borderColor: [
-                'rgb(255, 99, 132)',
-                'rgb(255, 159, 64)',
-                'rgb(255, 205, 86)',
-                'rgb(75, 192, 192)',
-                'rgb(54, 162, 235)',
-                'rgb(153, 102, 255)',
-                'rgb(201, 203, 207)'
-            ],
-            borderWidth: 1
-            }]
+            datasets: datasets
         },
         options: {
-        scales: {
-            y: {
-            beginAtZero: true
+            scales: {
+                x: {
+                    stacked: true
+                },
+                y: {
+                    stacked: true
+                }
             }
-         }
-        },
-    }
-    )
+        }
+    });
 }
 
 const getIntercambiosMes = () => {
@@ -46,15 +44,16 @@ const getIntercambiosMes = () => {
       .then((res) => res.json())
       .then((res1) => {
         const results = res1.intercambios_mes;
-        const [labels, data] = [Object.keys(results), Object.values(results)];
+        const labels = Object.keys(results);
+        const puntoEncuentros = [...new Set(Object.values(results).flatMap(item => Object.keys(item)))];
+        const data = results;
+        
         console.log("results", results);
-        displayChart(data, labels);
+        displayChart(data, labels, puntoEncuentros);
       });
-  };
-  
+};
+
 document.onload = getIntercambiosMes();
-
-
 
 // Intercambios por estado
 

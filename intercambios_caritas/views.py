@@ -629,20 +629,24 @@ def listar_categorias(request):
 # ------------------------------------------
 
 def get_intercambios_mes(request):
-    # Filtra con los intercambios que me interesa mostrar
-    # TODO: cambiar la logica para cuando es moderador o admin
+    # Filter the queryset
     intercambios = Intercambio.objects.filter(
         Q(estado="ACEPTADA") | Q(estado="CONFIRMADA") | Q(estado="DESESTIMADA")
-    ).order_by('-fecha_creacion')
+    ).annotate(year_month=TruncMonth('fecha_intercambio')).values('year_month', 'punto_encuentro').annotate(total=Count('id')).order_by('-year_month')
 
-    # formatea en año/mes
-    intercambios = intercambios.annotate(year_month=TruncMonth('fecha_intercambio'))
-
-    # cuenta
-    intercambios_counts = intercambios.values('year_month').annotate(total=Count('id')).order_by('-year_month')
-
-    # Cinverte el resultado
-    finalrep = {item['year_month'].strftime("%Y %B"): item['total'] for item in intercambios_counts}
+    # Prepare the data for the chart
+    finalrep = {}
+    for item in intercambios:
+        year_month = item['year_month'].strftime("%Y %B")
+        punto_encuentro = item['punto_encuentro']
+        total = item['total']
+        
+        if year_month not in finalrep:
+            finalrep[year_month] = {}
+        if punto_encuentro not in finalrep[year_month]:
+            finalrep[year_month][punto_encuentro] = 0
+        
+        finalrep[year_month][punto_encuentro] += total
 
     return JsonResponse({'intercambios_mes': finalrep}, safe=False)
 
