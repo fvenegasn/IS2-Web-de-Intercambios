@@ -40,15 +40,16 @@
                                 <div class="col-md-4 mb-3">
                                     <div data-mdb-input-init class="form-outline">
                                         <label class="form-label mb-1" for="categoria">Categoría</label>
-                                        <select id="categoria" name="categoria" class="form-select form-select-lg"
-                                            required>
+                                        <select id="categoria" name="categoria" class="form-select form-select-lg" required>
                                             <option value="" selected disabled>-- Seleccione --</option>
-                                            {% for value, display in form.fields.categoria.choices %}
-                                            <option value="{{ value }}">{{ display }}</option>
+                                            {% for categoria in form.fields.categoria.queryset %}
+                                            <option value="{{ categoria.id }}">{{ categoria.nombre }}</option>
                                             {% endfor %}
                                         </select>
                                     </div>
                                 </div>
+                                
+                                
                             </div>
                             <div class="row">
                                 <div class="col-md-6 mb-3">

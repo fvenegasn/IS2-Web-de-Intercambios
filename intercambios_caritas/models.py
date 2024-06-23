@@ -86,6 +86,10 @@ class Categoria(models.Model):
 
     def __str__(self):
         return self.nombre
+    
+    def save(self, *args, **kwargs):
+        self.nombre = self.nombre.title()
+        super().save(*args, **kwargs)
 
 class Publicacion(models.Model):
     """
@@ -130,7 +134,7 @@ class Publicacion(models.Model):
     descripcion = models.CharField(max_length=280, blank=True, null=False, default="Sin descripción")
     imagen = models.ImageField()
     categoria = models.CharField(max_length=50, blank=False, null=False, choices=CATEGORIAS, default="Otros")
-    categoria_nueva = models.ForeignKey(Categoria, on_delete=models.CASCADE,default=1)
+    categoria_nueva = models.ForeignKey(Categoria, on_delete=models.PROTECT,default=1)
     estado = models.CharField(max_length=50, blank=False, null=False, choices=ESTADOS, default=ESTADOS[0][0])
     punto_encuentro = MultiSelectField(choices=PUNTOS_ENC, blank=True, max_length=100)
     dias_convenientes = MultiSelectField(choices=DIAS_SEMANA, blank=True, max_length=100)

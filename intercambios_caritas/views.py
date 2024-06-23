@@ -13,7 +13,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 # from is2.settings import LOGIN_ATTEMPTS_LIMIT
 from django.urls import reverse
-from django.db.models import Q
+from django.db.models import Q, ProtectedError
 from django.db.models import BooleanField, ExpressionWrapper, F
 import datetime
 import json
@@ -295,6 +295,11 @@ def toggle_user_status(request, username=None):
 
 @login_required
 def crear_publicacion(request):
+
+    if len(Categoria.objects.all()) == 0:
+        messages.error(request, "No se pueden publicar productos en este momento. Intente más tarde.")
+        return redirect("home")
+
     form = PublicacionForm()
     if request.method == 'POST':
         form = PublicacionForm(request.POST, request.FILES)
@@ -304,10 +309,12 @@ def crear_publicacion(request):
             publicacion.usuario = request.user
             inicio = form.cleaned_data.get('franja_horaria_inicio')
             fin = form.cleaned_data.get('franja_horaria_fin')
+            categoria = form.cleaned_data.get('categoria')
             if inicio and fin:
                 publicacion.franja_horaria = f"entre las {inicio.strftime('%H:%M')} y las {fin.strftime('%H:%M')}"
                 publicacion.franja_horaria_inicio = inicio
                 publicacion.franja_horaria_fin = fin
+            publicacion.categoria_nueva = categoria
             publicacion.save()
             messages.success(request, "Publicación creada exitosamente!")
             return redirect('home')
@@ -316,9 +323,14 @@ def crear_publicacion(request):
                 'punto_encuentro': 'No se especificó un punto de encuentro.',
                 'dias_convenientes': 'No se especificó un dia conveniente.',
                 'franja_horaria_inicio': 'La hora de fin no puede ser menor a la hora de inicio.',
+                'categoria':'AAAAA',
+                'categoria_nueva':"BBBB"
             }
             generic_error_message = 'Error, Publicación no creada. verificar datos ingresados.'
             custom_error_found = False
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f"Error: {error}")
             for field in form.errors:
                 if field in error_messages:
                     messages.warning(request, f"Error, Publicación no creada. {error_messages[field]}")
@@ -582,7 +594,6 @@ def ver_metricas_filiales(request):
 
 @login_required
 def listar_categorias(request):
-
     # Me aseguro que sólo entren los admin
     user = request.user
     if user.rol != "Administrador":
@@ -593,11 +604,18 @@ def listar_categorias(request):
             form = CategoriaForm(request.POST)
             if form.is_valid():
                 form.save()
+                messages.success(request, "Categoría agregada exitosamente.")
                 return redirect(reverse('listar_categorias'))
+            else:
+                messages.error(request, "La categoría ya existe.")
         elif 'eliminar_categoria' in request.POST:
             categoria_id = request.POST.get('categoria_id')
             categoria = Categoria.objects.get(id=categoria_id)
-            categoria.delete()
+            try:
+                categoria.delete()
+                messages.success(request, "Categoría eliminada exitosamente.")
+            except ProtectedError:
+                messages.error(request, "No se puede eliminar la categoría hasta que no existan productos de la misma")
             return redirect(reverse('listar_categorias'))
     else:
         form = CategoriaForm()
