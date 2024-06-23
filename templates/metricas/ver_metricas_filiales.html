@@ -1,11 +1,29 @@
 {% extends 'layouts/base.html' %}
+{% load static %}
 <!-- esto es para que se herede la estructura html y estilos del archivo base -->
 {% block content %}
 {% include 'layouts/navbar.html' %}
 <!-- esto es para que se vea el navbar  -->
 <!-- TODO: agregar logica para que solo lo vean los admins -->
 <h1 class="text-center custom-h1-bg mb-2">Métricas Intercambios Cáritas</h1>
-<!-- Default panel contents -->
+
+<!-- Graficos -->
+
+<div class="container">
+  <div class="row">
+    <div class="col-sm">
+      <canvas id="intercambios_mes" widht="200" height="200"></canvas>
+    </div>
+    <div class="col-sm">
+      <canvas id="piechart_intercambios_estado" widht="200" height="200"></canvas>
+    </div>
+    <div class="col-sm">
+      <canvas id="intercambios_filial" widht="200" height="200"></canvas>
+    </div>
+  </div>
+</div>
+
+<!-- Tabla Listado -->
 
 <div class="table-responsive">
 
@@ -38,5 +56,8 @@
   </table>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.9.0/feather.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
+<script src="{% static 'js/stats.js' %}"></script>
 
 {% endblock %}
