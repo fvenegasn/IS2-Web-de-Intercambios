@@ -2,8 +2,8 @@ import datetime
 import django
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render, get_object_or_404
-from intercambios_caritas.forms import IntercambioForm, PublicacionForm, UpdatePublicacionForm
-from intercambios_caritas.models import Intercambio, Usuario, Publicacion, Categoria
+from intercambios_caritas.forms import IntercambioForm, PublicacionForm, UpdatePublicacionForm,PreguntaForm,RespuestaForm
+from intercambios_caritas.models import Intercambio, Usuario, Publicacion, Categoria,Pregunta,Respuesta
 from . import views
 from django.utils.html import strip_tags
 from django.contrib.auth.decorators import login_required
@@ -63,7 +63,7 @@ def home(request):
         'categorias_seleccionadas': categorias_seleccionadas,
         'puntos_de_encuentro_seleccionados': puntos_de_encuentro_seleccionados,
         'estados_seleccionados': estados_seleccionados,
-        'buscar': queryset
+        'queryset': queryset
     })
 
 
@@ -399,7 +399,13 @@ def mis_publicaciones(request):
 
 def ver_publicacion(request, publicacion_id):
     publicacion = get_object_or_404(Publicacion, pk=publicacion_id)
-    return render(request, 'publicacion/ver_publicacion.html', {'publicacion': publicacion})
+    preguntas = Pregunta.objects.filter(publicacion=publicacion)
+    pregunta_form = PreguntaForm()
+    respuesta_form = RespuestaForm()
+    return render(request, 'publicacion/ver_publicacion.html', {'publicacion': publicacion,
+                                                                'preguntas': preguntas,
+                                                               'pregunta_form': pregunta_form,
+                                                               'respuesta_form': respuesta_form})
 
 @login_required
 def listar_usuarios(request):
@@ -661,7 +667,37 @@ def get_intercambios_estado(request):
     finalrep = {item['estado']: item['total'] for item in intercambios_counts}
 
     return JsonResponse({'intercambios_estado': finalrep}, safe=False)
-
-
+@login_required
+def agregar_pregunta(request, publicacion_id):
+    publicacion = get_object_or_404(Publicacion, id=publicacion_id)
+    if request.user == publicacion.usuario:
+        return redirect('ver_publicacion', publicacion_id=publicacion.id)  # O mostrar un mensaje de error
+    if request.method == 'POST':
+        form = PreguntaForm(request.POST)
+        if form.is_valid():
+            pregunta = form.save(commit=False)
+            pregunta.publicacion = publicacion
+            pregunta.usuario = request.user
+            pregunta.save()
+            return redirect('ver_publicacion', publicacion_id=publicacion.id)
+    else:
+        form = PreguntaForm()
+    return render(request, 'publicacion/ver_publicacion.html', {'form': form, 'publicacion': publicacion})
+@login_required
+def agregar_respuesta(request, pregunta_id):
+    pregunta = get_object_or_404(Pregunta, id=pregunta_id)
+    if request.user != pregunta.publicacion.usuario:
+        return redirect('ver_publicacion', publicacion_id=pregunta.publicacion.id)  # O mostrar un mensaje de error
+    if request.method == 'POST':
+        form = RespuestaForm(request.POST)
+        if form.is_valid():
+            respuesta = form.save(commit=False)
+            respuesta.pregunta = pregunta
+            respuesta.usuario = request.user
+            respuesta.save()
+            return redirect('ver_publicacion', publicacion_id=pregunta.publicacion.id)
+    else:
+        form = RespuestaForm()
+    return render(request, 'publicacion/ver_publicacion.html', {'form': form, 'pregunta': pregunta})
 
 # ------------------------------------------
