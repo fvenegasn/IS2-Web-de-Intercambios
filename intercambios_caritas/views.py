@@ -2,8 +2,8 @@ import datetime
 import django
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render, get_object_or_404
-from intercambios_caritas.forms import IntercambioForm, PublicacionForm, UpdatePublicacionForm
-from intercambios_caritas.models import Intercambio, Usuario, Publicacion, Categoria
+from intercambios_caritas.forms import IntercambioForm, PublicacionForm, UpdatePublicacionForm, FilialForm
+from intercambios_caritas.models import Intercambio, Usuario, Publicacion, Categoria, Filial
 from . import views
 from django.utils.html import strip_tags
 from django.contrib.auth.decorators import login_required
@@ -616,3 +616,34 @@ def listar_categorias(request):
     
     categorias = Categoria.objects.all()
     return render(request, 'publicacion/listar_categorias.html', {'categorias': categorias, 'form': form})
+
+@login_required
+def listar_filiales(request):
+    # Me aseguro que sólo entren los admin
+    user = request.user
+    if user.rol != "Administrador":
+        return redirect("home")
+
+    if request.method == 'POST':
+        if 'agregar_filial' in request.POST:
+            form = FilialForm(request.POST)
+            if form.is_valid():
+                form.save()
+                messages.success(request, "Filial agregada exitosamente.")
+                return redirect(reverse('listar_filiales'))
+            else:
+                messages.error(request, "La filial ya existe.")
+        elif 'eliminar_filial' in request.POST:
+            filial_id = request.POST.get('filial_id')
+            filial = Filial.objects.get(id=filial_id)
+            try:
+                filial.delete()
+                messages.success(request, "Filial eliminada exitosamente.")
+            except ProtectedError:
+                messages.error(request, "No se puede eliminar la filial hasta que no existan intercambios en la misma")
+            return redirect(reverse('listar_filiales'))
+    else:
+        form = FilialForm()
+    
+    filiales = Filial.objects.all()
+    return render(request, 'publicacion/listar_filiales.html', {'filiales': filiales, 'form': form})
