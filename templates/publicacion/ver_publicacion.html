@@ -35,4 +35,69 @@
         </div>
     </div>
 </div>
+<!-- Sección de preguntas y respuestas -->
+<div class="d-flex justify-content-center align-items-center flex-grow-1 mt-4">
+    <div class="row">
+        <div class="col-md-12">
+            <h2>Preguntas y respuestas</h2>
+                {% if preguntas %}
+                    <ul class="list-group mt-3">
+                        {% for pregunta in preguntas %}
+                            <li class="list-group-item">
+                                <p><strong>{{ pregunta.usuario.get_full_name }}:</strong> {{ pregunta.contenido }}</p>
+                                {% if pregunta.respuesta %}
+                                    <ul class="list-group mt-2">
+                                        <li class="list-group-item">
+                                            <p><strong>{{ pregunta.respuesta.usuario.get_full_name }}:</strong> {{ pregunta.respuesta.contenido }}</p>
+                                        </li>
+                                    </ul>
+                                {% else %}
+                                    {% if user.is_authenticated and user == publicacion.usuario %}
+                                        <form method="POST" action="{% url 'agregar_respuesta' pregunta.id %}">
+                                            {% csrf_token %}
+                                            <div class="form-group">
+                                                <label for="respuesta">Responder:</label>
+                                                <textarea class="form-control" id="respuesta" name="contenido" rows="2" required></textarea>
+                                            </div>
+                                            <button type="submit" class="btn btn-primary btn-sm">Responder</button>
+                                        </form>
+                                    {% endif %}
+                                {% endif %}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>No hay preguntas aún.</p>
+                {% endif %}
+            </div>
+
+            <!-- Formulario para agregar pregunta -->
+            {% if user.is_authenticated and user != publicacion.usuario and not user.isModerador and not user.isAdmin %}
+                <form method="POST" action="{% url 'agregar_pregunta' publicacion.id %}">
+                    {% csrf_token %}
+                    <div class="form-group mt-4">
+                        <label for="pregunta">Hacer una pregunta:</label>
+                        <textarea class="form-control" id="pregunta" name="contenido" rows="3" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Preguntar</button>
+                </form>
+            {% elif not user.is_authenticated %}
+                <p>Inicia sesión para hacer una pregunta.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- <script> SI SE NECESITA BOTON VER PREGUNTAS
+    document.getElementById('togglePreguntasBtn').addEventListener('click', function() {
+        var preguntasContainer = document.getElementById('preguntasContainer');
+        if (preguntasContainer.style.display === 'none') {
+            preguntasContainer.style.display = 'block';
+            this.textContent = 'Ocultar Preguntas';
+        } else {
+            preguntasContainer.style.display = 'none';
+            this.textContent = 'Ver Preguntas';
+        }
+    });
+</script> -->
 {% endblock %}

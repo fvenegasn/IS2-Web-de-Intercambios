@@ -86,10 +86,6 @@ class Categoria(models.Model):
 
     def __str__(self):
         return self.nombre
-    
-    def save(self, *args, **kwargs):
-        self.nombre = self.nombre.title()
-        super().save(*args, **kwargs)
 
 class Filial(models.Model):
     nombre = models.CharField(max_length=100, unique=True)
@@ -144,7 +140,7 @@ class Publicacion(models.Model):
     descripcion = models.CharField(max_length=280, blank=True, null=False, default="Sin descripción")
     imagen = models.ImageField()
     categoria = models.CharField(max_length=50, blank=False, null=False, choices=CATEGORIAS, default="Otros")
-    categoria_nueva = models.ForeignKey(Categoria, on_delete=models.PROTECT,default=1)
+    categoria_nueva = models.ForeignKey(Categoria, on_delete=models.CASCADE,default=1)
     estado = models.CharField(max_length=50, blank=False, null=False, choices=ESTADOS, default=ESTADOS[0][0])
     punto_encuentro = MultiSelectField(choices=PUNTOS_ENC, blank=True, max_length=100)
     filial = models.ForeignKey(Filial, on_delete=models.PROTECT,default=1) # tiene que permitir múltiples opciones
@@ -343,28 +339,17 @@ class Intercambio(models.Model):
     ]
 
     MOTIVOS_RECHAZO = [
-        ('El producto no cumplió con mis expectativas', 'El producto no cumplió con mis expectativas'),
+        ('No me gusta el producto', 'No me gusta el producto'),
         ('No puedo en ese día/horario', 'No puedo en ese día/horario'),
         ('No puedo en ese centro', 'No puedo en ese centro'),
-        ('Otro', 'Otro')
         # motivos según sea necesario
     ]
 
     MOTIVOS_CANCELACION = [
-        ('El producto no cumplió con mis expectativas', 'El producto no cumplió con mis expectativas'),
+        ('Confundi', 'Me confundi'),
         ('No puedo en ese día/horario', 'No puedo en ese día/horario'),
         ('No puedo en ese centro', 'No puedo en ese centro'),
-        ('Otro', 'Otro')
         # motivos según sea necesario
-    ]
-
-    MOTIVOS_DESESTIMACION = [
-        ("Faltó el usuario que inició la oferta", "Faltó el usuario que inició la oferta"),
-        ("Faltó el usuario que aceptó la oferta", "Faltó el usuario que aceptó la oferta"),
-        ("El usuario ofertante no trajo el producto", "El usuario ofertante no trajo el producto"),
-        ("El usuario ofertado no trajo el producto", "El usuario ofertado no trajo el producto"),
-        ('Otro', 'Otro')
-        # motivos A COMPLETAR EN CONSULTA
     ]
 
     publicacion_ofertante = models.ForeignKey('Publicacion', related_name='ofertas_realizadas', on_delete=models.CASCADE)
@@ -423,10 +408,27 @@ class Intercambio(models.Model):
 
         for oferta in ofertas_relacionadas:
             if oferta != self:  
-                oferta.cancelar("")
+                oferta.cancelar()
                 if oferta.publicacion_demandada.disponible_para_intercambio == False:
                     oferta.motivo_desestimacion = f"Oferta cancelada porque {oferta.publicacion_demandada.usuario.get_full_name()} aceptó otro intercambio por su {oferta.publicacion_demandada.nombre}"
                     oferta.save()
                 else:
                     oferta.motivo_desestimacion = f"Oferta cancelada porque {oferta.publicacion_ofertante.usuario.get_full_name()} aceptó otro intercambio por su {oferta.publicacion_ofertante.nombre}"
                     oferta.save()
+class Pregunta(models.Model):
+    publicacion = models.ForeignKey(Publicacion, related_name='preguntas', on_delete=models.CASCADE)
+    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    contenido = models.TextField()
+    fecha_creacion = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return f"Pregunta de {self.usuario.username} en {self.publicacion.nombre}"
+
+class Respuesta(models.Model):
+    pregunta = models.OneToOneField(Pregunta, related_name='respuesta', on_delete=models.CASCADE)
+    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    contenido = models.TextField()
+    fecha_creacion = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return f"Respuesta de {self.usuario.username} a {self.pregunta.id}"

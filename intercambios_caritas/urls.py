@@ -40,7 +40,8 @@ urlpatterns = [
     path('crear_publicacion', views.crear_publicacion,name="crear_publicacion"),
     path('mis_publicaciones', views.mis_publicaciones, name="mis_publicaciones"),
     path('ver_publicacion/<int:publicacion_id>/', views.ver_publicacion, name="ver_publicacion"),
-
+    path('ver_publicacion/<int:publicacion_id>/agregar_pregunta/', views.agregar_pregunta, name='agregar_pregunta'),
+    path('pregunta/<int:pregunta_id>/agregar_respuesta/', views.agregar_respuesta, name='agregar_respuesta'),
     path('listar_usuarios', views.listar_usuarios, name="listar_usuarios"),
     path('crear_oferta/<int:publicacion_id>/', views.crear_oferta, name='crear_oferta'),
     path('ofertas_realizadas', views.ver_ofertas_realizadas, name='ver_ofertas_realizadas'),
@@ -56,6 +57,8 @@ urlpatterns = [
     path('perfil/<str:username>/cambiar_rol/', views.cambiar_rol, name="cambiar_rol"),
 
     path('ver_metricas_filiales', views.ver_metricas_filiales, name="ver_metricas_filiales"),
+    path('metricas_intercambios_mes', views.get_intercambios_mes, name="metricas_intercambios_mes"),
+    path('metricas_intercambios_estado', views.get_intercambios_estado, name="metricas_intercambios_estado"),
 
     path('perfil/<str:username>/toggle_user_status/', views.toggle_user_status, name='toggle_user_status'),
 

@@ -2,8 +2,8 @@ import datetime
 import django
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render, get_object_or_404
-from intercambios_caritas.forms import IntercambioForm, PublicacionForm, UpdatePublicacionForm, FilialForm
-from intercambios_caritas.models import Intercambio, Usuario, Publicacion, Categoria, Filial
+from intercambios_caritas.forms import IntercambioForm, PublicacionForm, UpdatePublicacionForm,PreguntaForm,RespuestaForm,FilialForm
+from intercambios_caritas.models import Intercambio, Usuario, Publicacion, Categoria,Pregunta,Respuesta,Filial
 from . import views
 from django.utils.html import strip_tags
 from django.contrib.auth.decorators import login_required
@@ -15,6 +15,12 @@ from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse
 from django.db.models import Q, ProtectedError
 from django.db.models import BooleanField, ExpressionWrapper, F
+import datetime
+import json
+from django.http import JsonResponse
+from collections import Counter
+from django.db.models import Q, Count
+from django.db.models.functions import TruncMonth
 
 # Create your views here.
 
@@ -57,7 +63,7 @@ def home(request):
         'categorias_seleccionadas': categorias_seleccionadas,
         'puntos_de_encuentro_seleccionados': puntos_de_encuentro_seleccionados,
         'estados_seleccionados': estados_seleccionados,
-        'buscar': queryset
+        'queryset': queryset
     })
 
 
@@ -393,7 +399,13 @@ def mis_publicaciones(request):
 
 def ver_publicacion(request, publicacion_id):
     publicacion = get_object_or_404(Publicacion, pk=publicacion_id)
-    return render(request, 'publicacion/ver_publicacion.html', {'publicacion': publicacion})
+    preguntas = Pregunta.objects.filter(publicacion=publicacion)
+    pregunta_form = PreguntaForm()
+    respuesta_form = RespuestaForm()
+    return render(request, 'publicacion/ver_publicacion.html', {'publicacion': publicacion,
+                                                                'preguntas': preguntas,
+                                                               'pregunta_form': pregunta_form,
+                                                               'respuesta_form': respuesta_form})
 
 @login_required
 def listar_usuarios(request):
@@ -647,3 +659,79 @@ def listar_filiales(request):
     
     filiales = Filial.objects.all()
     return render(request, 'publicacion/listar_filiales.html', {'filiales': filiales, 'form': form})
+
+
+# Sección para visualizacion de metricas
+# ------------------------------------------
+
+def get_intercambios_mes(request):
+    # Filter the queryset
+    intercambios = Intercambio.objects.filter(
+        Q(estado="ACEPTADA") | Q(estado="CONFIRMADA") | Q(estado="DESESTIMADA")
+    ).annotate(year_month=TruncMonth('fecha_intercambio')).values('year_month', 'punto_encuentro').annotate(total=Count('id')).order_by('-year_month')
+
+    # Prepare the data for the chart
+    finalrep = {}
+    for item in intercambios:
+        year_month = item['year_month'].strftime("%Y %B")
+        punto_encuentro = item['punto_encuentro']
+        total = item['total']
+        
+        if year_month not in finalrep:
+            finalrep[year_month] = {}
+        if punto_encuentro not in finalrep[year_month]:
+            finalrep[year_month][punto_encuentro] = 0
+        
+        finalrep[year_month][punto_encuentro] += total
+
+    return JsonResponse({'intercambios_mes': finalrep}, safe=False)
+
+
+
+
+def get_intercambios_estado(request):
+    # Filtra con los intercambios que me interesa mostrar
+    # TODO: cambiar la logica para cuando es moderador o admin
+    intercambios = Intercambio.objects.all()
+
+    # cuenta
+    intercambios_counts = intercambios.values('estado').annotate(total=Count('id'))
+
+    # Cinverte el resultado
+    finalrep = {item['estado']: item['total'] for item in intercambios_counts}
+
+    return JsonResponse({'intercambios_estado': finalrep}, safe=False)
+@login_required
+def agregar_pregunta(request, publicacion_id):
+    publicacion = get_object_or_404(Publicacion, id=publicacion_id)
+    if request.user == publicacion.usuario:
+        return redirect('ver_publicacion', publicacion_id=publicacion.id)  # O mostrar un mensaje de error
+    if request.method == 'POST':
+        form = PreguntaForm(request.POST)
+        if form.is_valid():
+            pregunta = form.save(commit=False)
+            pregunta.publicacion = publicacion
+            pregunta.usuario = request.user
+            pregunta.save()
+            return redirect('ver_publicacion', publicacion_id=publicacion.id)
+    else:
+        form = PreguntaForm()
+    return render(request, 'publicacion/ver_publicacion.html', {'form': form, 'publicacion': publicacion})
+@login_required
+def agregar_respuesta(request, pregunta_id):
+    pregunta = get_object_or_404(Pregunta, id=pregunta_id)
+    if request.user != pregunta.publicacion.usuario:
+        return redirect('ver_publicacion', publicacion_id=pregunta.publicacion.id)  # O mostrar un mensaje de error
+    if request.method == 'POST':
+        form = RespuestaForm(request.POST)
+        if form.is_valid():
+            respuesta = form.save(commit=False)
+            respuesta.pregunta = pregunta
+            respuesta.usuario = request.user
+            respuesta.save()
+            return redirect('ver_publicacion', publicacion_id=pregunta.publicacion.id)
+    else:
+        form = RespuestaForm()
+    return render(request, 'publicacion/ver_publicacion.html', {'form': form, 'pregunta': pregunta})
+
+# ------------------------------------------
