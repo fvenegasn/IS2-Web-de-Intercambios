@@ -363,7 +363,11 @@ class Intercambio(models.Model):
     fecha_creacion = models.DateTimeField(default=timezone.now)
     estado = models.CharField(max_length=12, choices=ESTADOS, default='PENDIENTE')
     motivo_desestimacion = models.CharField(max_length=280, default="N/A")
-
+    hubo_donacion = models.BooleanField(default=False, verbose_name="Hubo donación", help_text="Indica si hubo donación en el intercambio",)
+    donacion_descripcion = models.CharField(max_length=280, blank=True, null=True, default="Sin descripción", verbose_name="Descripción de la donación", help_text="Descripción de la donación realizada")
+    calificacion_ofertante = models.IntegerField(default=0, verbose_name="Calificación del ofertante", help_text="Calificación del ofertante")
+    calificacion_demandante = models.IntegerField(default=0, verbose_name="Calificación del demandante", help_text="Calificación del demandante")
+    
     def __str__(self):
         return f"Intercambio de {self.publicacion_ofertante.nombre} por {self.publicacion_demandada.nombre}"
 

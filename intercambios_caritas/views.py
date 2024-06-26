@@ -551,6 +551,20 @@ def cancelar_oferta(request, oferta_id):
             messages.error(request, "Debe seleccionar un motivo para cancelar la oferta.")
     return redirect('ver_ofertas_realizadas')
 
+def actualizar_calificaciones_y_donacion(oferta, request):
+    # Actualizar calificaciones
+    oferta.calificacion_demandante = request.POST.get('calificacion_demandada')
+    oferta.calificacion_ofertante = request.POST.get('calificacion_ofertante')
+    
+    # Actualizar información de donación
+    donacion_realizada = request.POST.get('donacion_realizada')
+    if donacion_realizada == 'Si':
+        oferta.hubo_donacion = True
+        oferta.donacion_descripcion = request.POST.get('descripcion_donacion')
+    else:
+        oferta.hubo_donacion = False
+        oferta.donacion_descripcion = "Sin descripción"  # O cualquier valor predeterminado
+
 @login_required
 def gestionar_intercambio(request, oferta_id):
     oferta = get_object_or_404(Intercambio, id=oferta_id)
@@ -560,7 +574,10 @@ def gestionar_intercambio(request, oferta_id):
         
         if accion == 'confirmar_intercambio':
             try:
+                actualizar_calificaciones_y_donacion(oferta, request)
+                
                 oferta.confirmar()
+                oferta.save()
                 messages.success(request, "Intercambio confirmado.")
             except ValueError as e:
                 messages.warning(request, str(e))
@@ -572,11 +589,14 @@ def gestionar_intercambio(request, oferta_id):
                 if motivo == 'Otro' and motivo_otro:
                     motivo = motivo_otro
                 try:
+                    actualizar_calificaciones_y_donacion(oferta, request)
+                    
                     oferta.desestimar(motivo)
                     oferta.publicacion_ofertante.disponible_para_intercambio = True
                     oferta.publicacion_ofertante.save()
                     oferta.publicacion_demandada.disponible_para_intercambio = True
                     oferta.publicacion_demandada.save()
+                    oferta.save()  # No olvidar guardar después de desestimar
                     messages.success(request, "Intercambio desestimado.")
                 except ValueError as e:
                     messages.warning(request, str(e))
