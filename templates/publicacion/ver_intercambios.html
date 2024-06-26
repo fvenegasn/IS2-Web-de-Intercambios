@@ -23,7 +23,7 @@
     <li class="mb-3">
         <div class="card text-center">
             <div class="card-header">
-                <p>Intercambio: {{ oferta.publicacion_ofertante.nombre }} por {{oferta.publicacion_demandada.nombre}}</p>
+                <p><strong>Intercambio: {{ oferta.publicacion_ofertante.nombre }} por {{oferta.publicacion_demandada.nombre}}</strong></p>
                 <p>Estado: 
                 {% if oferta.estado == 'ACEPTADA' %}
                     Oferta aceptada, intercambio registrado pendiente de realizarse.
@@ -73,8 +73,7 @@
                 </div>
             </div>
             <div class="card-footer">
-                {% if user.isModerador %}
-                    {% if oferta.estado == 'ACEPTADA' %}
+                {% if user.isModerador and oferta.estado == 'ACEPTADA' %}
                     <div class="d-flex align-items-center justify-content-center" style="width: 100%;">
                         <form action="{% url 'gestionar_intercambio' oferta.id %}" method="post" class="d-flex align-items-center justify-content-center mx-1" style="width: 80%; gap: 8px; display: flex;">
                             {% csrf_token %}
@@ -141,33 +140,22 @@
                             </div>
                         </form>
                     </div>
-                    {% else %}
-                    <div class="d-flex align-items-center justify-content-center" style="width: 100%;">
-                        <div class="" style="width: 80%;">
-                            <div class="container">
-                                <div class="card" style="width: 80%; margin: auto;">
-                                    <div class="card-body">
-                                        <div class="d-flex justify-content-between">
-                                            <p>Se calificó a <strong>{{ oferta.publicacion_ofertante.usuario.get_full_name }}</strong> con:</p>
-                                            <p class="text-primary">{{ oferta.calificacion_ofertante }} ⭐</p>
-                                        </div>
-                                        <div class="d-flex justify-content-between">
-                                            <p>Se calificó a <strong>{{ oferta.publicacion_demandada.usuario.get_full_name }}</strong> con:</p>
-                                            <p class="text-primary">{{ oferta.calificacion_demandante }} ⭐</p>
-                                        </div>
-                                        <div class="text-center">
-                                            {% if oferta.hubo_donacion %}
-                                                <p class="text-success">Se registró una donación: {{ oferta.donacion_descripcion }}</p>
-                                            {% else %}
-                                                <p class="text-danger">No se registró donación.</p>
-                                            {% endif %}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                {% elif oferta.estado != 'ACEPTADA' %}
+                    <div class="d-flex flex-column align-items-center" style="width: 90%; margin: auto;">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <p>Se calificó a {{ oferta.publicacion_ofertante.usuario.get_full_name }} con: {{ oferta.calificacion_ofertante }} ⭐</p>
+                        </div>
+                        <div class="d-flex align-items-center justify-content-between">
+                            <p>Se calificó a {{ oferta.publicacion_demandada.usuario.get_full_name }} con: {{ oferta.calificacion_demandante }} ⭐</p>
+                        </div>
+                        <div class="text-center">
+                            {% if oferta.hubo_donacion %}
+                                <p class="text-success">Se registró una donación: {{ oferta.donacion_descripcion }}</p>
+                            {% else %}
+                                <p class="text-danger">No se registró donación.</p>
+                            {% endif %}
                         </div>
                     </div>
-                    {% endif %}
                 {% endif %}
             </div>
         </div>

@@ -43,11 +43,11 @@ class Usuario(AbstractUser):
         demandante = self.promedio_calificaciones_demandante()
         if ofertante is not None and demandante is not None:
             total = (ofertante + demandante) / 2
-            return f"(⭐{total}⭐)"
+            return f"⭐{total}⭐"
         elif ofertante is not None:
-            return f"(⭐{ofertante}⭐)"
+            return f"⭐{ofertante}⭐"
         elif demandante is not None:
-            return f"(⭐{demandante}⭐)"
+            return f"⭐{demandante}⭐"
         else:
             return "(Usuario nuevo)"  # O cualquier otro valor que indique la ausencia de calificaciones
 
