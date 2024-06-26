@@ -600,6 +600,12 @@ def gestionar_intercambio(request, oferta_id):
                     messages.success(request, "Intercambio desestimado.")
                 except ValueError as e:
                     messages.warning(request, str(e))
+            else:
+                messages.warning(request, "Se requiere un motivo para desestimar el intercambio.")
+    else:
+        messages.warning(request, "Acción no permitida.")
+    
+    return redirect('ver_intercambios_moderador')
 
 
 @login_required

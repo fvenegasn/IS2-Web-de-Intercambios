@@ -7,6 +7,7 @@ from django.utils import timezone
 from abc import ABC, abstractmethod
 import datetime
 from django.db.models import Q
+from django.db.models import Avg
 
 # Create your models here.
 
@@ -18,6 +19,37 @@ class Usuario(AbstractUser):
     telefono = models.CharField(max_length=20, blank=True)
     direccion = models.CharField(max_length=100, blank=True)
     nacimiento = models.DateField(blank=True, null=True)
+    
+    def promedio_calificaciones_ofertante(self):
+        # Verifica primero si hay intercambios con calificaciones para el ofertante
+        intercambios = Intercambio.objects.filter(publicacion_ofertante__usuario=self, calificacion_ofertante__gt=0)
+        if intercambios.exists():
+            promedio = intercambios.aggregate(Avg('calificacion_ofertante'))['calificacion_ofertante__avg']
+            return promedio
+        else:
+            return None  # O cualquier otro valor que indique la ausencia de calificaciones
+
+    def promedio_calificaciones_demandante(self):
+        # Verifica primero si hay intercambios con calificaciones para el demandante
+        intercambios = Intercambio.objects.filter(publicacion_demandada__usuario=self, calificacion_demandante__gt=0)
+        if intercambios.exists():
+            promedio = intercambios.aggregate(Avg('calificacion_demandante'))['calificacion_demandante__avg']
+            return promedio
+        else:
+            return None  # O cualquier otro valor que indique la ausencia de calificaciones
+
+    def get_promedio(self):
+        ofertante = self.promedio_calificaciones_ofertante()
+        demandante = self.promedio_calificaciones_demandante()
+        if ofertante is not None and demandante is not None:
+            total = (ofertante + demandante) / 2
+            return f"(⭐{total}⭐)"
+        elif ofertante is not None:
+            return f"(⭐{ofertante}⭐)"
+        elif demandante is not None:
+            return f"(⭐{demandante}⭐)"
+        else:
+            return "(Usuario nuevo)"  # O cualquier otro valor que indique la ausencia de calificaciones
 
     class Types(models.TextChoices):
         Administrador = "Administrador", "Administrador"
