@@ -75,35 +75,68 @@
             <div class="card-footer">
                 {% if user.isModerador %}
                     {% if oferta.estado == 'ACEPTADA' %}
-                        <div class="d-flex align-items-center justify-content-center">
-                            <form action="{% url 'confirmar_intercambio' oferta.id %}" method="post" class="mx-1 w-25">
-                                {% csrf_token %}
-                                <button type="submit" class="btn btn-success">Confirmar</button>
-                            </form>
-                            <form action="{% url 'desestimar_intercambio' oferta.id %}" method="post" class="w-50">
-                                {% csrf_token %}
-                                <div class="d-flex align-items-center justify-content-center">
-                                    <button type="submit" class="btn btn-danger mx-1 w-50">Desestimar</button>
-                                    <select name="motivo" id="motivo" class="form-control" onchange="toggleOtroCampo(this)">
-                                        <option value="" selected disabled>-- Motivo --</option>
-                                        {% for value, label in oferta.MOTIVOS_DESESTIMACION %}
-                                        <option value="{{ value }}">{{ label }}</option>
-                                        {% endfor %}
-                                    </select>
-                                    <input type="text" name="motivo_otro" id="motivo_otro" class="form-control mt-2" placeholder="Especifique el motivo" style="display:none;">
-                                </div>
-                            </form>
-                            <script>
-                                function toggleOtroCampo(select) {
-                                    var otroCampo = document.getElementById('motivo_otro');
-                                    if (select.value === 'Otro') {
-                                        otroCampo.style.display = 'block';
-                                    } else {
-                                        otroCampo.style.display = 'none';
+                    <div class="d-flex align-items-center justify-content-center" style="width: 100%;">
+                        <form action="{% url 'gestionar_intercambio' oferta.id %}" method="post" class="d-flex align-items-center justify-content-center mx-1" style="width: 80%; gap: 8px; display: flex;">
+                            {% csrf_token %}
+                            <div class="d-flex align-items-center justify-content-center" style="width: 100%;">
+                                <select name="calificacion_demandada" class="form-control mx-1" style="flex: 1;" required>
+                                    <option value="" selected disabled>Calificar a {{oferta.publicacion_demandada.usuario.get_full_name}}:</option>
+                                    <option value="1">Calificación de {{oferta.publicacion_demandada.usuario.get_full_name}}: 1</option>
+                                    <option value="2">Calificación de {{oferta.publicacion_demandada.usuario.get_full_name}}: 2</option>
+                                    <option value="3">Calificación de {{oferta.publicacion_demandada.usuario.get_full_name}}: 3</option>
+                                    <option value="4">Calificación de {{oferta.publicacion_demandada.usuario.get_full_name}}: 4</option>
+                                    <option value="5">Calificación de {{oferta.publicacion_demandada.usuario.get_full_name}}: 5</option>
+                                </select>
+                                <select name="calificacion_ofertante" class="form-control mx-1" style="flex: 1;" required>
+                                    <option value="" selected disabled>Calificar a {{oferta.publicacion_ofertante.usuario.get_full_name}}:</option>
+                                    <option value="1">Calificación de {{oferta.publicacion_ofertante.usuario.get_full_name}}: 1</option>
+                                    <option value="2">Calificación de {{oferta.publicacion_ofertante.usuario.get_full_name}}: 2</option>
+                                    <option value="3">Calificación de {{oferta.publicacion_ofertante.usuario.get_full_name}}: 3</option>
+                                    <option value="4">Calificación de {{oferta.publicacion_ofertante.usuario.get_full_name}}: 4</option>
+                                    <option value="5">Calificación de {{oferta.publicacion_ofertante.usuario.get_full_name}}: 5</option>
+                                </select>
+                            </div>
+                            <div class="d-flex align-items-center justify-content-center" style="width: 100%;">
+                                <select name="donacion_realizada" id="donacion_realizada" class="form-control mx-1" onchange="toggleDescripcionDonacion(this)" required>
+                                    <option value="" selected disabled>¿Se realizó una donación?</option>
+                                    <option value="No">No hubo donacion en este intercambio</option>
+                                    <option value="Si">Se registro donacion en este intercambio</option>
+                                </select>
+                                <input type="text" name="descripcion_donacion" id="descripcion_donacion" class="form-control mx-1" placeholder="Descripción de la donación" style="display:none;" required>
+                                <script>
+                                    function toggleDescripcionDonacion(select) {
+                                        var descripcion = document.getElementById('descripcion_donacion');
+                                        if (select.value === 'Si') {
+                                            descripcion.style.display = 'block';
+                                        } else {
+                                            descripcion.style.display = 'none';
+                                        }
                                     }
-                                }
-                            </script>
-                        </div>
+                                </script>
+                            </div>
+                            <div class="d-flex align-items-center justify-content-center" style="width: 100%;">
+                                <button type="submit" name="accion" value="confirmar_intercambio" class="btn btn-success mx-1" style="flex: 1;">Confirmar</button>
+                                <button type="submit" name="accion" value="desestimar_intercambio" class="btn btn-danger mx-1" style="flex: 1;">Desestimar</button>
+                                <select name="motivo" id="motivo" class="form-control mx-1" style="flex: 1;" onchange="toggleOtroCampo(this)">
+                                    <option value="" selected disabled>-- Motivo --</option>
+                                    {% for value, label in oferta.MOTIVOS_DESESTIMACION %}
+                                    <option value="{{ value }}">{{ label }}</option>
+                                    {% endfor %}
+                                </select>
+                                <input type="text" name="motivo_otro" id="motivo_otro" class="form-control mx-1" placeholder="Especifique el motivo" style="flex: 1; display:none;">
+                            </div>
+                        </form>
+                    </div>
+                        <script>
+                        function toggleOtroCampo(select) {
+                            var otroCampo = document.getElementById('motivo_otro');
+                            if (select.value === 'Otro') {
+                                otroCampo.style.display = 'block';
+                            } else {
+                                otroCampo.style.display = 'none';
+                            }
+                        }
+                        </script>
                     {% endif %}
                 {% endif %}
             </div>

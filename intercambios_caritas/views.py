@@ -552,43 +552,39 @@ def cancelar_oferta(request, oferta_id):
     return redirect('ver_ofertas_realizadas')
 
 @login_required
-def confirmar_intercambio(request, oferta_id):
+def gestionar_intercambio(request, oferta_id):
     oferta = get_object_or_404(Intercambio, id=oferta_id)
-    try:
-        oferta.confirmar()
-        messages.success(request, "Intercambio confirmado.")
-    except ValueError as e:
-        messages.error(request, str(e))
-    return redirect(ver_intercambios_moderador)
-
-@login_required
-def desestimar_intercambio(request, oferta_id):
-    oferta = get_object_or_404(Intercambio, id=oferta_id)
-
+    
     if request.method == 'POST':
-        motivo = request.POST.get('motivo')
-        motivo_otro = request.POST.get('motivo_otro')
-        #motivo = request.POST.get('motivo', '')
-        if motivo:
-            if motivo == 'Otro' and motivo_otro:
-                motivo = motivo_otro
-            #if not strip_tags(motivo.strip()):  # Verificar si el motivo contiene solo espacios en blanco
-            #    messages.error(request, "El motivo no puede estar compuesto únicamente por espacios en blanco.")
-            #else:
+        accion = request.POST.get('accion')
+        
+        if accion == 'confirmar_intercambio':
             try:
-                oferta.desestimar(motivo)
-                oferta.publicacion_ofertante.disponible_para_intercambio = True
-                oferta.publicacion_ofertante.save()
-                oferta.publicacion_demandada.disponible_para_intercambio = True
-                oferta.publicacion_demandada.save()
-                messages.success(request, "Intercambio desestimado.")
+                oferta.confirmar()
+                messages.success(request, "Intercambio confirmado.")
             except ValueError as e:
-                messages.error(request, str(e))
-        else:
-            messages.error(request, "Se requiere un motivo para desestimar el intercambio.")
+                messages.warning(request, str(e))
+                
+        elif accion == 'desestimar_intercambio':
+            motivo = request.POST.get('motivo')
+            motivo_otro = request.POST.get('motivo_otro')
+            if motivo:
+                if motivo == 'Otro' and motivo_otro:
+                    motivo = motivo_otro
+                try:
+                    oferta.desestimar(motivo)
+                    oferta.publicacion_ofertante.disponible_para_intercambio = True
+                    oferta.publicacion_ofertante.save()
+                    oferta.publicacion_demandada.disponible_para_intercambio = True
+                    oferta.publicacion_demandada.save()
+                    messages.success(request, "Intercambio desestimado.")
+                except ValueError as e:
+                    messages.warning(request, str(e))
+            else:
+                messages.warning(request, "Se requiere un motivo para desestimar el intercambio.")
     else:
-        messages.error(request, "El intercambio ya ha sido desestimado o no está en el estado correcto.")
-
+        messages.warning(request, "Acción no permitida.")
+    
     return redirect('ver_intercambios_moderador')
 
 
