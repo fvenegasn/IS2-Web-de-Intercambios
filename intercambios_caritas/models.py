@@ -340,16 +340,29 @@ class Intercambio(models.Model):
 
     MOTIVOS_RECHAZO = [
         ('No me gusta el producto', 'No me gusta el producto'),
+        ('El producto no cumplió con mis expectativas', 'El producto no cumplió con mis expectativas'),
         ('No puedo en ese día/horario', 'No puedo en ese día/horario'),
         ('No puedo en ese centro', 'No puedo en ese centro'),
+        ('Otro', 'Otro')
         # motivos según sea necesario
     ]
 
     MOTIVOS_CANCELACION = [
         ('Confundi', 'Me confundi'),
+        ('El producto no cumplió con mis expectativas', 'El producto no cumplió con mis expectativas'),
         ('No puedo en ese día/horario', 'No puedo en ese día/horario'),
         ('No puedo en ese centro', 'No puedo en ese centro'),
+        ('Otro', 'Otro')
         # motivos según sea necesario
+    ]
+
+    MOTIVOS_DESESTIMACION = [
+        ("Faltó el usuario que inició la oferta", "Faltó el usuario que inició la oferta"),
+        ("Faltó el usuario que aceptó la oferta", "Faltó el usuario que aceptó la oferta"),
+        ("El usuario ofertante no trajo el producto", "El usuario ofertante no trajo el producto"),
+        ("El usuario ofertado no trajo el producto", "El usuario ofertado no trajo el producto"),
+        ('Otro', 'Otro')
+        # motivos A COMPLETAR EN CONSULTA
     ]
 
     publicacion_ofertante = models.ForeignKey('Publicacion', related_name='ofertas_realizadas', on_delete=models.CASCADE)
