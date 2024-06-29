@@ -1,7 +1,7 @@
 import datetime
 from django.utils import timezone
 from django import forms
-from .models import Publicacion, Intercambio, Categoria, Pregunta, Respuesta
+from .models import Filial, Publicacion, Intercambio, Categoria, Pregunta, Respuesta
 
 class PublicacionForm(forms.ModelForm):
     dias_convenientes = forms.MultipleChoiceField(
@@ -176,6 +176,21 @@ class CategoriaForm(forms.ModelForm):
     class Meta:
         model = Categoria
         fields = ['nombre']
+
+class FilialForm(forms.ModelForm):
+    class Meta:
+        model = Filial
+        fields = ['nombre']
+        widgets = {
+            'nombre': forms.TextInput(attrs={'class': 'form-control'})
+        }
+
+    def clean_nombre(self):
+        nombre = self.cleaned_data['nombre']
+        capitalized_nombre = nombre.title() 
+        if Filial.objects.filter(nombre__iexact=capitalized_nombre).exists():
+            raise forms.ValidationError("")
+        return capitalized_nombre
 
 class PreguntaForm(forms.ModelForm):
     class Meta:

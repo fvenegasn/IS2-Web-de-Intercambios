@@ -65,4 +65,5 @@ urlpatterns = [
     path('ver_publicacion/<int:publicacion_id>/eliminar', views.bajar_mi_publicacion, name="bajar_mi_publicacion"),
 
      path('listar_categorias', views.listar_categorias, name='listar_categorias'),
+     path('listar_filiales', views.listar_filiales,name="listar_filiales")
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

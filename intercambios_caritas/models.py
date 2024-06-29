@@ -118,6 +118,16 @@ class Categoria(models.Model):
 
     def __str__(self):
         return self.nombre
+    
+class Filial(models.Model):
+    nombre = models.CharField(max_length=100, unique=True)
+
+    def __str__(self):
+        return self.nombre
+
+    def save(self, *args, **kwargs):
+        self.nombre = self.nombre.title() # aca cambiar porque en realidad Cada Palabra Es Mayus
+        super().save(*args, **kwargs)
 
 class Publicacion(models.Model):
     """
@@ -369,7 +379,6 @@ class Intercambio(models.Model):
     ]
 
     MOTIVOS_CANCELACION = [
-        ('Confundi', 'Me confundi'),
         ('El producto no cumplió con mis expectativas', 'El producto no cumplió con mis expectativas'),
         ('No puedo en ese día/horario', 'No puedo en ese día/horario'),
         ('No puedo en ese centro', 'No puedo en ese centro'),
