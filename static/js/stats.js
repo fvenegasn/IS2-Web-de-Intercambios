@@ -96,49 +96,78 @@ const getIntercambiosEstado = () => {
 
 document.onload = getIntercambiosEstado();
 
-// Intercambios filial
+// Intercambios acumulados
 
+const displayChartAcumulados = (data, labels) => {
+  console.log("Data for chart:", data);
+  console.log("Labels for chart:", labels);
 
-var ctx_filial = document.getElementById("intercambios_filial").getContext("2d");
-var barchart_mes = new Chart(ctx_filial,  {
-    type: 'bar',
-    data: {
-        labels: ["Filial 1", "Filial 2", "Filial 3"],
-        datasets: [
-          {
-            label: 'Categoria 1',
-            data: [10, 30, 20],
-            backgroundColor: 'rgb(255, 99, 132)',
-          },
-          {
-            label: 'Categoria 1',
-            data: [30, 10, 60],
-            backgroundColor: 'rgb(54, 162, 235)',
-          },
-          {
-            label: 'Categoria 1',
-            data: [50, 10, 10],
-            backgroundColor: 'rgb(255, 205, 86)',
-          },
-        ]
+  var ctx_mes = document.getElementById("intercambios_totales").getContext("2d");
+
+  var lineChart = new Chart(ctx_mes, {
+      
+      type: 'line',
+      data: {
+          labels: labels,
+          datasets: [{
+              label: 'Intercambios Diarios Acumulados',
+              data: data,
+              fill: false,
+              cubicInterpolationMode: 'monotone',
+              borderColor: 'rgb(75, 192, 192)',
+              tension: 0.4
+          }]
       },
-    options: {
-      plugins: {
-        title: {
-          display: true,
-          text: 'Intercambios por Filiales y categoria'
-        },
+      options: {
+          responsive: true,
+          plugins: {
+              legend: {
+                  position: 'top',
+              },
+              title: {
+                  display: true,
+                  text: 'Intercambios Diarios Acumulados'
+              }
+          },
+          scales: {
+              x: {
+                  type: 'time',
+                  time: {
+                      unit: 'day',
+                      tooltipFormat: 'MMM D, YYYY'
+                  },
+                  title: {
+                      display: true,
+                      text: 'Fecha'
+                  }
+              },
+              y: {
+                  title: {
+                      display: true,
+                      text: 'Total Acumulado'
+                  }
+              }
+          }
       },
-      responsive: true,
-      scales: {
-        x: {
-          stacked: true,
-        },
-        y: {
-          stacked: true
-        }
-      }
-    }
-  }
-)
+  });
+};
+
+const getIntercambiosAcumulados = () => {
+  fetch("/metricas_intercambios_totales")
+      .then((res) => res.json())
+      .then((res1) => {
+          console.log("API response:", res1);
+          const results = res1.intercambios_dia_total;
+          const labels = Object.keys(results);
+          const data = Object.values(results);
+
+          displayChartAcumulados(data, labels);
+      })
+      .catch((error) => {
+          console.error("Error fetching data:", error);
+      });
+};
+
+window.onload = getIntercambiosAcumulados;
+
 

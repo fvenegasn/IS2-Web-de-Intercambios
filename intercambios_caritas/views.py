@@ -20,7 +20,7 @@ import json
 from django.http import JsonResponse
 from collections import Counter
 from django.db.models import Q, Count
-from django.db.models.functions import TruncMonth
+from django.db.models.functions import TruncMonth,TruncDay
 
 # Create your views here.
 
@@ -654,8 +654,8 @@ def get_intercambios_mes(request):
     # Filter the queryset
     intercambios = Intercambio.objects.filter(
         Q(estado="ACEPTADA") | Q(estado="CONFIRMADA") | Q(estado="DESESTIMADA")
-    ).annotate(year_month=TruncMonth('fecha_intercambio')).values('year_month', 'punto_encuentro').annotate(total=Count('id')).order_by('-year_month')
-
+    ).annotate(year_month=TruncMonth('fecha_intercambio')).values('year_month', 'punto_encuentro').annotate(total=Count('id')).order_by('year_month')
+    print(intercambios)
     # Prepare the data for the chart
     finalrep = {}
     for item in intercambios:
@@ -721,3 +721,20 @@ def agregar_respuesta(request, pregunta_id):
     return render(request, 'publicacion/ver_publicacion.html', {'form': form, 'pregunta': pregunta})
 
 # ------------------------------------------
+
+
+def get_intercambios_totales(request):
+    # Filter the queryset
+    intercambios = Intercambio.objects.filter(
+        Q(estado="ACEPTADA") | Q(estado="CONFIRMADA") | Q(estado="DESESTIMADA")
+    ).annotate(day=TruncDay('fecha_intercambio')).values('day').annotate(total=Count('id')).order_by('day')
+    
+    finalrep = {}
+    totalcum = 0
+    for item in intercambios:
+        day = item['day'].strftime("%Y-%m-%d")
+        totalcum += item['total']
+        finalrep[day] = totalcum
+
+    return JsonResponse({'intercambios_dia_total': finalrep}, safe=False)
+    # Prepare the data for the chart
