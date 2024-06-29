@@ -12,11 +12,30 @@
 {% endfor %}
 {% endif %}
 {% if user.isModerador %}
-    <h1 class="text-center custom-h1-bg mb-2">Intercambios de filial: {{ user.filial }}</h1>    
+    <h1 class="text-center custom-h1-bg mb-2">Intercambios de filial: {{ user.filial }}</h1>
+       <!-- Formulario de Filtro -->
+       <form method="GET" class="mb-4">
+        <div class="row g-3 align-items-center justify-content-center">
+            <div class="col-auto">
+                {{ form.usuario.label_tag }}
+                {{ form.usuario}}
+            </div>
+            <div class="col-auto">
+                {{ form.estado.label_tag }}
+                {{ form.estado }}
+            </div>
+            <div class="col-auto">
+                {{ form.fecha.label_tag }}
+                {{ form.fecha }}
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary">Filtrar</button>
+            </div>
+        </div>
+    </form>    
 {% else %}
-    <h1 class="text-center custom-h1-bg mb-2">Mis Intercambios</h1>      
+    <h1 class="text-center custom-h1-bg mb-2">Mis Intercambios</h1>
 {% endif %}
-
 <ul>
     {% if ofertas_recibidas %}
     {% for oferta in ofertas_recibidas %}

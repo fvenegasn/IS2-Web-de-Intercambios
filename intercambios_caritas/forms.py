@@ -2,6 +2,7 @@ import datetime
 from django.utils import timezone
 from django import forms
 from .models import Filial, Publicacion, Intercambio, Categoria, Pregunta, Respuesta
+from django.core.exceptions import ValidationError
 
 class PublicacionForm(forms.ModelForm):
     dias_convenientes = forms.MultipleChoiceField(
@@ -201,3 +202,13 @@ class RespuestaForm(forms.ModelForm):
     class Meta:
         model = Respuesta
         fields = ['contenido']
+
+class UsuarioModelChoiceField(forms.ModelChoiceField):
+    def label_from_instance(self, obj):
+        return f"{obj.get_full_name()}"
+        
+class FiltroIntercambiosForm(forms.Form):
+    usuario = UsuarioModelChoiceField(queryset=Usuario.objects.all(), required=False, label='Usuario')
+    ESTADOS_CHOICES = [('', 'Todos')] + list(Intercambio.ESTADOS)
+    estado = forms.ChoiceField(choices=ESTADOS_CHOICES, required=False, label='Estado')
+    fecha = forms.DateField(label='Fecha', required=False, widget=forms.DateInput(attrs={'type': 'date'}))

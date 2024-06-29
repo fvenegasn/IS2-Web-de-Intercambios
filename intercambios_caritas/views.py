@@ -2,8 +2,9 @@ import datetime
 import django
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render, get_object_or_404
-from intercambios_caritas.forms import IntercambioForm, PublicacionForm, UpdatePublicacionForm,PreguntaForm,RespuestaForm, FilialForm
+from intercambios_caritas.forms import IntercambioForm, PublicacionForm, UpdatePublicacionForm,PreguntaForm,RespuestaForm, FilialForm, FiltroIntercambiosForm
 from intercambios_caritas.models import Intercambio, Usuario, Publicacion, Categoria,Pregunta,Respuesta, Filial
+
 from . import views
 from django.utils.html import strip_tags
 from django.contrib.auth.decorators import login_required
@@ -21,6 +22,7 @@ from django.http import JsonResponse
 from collections import Counter
 from django.db.models import Q, Count
 from django.db.models.functions import TruncMonth,TruncDay
+from django.utils import timezone
 
 # Create your views here.
 
@@ -480,11 +482,32 @@ def ver_ofertas_recibidas(request):
 
 @login_required
 def ver_intercambios_moderador(request):
-    inter = Intercambio.objects.filter(
+    intercambios = Intercambio.objects.filter(
         Q(punto_encuentro=request.user.filial) & 
         (Q(estado="ACEPTADA") | Q(estado="CONFIRMADA") | Q(estado="DESESTIMADA"))
-        ).order_by('-fecha_creacion')
-    return render(request, 'publicacion/ver_intercambios.html', {'ofertas_recibidas': inter})
+    ).order_by('-fecha_creacion')
+    
+    if request.method == 'GET':
+        form = FiltroIntercambiosForm(request.GET)
+        if form.is_valid():
+            usuario = form.cleaned_data.get('usuario')
+            estado = form.cleaned_data.get('estado')
+            fecha = form.cleaned_data.get('fecha')
+
+            if usuario:
+                intercambios = intercambios.filter(
+                    Q(publicacion_ofertante__usuario=usuario) | Q(publicacion_demandada__usuario=usuario)
+                )
+
+            if estado and estado != 'Todos':
+                intercambios = intercambios.filter(estado=estado)
+
+            if fecha:
+                intercambios = intercambios.filter(fecha_intercambio=fecha)
+    else:
+        form = FiltroIntercambiosForm()
+
+    return render(request, 'publicacion/ver_intercambios.html', {'ofertas_recibidas': intercambios, 'form': form})
 
 @login_required
 def ver_mis_intercambios(request):
