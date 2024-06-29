@@ -99,6 +99,9 @@ class Usuario(AbstractUser):
 
     def modificarRol(self, nuevoRol):
         self.rol = nuevoRol
+    
+    def get_full_name(self) -> str:
+        return super().get_full_name()
 
 
 def get_default_user():
