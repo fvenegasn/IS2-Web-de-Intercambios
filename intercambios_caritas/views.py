@@ -325,14 +325,11 @@ def crear_publicacion(request):
                 'punto_encuentro': 'No se especificó un punto de encuentro.',
                 'dias_convenientes': 'No se especificó un dia conveniente.',
                 'franja_horaria_inicio': 'La hora de fin no puede ser menor a la hora de inicio.',
-                'categoria':'AAAAA',
-                'categoria_nueva':"BBBB"
+                'categoria':'No se especificó la categoría',
+                'categoria_nueva':"No se especificó la categoría"
             }
             generic_error_message = 'Error, Publicación no creada. verificar datos ingresados.'
             custom_error_found = False
-            for field, errors in form.errors.items():
-                for error in errors:
-                    messages.error(request, f"Error: {error}")
             for field in form.errors:
                 if field in error_messages:
                     messages.warning(request, f"Error, Publicación no creada. {error_messages[field]}")

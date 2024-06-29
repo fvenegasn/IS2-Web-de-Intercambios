@@ -25,7 +25,7 @@ class PublicacionForm(forms.ModelForm):
         required=True,
         label='Franja horaria fin'
     )
-    categoria = forms.ModelChoiceField(queryset=Categoria.objects.all(), empty_label="-- Seleccione --")
+    categoria = forms.ModelChoiceField(queryset=Categoria.objects.all(), empty_label="-- Seleccione --", required=True)
 
     class Meta:
         model = Publicacion
@@ -185,6 +185,13 @@ class FilialForm(forms.ModelForm):
         widgets = {
             'nombre': forms.TextInput(attrs={'class': 'form-control'})
         }
+
+    def clean_nombre(self):
+        nombre = self.cleaned_data['nombre']
+        capitalized_nombre = nombre.title() 
+        if Categoria.objects.filter(nombre__iexact=capitalized_nombre).exists():
+            raise forms.ValidationError("")
+        return capitalized_nombre
 
     def clean_nombre(self):
         nombre = self.cleaned_data['nombre']
