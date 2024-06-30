@@ -701,10 +701,16 @@ def listar_filiales(request):
 
 def get_intercambios_mes(request):
     # Filter the queryset
-    intercambios = Intercambio.objects.filter(
-        Q(estado="ACEPTADA") | Q(estado="CONFIRMADA") | Q(estado="DESESTIMADA")
-    ).annotate(year_month=TruncMonth('fecha_intercambio')).values('year_month', 'punto_encuentro').annotate(total=Count('id')).order_by('year_month')
-    print(intercambios)
+    user = request.user
+    if user.rol == "Moderador":
+        intercambios = Intercambio.objects.filter(
+            (Q(estado="ACEPTADA") | Q(estado="CONFIRMADA") | Q(estado="DESESTIMADA"))&Q(punto_encuentro = user.filial)
+        ).annotate(year_month=TruncMonth('fecha_intercambio')).values('year_month', 'punto_encuentro').annotate(total=Count('id')).order_by('year_month')
+    else:
+        intercambios = Intercambio.objects.filter(
+            Q(estado="ACEPTADA") | Q(estado="CONFIRMADA") | Q(estado="DESESTIMADA")
+        ).annotate(year_month=TruncMonth('fecha_intercambio')).values('year_month', 'punto_encuentro').annotate(total=Count('id')).order_by('year_month')
+
     # Prepare the data for the chart
     finalrep = {}
     for item in intercambios:
@@ -726,8 +732,11 @@ def get_intercambios_mes(request):
 
 def get_intercambios_estado(request):
     # Filtra con los intercambios que me interesa mostrar
-    # TODO: cambiar la logica para cuando es moderador o admin
-    intercambios = Intercambio.objects.all()
+    user = request.user
+    if user.rol =="Moderador":
+        intercambios = Intercambio.objects.filter(Q(punto_encuentro = user.filial))
+    else:
+        intercambios = Intercambio.objects.all()
 
     # cuenta
     intercambios_counts = intercambios.values('estado').annotate(total=Count('id'))
@@ -773,11 +782,19 @@ def agregar_respuesta(request, pregunta_id):
 
 
 def get_intercambios_totales(request):
+    user = request.user
+    intercambios = None
     # Filter the queryset
-    intercambios = Intercambio.objects.filter(
-        Q(estado="ACEPTADA") | Q(estado="CONFIRMADA") | Q(estado="DESESTIMADA")
-    ).annotate(day=TruncDay('fecha_intercambio')).values('day').annotate(total=Count('id')).order_by('day')
-    
+    if user.rol == "Moderador":
+        intercambios = Intercambio.objects.filter(
+            (Q(estado="ACEPTADA") | Q(estado="CONFIRMADA") | Q(estado="DESESTIMADA"))&Q(punto_encuentro = user.filial)
+        ).annotate(day=TruncDay('fecha_intercambio')).values('day').annotate(total=Count('id')).order_by('day')
+        
+    else:
+        intercambios = Intercambio.objects.filter(
+            Q(estado="ACEPTADA") | Q(estado="CONFIRMADA") | Q(estado="DESESTIMADA")
+        ).annotate(day=TruncDay('fecha_intercambio')).values('day').annotate(total=Count('id')).order_by('day')
+
     finalrep = {}
     totalcum = 0
     for item in intercambios:
@@ -788,6 +805,11 @@ def get_intercambios_totales(request):
     return JsonResponse({'intercambios_dia_total': finalrep}, safe=False)
 
 def mostrar_tabla_estadisticas(request):
-    intercambios = Intercambio.objects.all()
+    user = request.user
+    if user.rol == "Moderador":
+        intercambios = Intercambio.objects.filter(Q(punto_encuentro = user.filial))
+    else:
+        intercambios = Intercambio.objects.all()
+    
     intercambios = list(intercambios.annotate(year_month=TruncMonth('fecha_intercambio')).values('year_month', 'punto_encuentro', 'estado').annotate(total=Count('id')).order_by('year_month'))
     return JsonResponse({'intercambios':intercambios}, safe=False)
