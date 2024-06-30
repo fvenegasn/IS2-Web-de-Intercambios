@@ -759,4 +759,8 @@ def get_intercambios_totales(request):
         finalrep[day] = totalcum
 
     return JsonResponse({'intercambios_dia_total': finalrep}, safe=False)
-    # Prepare the data for the chart
+
+def mostrar_tabla_estadisticas(request):
+    intercambios = Intercambio.objects.all()
+    intercambios = list(intercambios.annotate(year_month=TruncMonth('fecha_intercambio')).values('year_month', 'punto_encuentro', 'estado').annotate(total=Count('id')).order_by('year_month'))
+    return JsonResponse({'intercambios':intercambios}, safe=False)

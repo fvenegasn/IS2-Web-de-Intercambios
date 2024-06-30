@@ -171,3 +171,48 @@ const getIntercambiosAcumulados = () => {
 window.onload = getIntercambiosAcumulados;
 
 
+// tabla
+
+let dataTable;
+let dataTableInitialized = false;
+
+const dataTableOptions =  {
+  columnDefs : [
+    {className : "centered", targets : [0, 1, 2, 3]}
+  ]
+};
+
+const initDatatable = async ()=>{
+  if (dataTableInitialized){
+    dataTable.destroy();
+  }
+  await listIntercambios();
+  dataTable = $("#datatable_estadisticas").DataTable(dataTableOptions);
+  dataTableInitialized = true;
+};
+
+const listIntercambios = async()=>{
+  try{
+    const response = await fetch("/metricas_mostrar_tabla");
+    const data = await response.json();
+    let content = ``;
+    data.intercambios.forEach((intercambio, index)=>{
+      content+=`
+        <tr>
+          <td>${intercambio.punto_encuentro}</td>
+          <td>${intercambio.year_month}</td>
+          <td>${intercambio.estado}</td>
+          <td>${intercambio.total}</td>
+        </tr>
+      `;
+    });
+    tabla_intercambios.innerHTML = content;
+  }catch(ex){
+    alert(ex);
+  }
+
+};
+
+window.addEventListener('load', async()=>{
+  await initDatatable();
+});

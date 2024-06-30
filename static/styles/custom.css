@@ -188,3 +188,10 @@ footer {
     height: 100px; 
     object-fit: cover;
 }
+
+/*para centrar la tabla*/
+
+.centered {
+    text-align: center !important;
+    vertical-align: middle !important;
+}

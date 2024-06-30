@@ -24,7 +24,32 @@
 </div>
 
 <!-- Tabla Listado -->
+<div class="container mt-8">
+  <div class="row">
+    <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+        <div class="table-responsive">
+          <table class="table" id="datatable_estadisticas">
+            <thead>
+              <tr>
+                <th class="centered">Filial</th>
+                <th class="centered">Fecha</th>
+                <th class="centered">Estado</th>
+                <th class="centered">Total</th>
+              </tr>
+            </thead>
+            <tbody id="tabla_intercambios"></tbody>
+          </table>
+        </div>
+    </div> 
+  </div>
+</div>
+<!-- Para Data Table -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
+<script src="https://cdn.datatables.net/2.0.8/js/dataTables.js"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
 
+<!-- Para Chart JS -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.9.0/feather.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
 <script src="{% static 'js/stats.js' %}"></script>
