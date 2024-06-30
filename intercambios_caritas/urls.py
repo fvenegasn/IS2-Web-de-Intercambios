@@ -70,5 +70,5 @@ urlpatterns = [
 =======
      path('listar_categorias', views.listar_categorias, name='listar_categorias'),
      path('listar_filiales', views.listar_filiales,name="listar_filiales")
->>>>>>> bbe29e190eec13290caa11f4d3a9e1ff8ed45e01
+
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
