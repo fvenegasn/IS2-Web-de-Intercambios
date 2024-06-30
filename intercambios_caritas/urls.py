@@ -67,7 +67,7 @@ urlpatterns = [
 
 
     path('listar_categorias', views.listar_categorias, name='listar_categorias'),
-=======
+
      path('listar_categorias', views.listar_categorias, name='listar_categorias'),
      path('listar_filiales', views.listar_filiales,name="listar_filiales")
 
