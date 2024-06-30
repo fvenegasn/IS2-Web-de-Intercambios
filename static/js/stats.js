@@ -34,6 +34,12 @@ const displayChart = (data, labels, puntoEncuentros) => {
                 y: {
                     stacked: true
                 }
+            },
+            plugins: {
+              title: {
+                display: true,
+                text: 'Intercambios Mensuales por Filial',
+              }
             }
         }
     });
@@ -58,29 +64,35 @@ document.onload = getIntercambiosMes();
 // Intercambios por estado
 
 const displayChart2 = (data, labels) => {
-    var ctx_estado = document.getElementById("piechart_intercambios_estado").getContext("2d");
-    var donut_estado = new Chart(ctx_estado,  {
-    
-            type: 'doughnut',
-            data: {
-                labels: labels,
-                datasets: [{
-                label: 'Intercambios por Estado',
-                 data: data,
-                backgroundColor: [
-                    'rgb(255, 99, 132)',
-                    'rgb(54, 162, 235)',
-                    'rgb(255, 205, 86)',
-                    'rgb(255, 50, 86)',
-                    'rgb(100, 205, 86)',
-                    'rgb(255, 20, 10)'
-                ],
-                hoverOffset: 4
-                }]
-            }
-         }
-    
-    )
+  var ctx_estado = document.getElementById("piechart_intercambios_estado").getContext("2d");
+  var donut_estado = new Chart(ctx_estado, {
+      type: 'doughnut',
+      data: {
+          labels: labels,
+          datasets: [{
+              label: 'Intercambios por Estado',
+              data: data,
+              backgroundColor: [
+                  'rgb(255, 99, 132)',
+                  'rgb(54, 162, 235)',
+                  'rgb(255, 205, 86)',
+                  'rgb(255, 50, 86)',
+                  'rgb(100, 205, 86)',
+                  'rgb(255, 20, 10)'
+              ],
+              hoverOffset: 4
+          }]
+      },
+      options: {
+          plugins: {
+              title: {
+                  display: true,
+                  text: 'Intercambios por Estado',
+                  
+              }
+          }
+      }
+  });
 }
 
 const getIntercambiosEstado = () => {
@@ -105,7 +117,6 @@ const displayChartAcumulados = (data, labels) => {
   var ctx_mes = document.getElementById("intercambios_totales").getContext("2d");
 
   var lineChart = new Chart(ctx_mes, {
-      
       type: 'line',
       data: {
           labels: labels,
@@ -134,7 +145,10 @@ const displayChartAcumulados = (data, labels) => {
                   type: 'time',
                   time: {
                       unit: 'day',
-                      tooltipFormat: 'MMM D, YYYY'
+                      tooltipFormat: 'MMM d, yyyy',
+                      displayFormats: {
+                          day: 'MMM d, yyyy'
+                      }
                   },
                   title: {
                       display: true,
@@ -169,6 +183,7 @@ const getIntercambiosAcumulados = () => {
 };
 
 window.onload = getIntercambiosAcumulados;
+
 
 
 // tabla
