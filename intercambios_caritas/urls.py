@@ -58,7 +58,7 @@ urlpatterns = [
     path('ver_metricas_filiales', views.ver_metricas_filiales, name="ver_metricas_filiales"),
     path('metricas_intercambios_mes', views.get_intercambios_mes, name="metricas_intercambios_mes"),
     path('metricas_intercambios_estado', views.get_intercambios_estado, name="metricas_intercambios_estado"),
-    path('metricas_intercambios_totales', views.get_intercambios_totales, name='get_intercambios_totales'),
+    path('metricas_intercambios_totales', views.get_intercambios_totales, name="metricas_intercambios_totales"),
     path('metricas_mostrar_tabla', views.mostrar_tabla_estadisticas, name='metricas_mostrar_tabla'),
     path('perfil/<str:username>/toggle_user_status/', views.toggle_user_status, name='toggle_user_status'),
 
