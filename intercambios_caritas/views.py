@@ -2,8 +2,9 @@ import datetime
 import django
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render, get_object_or_404
-from intercambios_caritas.forms import IntercambioForm, PublicacionForm, UpdatePublicacionForm,PreguntaForm,RespuestaForm,FiltroIntercambiosForm
-from intercambios_caritas.models import Intercambio, Usuario, Publicacion, Categoria,Pregunta,Respuesta
+from intercambios_caritas.forms import IntercambioForm, PublicacionForm, UpdatePublicacionForm,PreguntaForm,RespuestaForm, FilialForm, FiltroIntercambiosForm
+from intercambios_caritas.models import Intercambio, Usuario, Publicacion, Categoria,Pregunta,Respuesta, Filial
+
 from . import views
 from django.utils.html import strip_tags
 from django.contrib.auth.decorators import login_required
@@ -324,14 +325,11 @@ def crear_publicacion(request):
                 'punto_encuentro': 'No se especificó un punto de encuentro.',
                 'dias_convenientes': 'No se especificó un dia conveniente.',
                 'franja_horaria_inicio': 'La hora de fin no puede ser menor a la hora de inicio.',
-                'categoria':'AAAAA',
-                'categoria_nueva':"BBBB"
+                'categoria':'No se especificó la categoría',
+                'categoria_nueva':"No se especificó la categoría"
             }
             generic_error_message = 'Error, Publicación no creada. verificar datos ingresados.'
             custom_error_found = False
-            for field, errors in form.errors.items():
-                for error in errors:
-                    messages.error(request, f"Error: {error}")
             for field in form.errors:
                 if field in error_messages:
                     messages.warning(request, f"Error, Publicación no creada. {error_messages[field]}")
@@ -667,7 +665,36 @@ def listar_categorias(request):
     categorias = Categoria.objects.all()
     return render(request, 'publicacion/listar_categorias.html', {'categorias': categorias, 'form': form})
 
+@login_required
+def listar_filiales(request):
+    # Me aseguro que sólo entren los admin
+    user = request.user
+    if user.rol != "Administrador":
+        return redirect("home")
 
+    if request.method == 'POST':
+        if 'agregar_filial' in request.POST:
+            form = FilialForm(request.POST)
+            if form.is_valid():
+                form.save()
+                messages.success(request, "Filial agregada exitosamente.")
+                return redirect(reverse('listar_filiales'))
+            else:
+                messages.error(request, "La filial ya existe.")
+        elif 'eliminar_filial' in request.POST:
+            filial_id = request.POST.get('filial_id')
+            filial = Filial.objects.get(id=filial_id)
+            try:
+                filial.delete()
+                messages.success(request, "Filial eliminada exitosamente.")
+            except ProtectedError:
+                messages.error(request, "No se puede eliminar la filial hasta que no existan intercambios en la misma")
+            return redirect(reverse('listar_filiales'))
+    else:
+        form = FilialForm()
+
+    filiales = Filial.objects.all()
+    return render(request, 'publicacion/listar_filiales.html', {'filiales': filiales, 'form': form})
 
 # Sección para visualizacion de metricas
 # ------------------------------------------
