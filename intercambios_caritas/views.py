@@ -306,21 +306,28 @@ def crear_publicacion(request):
     if request.method == 'POST':
         form = PublicacionForm(request.POST, request.FILES)
         
+        print(request.POST)
+
         if form.is_valid():
             publicacion = form.save(commit=False)
             publicacion.usuario = request.user
             inicio = form.cleaned_data.get('franja_horaria_inicio')
             fin = form.cleaned_data.get('franja_horaria_fin')
             categoria = form.cleaned_data.get('categoria')
+            filiales = form.cleaned_data.get("filial")
             if inicio and fin:
                 publicacion.franja_horaria = f"entre las {inicio.strftime('%H:%M')} y las {fin.strftime('%H:%M')}"
                 publicacion.franja_horaria_inicio = inicio
                 publicacion.franja_horaria_fin = fin
             publicacion.categoria_nueva = categoria
+            #publicacion.fil
+            #publicacion.filial = filiales
             publicacion.save()
+            form.save_m2m() #?
             messages.success(request, "Publicación creada exitosamente!")
             return redirect('home')
         else:
+            print (form.errors)
             error_messages = {
                 'punto_encuentro': 'No se especificó un punto de encuentro.',
                 'dias_convenientes': 'No se especificó un dia conveniente.',

@@ -182,6 +182,8 @@ class Publicacion(models.Model):
     categoria_nueva = models.ForeignKey(Categoria, on_delete=models.PROTECT,default=1)
     estado = models.CharField(max_length=50, blank=False, null=False, choices=ESTADOS, default=ESTADOS[0][0])
     punto_encuentro = MultiSelectField(choices=PUNTOS_ENC, blank=True, max_length=100)
+    #filial=models.ForeignKey(Filial,on_delete=models.CASCADE,blank=True)
+    filial = models.ManyToManyField(Filial, related_name="publicaciones", blank=True)
     dias_convenientes = MultiSelectField(choices=DIAS_SEMANA, blank=True, max_length=100)
     franja_horaria_inicio = models.TimeField(default=datetime.time(9,0,0)) # 9 AM
     franja_horaria_fin = models.TimeField(default=datetime.time(18,0,0)) # 6 PM

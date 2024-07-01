@@ -70,12 +70,12 @@
                             <div class="row">
                                 <div class="col-md-4 mb-3">
                                     <div data-mdb-input-init class="form-outline">
-                                        <label class="form-label mb-1" for="punto_encuentro">Punto de encuentro</label>
-                                        <div id="punto_encuentro">
-                                            {% for value, display in form.fields.punto_encuentro.choices %}
+                                        <label class="form-label mb-1" for="filial">Punto de encuentro</label>
+                                        <div id="filial">
+                                            {% for filial in form.fields.filial.queryset %}
                                             <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" value="{{ value }}" id="punto_encuentro_{{ forloop.counter0 }}" name="punto_encuentro">
-                                                <label class="form-check-label" for="punto_encuentro_{{ forloop.counter0 }}">{{ display }}</label>
+                                                <input class="form-check-input" type="checkbox" value="{{ filial.id }}" id="filial_{{ forloop.counter0 }}" name="filial">
+                                                <label class="form-check-label" for="filial_{{ forloop.counter0 }}">{{ filial.nombre }}</label>
                                             </div>
                                             {% endfor %}
                                         </div>
