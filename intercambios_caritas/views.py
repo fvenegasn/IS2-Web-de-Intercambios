@@ -446,13 +446,19 @@ def crear_oferta(request, publicacion_id):
             propuesta = form.save(commit=False)
             propuesta.publicacion_demandada = publicacion_demandada
             propuesta.publicacion_ofertante = form.cleaned_data['publicacion_ofertante']
+            filial_id = request.POST.get('filial')
+            filial = Filial.objects.get(id=filial_id)
+            propuesta.filial = filial
+            print("LA ASIGNE")
             if propuesta.es_valida():
+                
                 propuesta.save()
                 messages.success(request, "Propuesta de intercambio creada exitosamente.")
                 return redirect('home')
             else:
                 messages.error(request, "Propuesta de intercambio inválida.") # aca entra cuando no cumple con las RDN
         else:
+            print (form.errors)
             for field, errors in form.errors.items():
                 for error in errors:
                     if error != "Este campo es obligatorio.":
@@ -486,8 +492,9 @@ def ver_ofertas_recibidas(request):
 
 @login_required
 def ver_intercambios_moderador(request):
+    filial_id = Filial.objects.get(nombre=request.user.filial)
     intercambios = Intercambio.objects.filter(
-        Q(punto_encuentro=request.user.filial) & 
+        Q(filial=filial_id) & 
         (Q(estado="ACEPTADA") | Q(estado="CONFIRMADA") | Q(estado="DESESTIMADA"))
     ).order_by('-fecha_creacion')
     
@@ -549,7 +556,10 @@ def rechazar_oferta(request, oferta_id):
         motivo = request.POST.get('motivo')
         motivo_otro = request.POST.get('motivo_otro')
         if motivo:
-            if motivo == 'Otro' and motivo_otro:
+            if motivo == 'Otro'and not motivo_otro:
+                messages.warning(request, "Debe indicar el motivo")
+                return redirect('ver_ofertas_recibidas')
+            elif motivo == 'Otro'and motivo_otro: 
                 motivo = motivo_otro
             try:
                 oferta.rechazar(motivo)
@@ -567,7 +577,10 @@ def cancelar_oferta(request, oferta_id):
         motivo = request.POST.get('motivo')
         motivo_otro = request.POST.get('motivo_otro')
         if motivo:
-            if motivo == 'Otro' and motivo_otro:
+            if motivo == 'Otro'and not motivo_otro:
+                messages.warning(request, "Debe indicar el motivo")
+                return redirect('ver_ofertas_realizadas')
+            elif motivo == 'Otro'and motivo_otro: 
                 motivo = motivo_otro
             try:
                 oferta.cancelar(motivo)

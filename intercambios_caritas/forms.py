@@ -58,6 +58,7 @@ class PublicacionForm(forms.ModelForm):
 class IntercambioForm(forms.ModelForm):
     publicacion_ofertante = forms.ModelChoiceField(queryset=Publicacion.objects.none())
     fecha_intercambio = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}), required=True)
+    filial = forms.ModelChoiceField(queryset=Filial.objects.all(), empty_label="-- Seleccione --", required=True)
 
     franja_horaria = forms.TimeField(
         widget=forms.TimeInput(format='%H:%M', attrs={'placeholder': 'HH:MM'}),
@@ -67,7 +68,7 @@ class IntercambioForm(forms.ModelForm):
 
     class Meta:
         model = Intercambio
-        fields = ['publicacion_ofertante', 'punto_encuentro', 'fecha_intercambio', 'franja_horaria']
+        fields = ['publicacion_ofertante', 'filial', 'fecha_intercambio', 'franja_horaria']
         widgets = {
             'franja_horaria': forms.TimeInput(format='%H:%M')
         }
@@ -83,7 +84,7 @@ class IntercambioForm(forms.ModelForm):
         self.fields['publicacion_ofertante'].queryset = Publicacion.objects.filter(usuario=user, categoria=categoria, disponible_para_intercambio=True)
         # self.fields['dias_convenientes'].choices = [(dia, dia) for dia in dias]
 
-        self.fields['punto_encuentro'].choices = [(p, p) for p in puntos]
+        self.fields['filial'].choices = [(p, p) for p in puntos]
 
         self.franja_horaria_inicio_publicacion = franja_horaria_inicio
         self.franja_horaria_fin_publicacion = franja_horaria_fin

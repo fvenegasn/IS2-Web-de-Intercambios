@@ -379,7 +379,6 @@ class Intercambio(models.Model):
     ]
 
     MOTIVOS_RECHAZO = [
-        ('No me gusta el producto', 'No me gusta el producto'),
         ('El producto no cumplió con mis expectativas', 'El producto no cumplió con mis expectativas'),
         ('No puedo en ese día/horario', 'No puedo en ese día/horario'),
         ('No puedo en ese centro', 'No puedo en ese centro'),
@@ -406,7 +405,9 @@ class Intercambio(models.Model):
 
     publicacion_ofertante = models.ForeignKey('Publicacion', related_name='ofertas_realizadas', on_delete=models.CASCADE)
     publicacion_demandada = models.ForeignKey('Publicacion', related_name='ofertas_recibidas', on_delete=models.CASCADE)
-    punto_encuentro = models.CharField(max_length=50, choices=Publicacion.PUNTOS_ENC) # 1 solo respecto de lo seleccionado en publicacion_demandada
+    #punto_encuentro = models.CharField(max_length=50, choices=Publicacion.PUNTOS_ENC) # 1 solo respecto de lo seleccionado en publicacion_demandada
+    filial = models.ForeignKey(Filial, on_delete=models.CASCADE, default=1,null=True)
+    categoria_nueva = models.ForeignKey(Categoria, on_delete=models.PROTECT,default=1)
     fecha_intercambio = models.DateField(default=datetime.datetime(2024,7,3)) # representa una fecha calendario sobre los días convenientes
     # La franja horaria debe representar 1 hora dentro del rango previamente seleccionado por el usuario
     franja_horaria = models.TimeField(default=datetime.time(9,0,0))
@@ -444,7 +445,7 @@ class Intercambio(models.Model):
     def rechazar(self, motivo):
         self.estado_clase.rechazar(self, motivo)
 
-    def cancelar(self, motivo):
+    def cancelar(self, motivo=""):
         self.estado_clase.cancelar(self, motivo)
 
     def confirmar(self):
@@ -471,6 +472,7 @@ class Intercambio(models.Model):
                 else:
                     oferta.motivo_desestimacion = f"Oferta cancelada porque {oferta.publicacion_ofertante.usuario.get_full_name()} aceptó otro intercambio por su {oferta.publicacion_ofertante.nombre}"
                     oferta.save()
+                    
 class Pregunta(models.Model):
     publicacion = models.ForeignKey(Publicacion, related_name='preguntas', on_delete=models.CASCADE)
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
