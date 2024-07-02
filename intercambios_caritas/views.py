@@ -213,7 +213,8 @@ def mi_perfil_eliminar(request):
 @login_required
 def ver_perfil(request, username):
     user = get_object_or_404(Usuario, username=username)
-    return render(request, 'administracion_usuarios/perfil.html', {'user': user})
+    filiales = Filial.objects.all()  # Obtiene todas las filiales disponibles
+    return render(request, 'administracion_usuarios/perfil.html', {'user': user, 'filiales': filiales})
 
 @login_required
 def cambiar_rol(request, username=None):
