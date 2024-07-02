@@ -70,11 +70,11 @@
                         {% if oferta.estado == 'ACEPTADA' %}
                         <p class="my-2 p-2" style="background-color: #f0f8ff">Intercambio el dia
                             {{ oferta.fecha_intercambio }} a las {{oferta.franja_horaria}}
-                            en la filial {{ oferta.punto_encuentro }}. Te esperamos!!!</p>
+                            en la filial {{ oferta.filial.nombre }}. Te esperamos!!!</p>
                         {% else %}
                         <p class="my-2 p-2" style="background-color: #f0f8ff">Intercambio el dia
                             {{ oferta.fecha_intercambio }} a las {{oferta.franja_horaria}}
-                            en la filial {{ oferta.punto_encuentro }}.</p>
+                            en la filial {{ oferta.filial.nombre }}.</p>
                         {% endif %}
                     </div>
                     <div class="col-md-4 text-center">
