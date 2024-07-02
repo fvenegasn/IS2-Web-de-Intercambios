@@ -22,6 +22,7 @@ from django.http import JsonResponse
 from collections import Counter
 from django.db.models import Q, Count
 from django.db.models.functions import TruncMonth,TruncDay
+from django.utils.dateparse import parse_date
 from django.utils import timezone
 
 # Create your views here.
@@ -698,7 +699,7 @@ def listar_filiales(request):
 
 # Sección para visualizacion de metricas
 # ------------------------------------------
-
+"""
 def get_intercambios_mes(request):
     # Filter the queryset
     user = request.user
@@ -727,8 +728,26 @@ def get_intercambios_mes(request):
 
     return JsonResponse({'intercambios_mes': finalrep}, safe=False)
 
+"""
+def get_intercambios_mes(request):
+    user = request.user
+    start_date = request.GET.get('start_date')
+    end_date = request.GET.get('end_date')
 
+    filters = Q(estado__in=["ACEPTADA", "CONFIRMADA", "DESESTIMADA"])
+    if start_date:
+        filters &= Q(fecha_intercambio__gte=start_date)
+    if end_date:
+        filters &= Q(fecha_intercambio__lte=end_date)
+    if user.rol == "Moderador":
+        filters &= Q(punto_encuentro=user.filial)
 
+    intercambios = Intercambio.objects.filter(filters).values('punto_encuentro').annotate(total=Count('id'))
+
+    finalrep = {item['punto_encuentro']: item['total'] for item in intercambios}
+
+    return JsonResponse({'intercambios_mes': finalrep}, safe=False)
+"""
 
 def get_intercambios_estado(request):
     # Filtra con los intercambios que me interesa mostrar
@@ -745,6 +764,49 @@ def get_intercambios_estado(request):
     finalrep = {item['estado']: item['total'] for item in intercambios_counts}
 
     return JsonResponse({'intercambios_estado': finalrep}, safe=False)
+"""
+def get_intercambios_estado(request):
+    user = request.user
+    start_date = request.GET.get('start_date')
+    end_date = request.GET.get('end_date')
+
+    filters = Q()
+    if start_date:
+        filters &= Q(fecha_intercambio__gte=start_date)
+    if end_date:
+        filters &= Q(fecha_intercambio__lte=end_date)
+    if user.rol == "Moderador":
+        filters &= Q(punto_encuentro=user.filial)
+
+    intercambios = Intercambio.objects.filter(filters).values('estado').annotate(total=Count('id'))
+    finalrep = {item['estado']: item['total'] for item in intercambios}
+
+    return JsonResponse({'intercambios_estado': finalrep}, safe=False)
+
+def get_intercambios_totales(request):
+    user = request.user
+    start_date = request.GET.get('start_date')
+    end_date = request.GET.get('end_date')
+
+    filters = Q(estado__in=["ACEPTADA", "CONFIRMADA", "DESESTIMADA"])
+    if start_date:
+        filters &= Q(fecha_intercambio__gte=start_date)
+    if end_date:
+        filters &= Q(fecha_intercambio__lte=end_date)
+    if user.rol == "Moderador":
+        filters &= Q(punto_encuentro=user.filial)
+
+    intercambios = Intercambio.objects.filter(filters).annotate(day=TruncDay('fecha_intercambio')).values('day').annotate(total=Count('id')).order_by('day')
+    
+    finalrep = {}
+    totalcum = 0
+    for item in intercambios:
+        day = item['day'].strftime("%Y-%m-%d")
+        totalcum += item['total']
+        finalrep[day] = totalcum
+
+    return JsonResponse({'intercambios_dia_total': finalrep}, safe=False)
+
 @login_required
 def agregar_pregunta(request, publicacion_id):
     publicacion = get_object_or_404(Publicacion, id=publicacion_id)
@@ -780,7 +842,7 @@ def agregar_respuesta(request, pregunta_id):
 
 # ------------------------------------------
 
-
+"""
 def get_intercambios_totales(request):
     user = request.user
     intercambios = None
@@ -811,5 +873,70 @@ def mostrar_tabla_estadisticas(request):
     else:
         intercambios = Intercambio.objects.all()
     
-    intercambios = list(intercambios.annotate(year_month=TruncMonth('fecha_intercambio')).values('year_month', 'punto_encuentro', 'estado').annotate(total=Count('id')).order_by('year_month'))
+    intercambios = list(intercambios.annotate(year_month=TruncMonth('fecha_intercambio')).values('year_month', 'punto_encuentro', 'estado','publicacion_ofertante__categoria').annotate(total=Count('id')).order_by('year_month'))
+
     return JsonResponse({'intercambios':intercambios}, safe=False)
+
+def get_intercambios_categoria(request):
+    user = request.user
+    if user.rol == "Moderador":
+        intercambios = Intercambio.objects.filter(
+            (Q(estado="ACEPTADA") | Q(estado="CONFIRMADA") | Q(estado="DESESTIMADA")) & 
+            Q(punto_encuentro=user.filial)
+        ).values('publicacion_ofertante__categoria').annotate(total=Count('id')).order_by('publicacion_ofertante__categoria')
+    else:
+        intercambios = Intercambio.objects.filter(
+            Q(estado="ACEPTADA") | Q(estado="CONFIRMADA") | Q(estado="DESESTIMADA")
+        ).values('publicacion_ofertante__categoria').annotate(total=Count('id')).order_by('publicacion_ofertante__categoria')
+
+    finalrep = {}
+    for item in intercambios:
+        categoria = item['publicacion_ofertante__categoria']
+        total = item['total']
+        finalrep[categoria] = total
+
+    return JsonResponse({'intercambios_categoria': finalrep}, safe=False)
+"""
+
+def mostrar_tabla_estadisticas(request):
+    user = request.user
+    start_date = request.GET.get('start_date')
+    end_date = request.GET.get('end_date')
+
+    filters = Q()
+    if start_date:
+        filters &= Q(fecha_intercambio__gte=start_date)
+    if end_date:
+        filters &= Q(fecha_intercambio__lte=end_date)
+    if user.rol == "Moderador":
+        filters &= Q(punto_encuentro=user.filial)
+
+    intercambios = (
+        Intercambio.objects.filter(filters)
+        .annotate(year_month=TruncMonth('fecha_intercambio'))
+        .values('year_month', 'punto_encuentro', 'estado', 'publicacion_ofertante__categoria')
+        .annotate(total=Count('id'))
+        .annotate(donaciones=Count('id', filter=Q(hubo_donacion=True)))
+        .order_by('year_month')
+    )
+
+    return JsonResponse({'intercambios': list(intercambios)}, safe=False)
+
+def get_intercambios_categoria(request):
+    user = request.user
+    start_date = request.GET.get('start_date')
+    end_date = request.GET.get('end_date')
+
+    filters = Q(estado__in=["ACEPTADA", "CONFIRMADA", "DESESTIMADA"])
+    if start_date:
+        filters &= Q(fecha_intercambio__gte=start_date)
+    if end_date:
+        filters &= Q(fecha_intercambio__lte=end_date)
+    if user.rol == "Moderador":
+        filters &= Q(punto_encuentro=user.filial)
+
+    intercambios = Intercambio.objects.filter(filters).values('publicacion_ofertante__categoria').annotate(total=Count('id'))
+
+    finalrep = {item['publicacion_ofertante__categoria']: item['total'] for item in intercambios}
+
+    return JsonResponse({'intercambios_categoria': finalrep}, safe=False)

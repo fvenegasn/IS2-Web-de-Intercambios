@@ -69,6 +69,7 @@ urlpatterns = [
     path('listar_categorias', views.listar_categorias, name='listar_categorias'),
 
      path('listar_categorias', views.listar_categorias, name='listar_categorias'),
-     path('listar_filiales', views.listar_filiales,name="listar_filiales")
+     path('listar_filiales', views.listar_filiales,name="listar_filiales"),
+     path('metricas_intercambios_categoria',views.get_intercambios_categoria, name="metricas_intercambios_categoria"),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

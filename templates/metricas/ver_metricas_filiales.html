@@ -7,25 +7,43 @@
 <!-- TODO: agregar logica para que solo lo vean los admins -->
 <h1 class="text-center custom-h1-bg mb-2">Métricas Intercambios Cáritas</h1>
 
+<!-- Filtro de fechas-->
+<div class="container mt-4">
+  <form id="filter-form" class="form-inline mt-4">
+      <label for="start_date">Desde: </label>
+      <input type="date" id="start_date" name="start_date" class="form-control mx-sm-3">
+      <label for="end_date">Hasta: </label>
+      <input type="date" id="end_date" name="end_date" class="form-control mx-sm-3">
+      <button type="button" onclick="applyFilters()" class="btn btn-primary">Filtrar</button>
+  </form>
+</div>
+
 <!-- Graficos -->
 
-<div class="container">
-  <div class="row">
-    <div class="col-sm"> <bold>Intercambios por Filial</bold>
-      <canvas id="intercambios_mes" width="200" height="200"></canvas>
+<div class="container mt-4"><h3 class ="centered">Principales KPIs</h3>
+  <div class="row mt-4">
+    <div class="col-sm">
+      <b>Intercambios por Filial</b>
+      <canvas id="intercambios_mes" width="150" height="150" style="border:1px solid #f0f0f0;"></canvas>
     </div>
-    <div class="col-sm"><bold>Intercambios por Estado</bold>
-      <canvas id="piechart_intercambios_estado" width="200" height="200"></canvas>
+    <div class="col-sm">
+      <b>Intercambios por Estado</b>
+      <canvas id="piechart_intercambios_estado" width="150" height="150" style="border:1px solid #f0f0f0;"></canvas>
     </div>
-    <div class="col-sm"><bold>Intercambios diarios acumulados</bold>
-      <canvas id="intercambios_totales" width="200" height="200"></canvas>
+    <div class="col-sm">
+      <b>Intercambios Totales por Categoria</b>
+      <canvas id="intercambios_categoria" width="150" height="150" style="border:1px solid #f0f0f0;"></canvas>
+    </div>
+    <div class="col-sm">
+      <b>Intercambios diarios acumulados</b>
+      <canvas id="intercambios_totales" width="150" height="150" style="border:1px solid #f0f0f0;"></canvas>
     </div>
   </div>
 </div>
 
 <!-- Tabla Listado -->
 
-<div class="container mt-8"><h2 class ="centered mt-4">Resumen de Métricas</h2>
+<div class="container mt-8"><h3 class ="centered mt-4">Tabla Resumen Mensual</h3>
   <div class="row">
     <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
         <div class="table-responsive"> 
@@ -33,9 +51,11 @@
             <thead>
               <tr>
                 <th class="centered">Filial</th>
-                <th class="centered">Fecha</th>
+                <th class="centered">Mes</th>
                 <th class="centered">Estado</th>
-                <th class="centered">Total</th>
+                <th class="centered">Categoria</th>
+                <th class="centered">Intercambios</th>
+                <th class="centered">Donaciones</th>
               </tr>
             </thead>
             <tbody id="tabla_intercambios"></tbody>
@@ -44,16 +64,45 @@
     </div> 
   </div>
 </div>
+
 <!-- Para Data Table -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
-<script src="https://cdn.datatables.net/2.0.8/js/dataTables.js"></script>
-<link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css">
 
 <!-- Para Chart JS -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.9.0/feather.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
 <script src="{% static 'js/stats.js' %}"></script>
+
+<script>
+  $(document).ready(function() {
+      // Inicializar DataTable
+      $('#datatable_estadisticas').DataTable({
+          "paging": true,
+          "lengthChange": true,
+          "searching": true,
+          "ordering": true,
+          "info": true,
+          "autoWidth": false,
+          "responsive": true,
+          "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+          "pagingType": "full_numbers"
+      });
+  
+      // Cargar datos al cargar la página
+      fetchChartData();
+      fetchTableData();
+  });
+  
+  function applyFilters() {
+      // Aplicar filtros y cargar datos actualizados
+      fetchChartData();
+      fetchTableData();
+  }
+  </script>
+
 
 {% endblock %}
 
