@@ -30,7 +30,7 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'home' %}">Quienes Somos</a>
+                    <a class="nav-link" href="{% url 'quienes_somos' %}">Quienes Somos</a>
                 </li>
                 {% if user.isAdmin %}
                     {% include 'layouts/navbar_admin.html' %}

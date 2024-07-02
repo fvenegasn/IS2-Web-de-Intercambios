@@ -1,30 +1,32 @@
 {% extends 'layouts/base.html' %}
-<!-- esto es para que se herede la estructura html y estilos del archivo base -->
 {% block title %}Quienes Somos{% endblock %}
-<!-- titulo personalizado -->
-
 {% block content %}
+{% include 'layouts/navbar.html' %}
+<h1 class="text-center custom-h1-bg mb-2">Quienes somos:</h1>
 
-<!-- esto es para que se vea el navbar  -->
-
-<section class="min-vh-100 d-flex flex-column">
-    {% include 'layouts/navbar.html' %}
-    <div class="d-flex justify-content-center align-items-center mt-auto mb-auto">
-        <div class="card" style="width: 40rem;">
-            <div class="card-body">
-                <div class="text-center">
-                    <h1>Intercambios Cáritas</h1>
-                    <h2>Quienes Somos</h2>
-                </div>
-                <p class="card-text">
-                    Somos una organización sin fines de lucro que busca fomentar la economía circular y la solidaridad
+<div class="d-flex justify-content-center align-items-center flex-grow-1">
+    <section class="py-3 py-md-5">
+        <div class="container">
+          <div class="row gy-3 gy-md-4 gy-lg-0 align-items-lg-center">
+            <div class="col-12 col-lg-6 col-xl-5">
+              <img class="img-fluid rounded" loading="lazy" src="\static\logosCaritas\caritas_logo1.png" alt="About 1">
+            </div>
+            <div class="col-12 col-lg-6 col-xl-7">
+              <div class="row justify-content-xl-center">
+                <div class="col-12 col-xl-11">
+                  <h2 class="mb-3">Intercambios Cáritas</h2>
+                  <p class="lead fs-4 text-secondary mb-3">La solidaridad como moneda de cambio</p>
+                  <p class="mb-3">Somos una organización sin fines de lucro que busca fomentar la economía circular y la solidaridad
                     entre
                     las personas. Nuestro objetivo es que puedas intercambiar productos que ya no uses por otros que te
                     interesen, sin necesidad de gastar dinero. De esta forma, contribuimos a la reducción de la basura y
-                    promovemos el consumo responsable. ¡Únete a nuestra comunidad! </p>
+                    promovemos el consumo responsable. ¡Únete a nuestra comunidad!</p>
+                </div>
+              </div>
             </div>
+          </div>
         </div>
-    </div>
-</section>
+      </section>
+</div>
 
 {% endblock %}
