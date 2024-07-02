@@ -214,7 +214,8 @@ def mi_perfil_eliminar(request):
 @login_required
 def ver_perfil(request, username):
     user = get_object_or_404(Usuario, username=username)
-    return render(request, 'administracion_usuarios/perfil.html', {'user': user})
+    filiales = Filial.objects.all()  # Obtiene todas las filiales disponibles
+    return render(request, 'administracion_usuarios/perfil.html', {'user': user, 'filiales': filiales})
 
 @login_required
 def cambiar_rol(request, username=None):
@@ -307,21 +308,28 @@ def crear_publicacion(request):
     if request.method == 'POST':
         form = PublicacionForm(request.POST, request.FILES)
         
+        print(request.POST)
+
         if form.is_valid():
             publicacion = form.save(commit=False)
             publicacion.usuario = request.user
             inicio = form.cleaned_data.get('franja_horaria_inicio')
             fin = form.cleaned_data.get('franja_horaria_fin')
             categoria = form.cleaned_data.get('categoria')
+            filiales = form.cleaned_data.get("filial")
             if inicio and fin:
                 publicacion.franja_horaria = f"entre las {inicio.strftime('%H:%M')} y las {fin.strftime('%H:%M')}"
                 publicacion.franja_horaria_inicio = inicio
                 publicacion.franja_horaria_fin = fin
             publicacion.categoria_nueva = categoria
+            #publicacion.fil
+            #publicacion.filial = filiales
             publicacion.save()
+            form.save_m2m() #?
             messages.success(request, "Publicación creada exitosamente!")
             return redirect('home')
         else:
+            print (form.errors)
             error_messages = {
                 'punto_encuentro': 'No se especificó un punto de encuentro.',
                 'dias_convenientes': 'No se especificó un dia conveniente.',
@@ -440,13 +448,19 @@ def crear_oferta(request, publicacion_id):
             propuesta = form.save(commit=False)
             propuesta.publicacion_demandada = publicacion_demandada
             propuesta.publicacion_ofertante = form.cleaned_data['publicacion_ofertante']
+            filial_id = request.POST.get('filial')
+            filial = Filial.objects.get(id=filial_id)
+            propuesta.filial = filial
+            print("LA ASIGNE")
             if propuesta.es_valida():
+                
                 propuesta.save()
                 messages.success(request, "Propuesta de intercambio creada exitosamente.")
                 return redirect('home')
             else:
                 messages.error(request, "Propuesta de intercambio inválida.") # aca entra cuando no cumple con las RDN
         else:
+            print (form.errors)
             for field, errors in form.errors.items():
                 for error in errors:
                     if error != "Este campo es obligatorio.":
@@ -480,8 +494,9 @@ def ver_ofertas_recibidas(request):
 
 @login_required
 def ver_intercambios_moderador(request):
+    filial_id = Filial.objects.get(nombre=request.user.filial)
     intercambios = Intercambio.objects.filter(
-        Q(punto_encuentro=request.user.filial) & 
+        Q(filial=filial_id) & 
         (Q(estado="ACEPTADA") | Q(estado="CONFIRMADA") | Q(estado="DESESTIMADA"))
     ).order_by('-fecha_creacion')
     
@@ -543,7 +558,10 @@ def rechazar_oferta(request, oferta_id):
         motivo = request.POST.get('motivo')
         motivo_otro = request.POST.get('motivo_otro')
         if motivo:
-            if motivo == 'Otro' and motivo_otro:
+            if motivo == 'Otro'and not motivo_otro:
+                messages.warning(request, "Debe indicar el motivo")
+                return redirect('ver_ofertas_recibidas')
+            elif motivo == 'Otro'and motivo_otro: 
                 motivo = motivo_otro
             try:
                 oferta.rechazar(motivo)
@@ -561,7 +579,10 @@ def cancelar_oferta(request, oferta_id):
         motivo = request.POST.get('motivo')
         motivo_otro = request.POST.get('motivo_otro')
         if motivo:
-            if motivo == 'Otro' and motivo_otro:
+            if motivo == 'Otro'and not motivo_otro:
+                messages.warning(request, "Debe indicar el motivo")
+                return redirect('ver_ofertas_realizadas')
+            elif motivo == 'Otro'and motivo_otro: 
                 motivo = motivo_otro
             try:
                 oferta.cancelar(motivo)

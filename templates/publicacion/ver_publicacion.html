@@ -2,102 +2,114 @@
 {% block title %}Publicación{% endblock %}
 {% block content %}
 {% include 'layouts/navbar.html' %}
-
-<div class="d-flex justify-content-center align-items-center flex-grow-1">
-    <div class="row">
-        <!-- Parte izquierda -->
-        <div class="col-md-6">
-            <h1>{{ publicacion.nombre }}</h1>
-            <p>{{ publicacion.descripcion }}</p>
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item"><u>Categoría</u>: {{ publicacion.categoria }}</li>
-                <li class="list-group-item"><u>Estado</u>: {{ publicacion.estado }}</li>
-                <li class="list-group-item"><u>Punto de encuentro</u>: {{ publicacion.punto_encuentro }}</li>
-                <li class="list-group-item"><u>Dueño</u>: {{publicacion.usuario.get_full_name}}</li>
-                <li class="list-group-item"><u>Dias convenientes</u>: {{ publicacion.dias_convenientes }}</li>
-                <li class="list-group-item"><u>Franja horaria</u>: {{ publicacion.franja_horaria }}</li>
-            </ul>
-            <a href="{% url 'home' %}" class="btn btn-primary">Volver al menu</a>
-            {% if user.is_authenticated %}
-                {% if user == publicacion.usuario or publicacion.disponible_para_intercambio == False or user.isModerador or user.isAdmin %}
-                    <button class="btn btn-primary" disabled>Intercambiar</button>
-                {% else %}
-                    <a href="{% url 'crear_oferta' publicacion.id %}" class="btn btn-primary">Intercambiar</a>
-                {% endif %}
-            {% else %}
-                <a href="{% url 'signin' %}" class="btn btn-primary">Intercambiar</a>
-            {% endif %}
-        </div>
-        <!-- Parte derecha -->
-        <div class="col-md-6">
-            <img src="{{ publicacion.imagen.url }}" class="img-fluid" alt="Imagen de la publicación"
-                style="width: 860px; height: 640px; object-fit: cover;">
-        </div>
-    </div>
-</div>
-<!-- Sección de preguntas y respuestas -->
-<div class="d-flex justify-content-center align-items-center flex-grow-1 mt-4">
-    <div class="row">
-        <div class="col-md-12">
-            <h2>Preguntas y respuestas</h2>
-                {% if preguntas %}
-                    <ul class="list-group mt-3">
-                        {% for pregunta in preguntas %}
-                            <li class="list-group-item">
-                                <p><strong>{{ pregunta.usuario.get_full_name }}:</strong> {{ pregunta.contenido }}</p>
-                                {% if pregunta.respuesta %}
-                                    <ul class="list-group mt-2">
-                                        <li class="list-group-item">
-                                            <p><strong>{{ pregunta.respuesta.usuario.get_full_name }}:</strong> {{ pregunta.respuesta.contenido }}</p>
-                                        </li>
-                                    </ul>
+<h1 class="text-center custom-h1-bg mb-2">Publicacion: {{ publicacion.nombre }}</h1>
+    <div class="card mb-3" style="width: 100%;">
+        <div class="row g-0">
+            <div class="col-md-7">
+                <div class="card-body">
+                    <div class="">
+                        <h2>{{ publicacion.nombre }}</h2>
+                        <p>Descripcion: {{ publicacion.descripcion }}</p>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item"><u>Categoría</u>: {{ publicacion.categoria }}</li>
+                            <li class="list-group-item"><u>Estado</u>: {{ publicacion.estado }}</li>
+                            <li class="list-group-item"><u>Punto de encuentro</u>:
+                                {% if publicacion.filial.count == 1 %}
+                                    {{ publicacion.filial.first }}
                                 {% else %}
-                                    {% if user.is_authenticated and user == publicacion.usuario %}
-                                        <form method="POST" action="{% url 'agregar_respuesta' pregunta.id %}">
-                                            {% csrf_token %}
-                                            <div class="form-group">
-                                                <label for="respuesta">Responder:</label>
-                                                <textarea class="form-control" id="respuesta" name="contenido" rows="2" required></textarea>
-                                            </div>
-                                            <button type="submit" class="btn btn-primary btn-sm">Responder</button>
-                                        </form>
-                                    {% endif %}
+                                    {% for punto in publicacion.filial.all %}
+                                        {{punto}} <a href="">-</a>
+                                    {% endfor %}
                                 {% endif %}
                             </li>
-                        {% endfor %}
-                    </ul>
-                {% else %}
-                    <p>No hay preguntas aún.</p>
-                {% endif %}
-            </div>
-
-            <!-- Formulario para agregar pregunta -->
-            {% if user.is_authenticated and user != publicacion.usuario and not user.isModerador and not user.isAdmin %}
-                <form method="POST" action="{% url 'agregar_pregunta' publicacion.id %}">
-                    {% csrf_token %}
-                    <div class="form-group mt-4">
-                        <label for="pregunta">Hacer una pregunta:</label>
-                        <textarea class="form-control" id="pregunta" name="contenido" rows="3" required></textarea>
+                            <li class="list-group-item"><u>Dueño</u>: {{publicacion.usuario.get_full_name}}</li>
+                            <li class="list-group-item"><u>Dias convenientes</u>: {{ publicacion.dias_convenientes }}</li>
+                            <li class="list-group-item"><u>Franja horaria</u>: {{ publicacion.franja_horaria }}</li>
+                        </ul>
                     </div>
-                    <button type="submit" class="btn btn-primary">Preguntar</button>
-                </form>
-            {% elif not user.is_authenticated %}
-                <p>Inicia sesión para hacer una pregunta.</p>
-            {% endif %}
+                    <div class="d-flex justify-content-center align-items-center gap-2">
+                        <a href="{% url 'home' %}" class="btn btn-primary">Volver al menu</a>
+                        {% if user.is_authenticated %}
+                            {% if user == publicacion.usuario or publicacion.disponible_para_intercambio == False or user.isModerador or user.isAdmin %}
+                                <button class="btn btn-primary" disabled>Intercambiar</button>
+                            {% else %}
+                                <a href="{% url 'crear_oferta' publicacion.id %}" class="btn btn-primary">Intercambiar</a>
+                            {% endif %}
+                        {% else %}
+                            <a href="{% url 'signin' %}" class="btn btn-primary">Intercambiar</a>
+                        {% endif %}
+                    </div>
+                    <!-- Sección de preguntas y respuestas -->
+                    <div class="mt-3">
+                        <div class="">
+                            <h2>Preguntas y respuestas</h2>
+                            {% if preguntas %}
+                                <ul class="list-group mt-2">
+                                    {% for pregunta in preguntas %}
+                                        <li class="list-group-item my-1" style="border-top: 1px solid #dee2e6;">
+                                            <p><strong>{{ pregunta.usuario.get_full_name }}:</strong> {{ pregunta.contenido }}</p>
+                                            {% if pregunta.respuesta %}
+                                                <ul class="list-group mt-2">
+                                                    <li class="list-group-item">
+                                                        <p><strong>{{ pregunta.respuesta.usuario.get_full_name }}:</strong> {{ pregunta.respuesta.contenido }}</p>
+                                                    </li>
+                                                </ul>
+                                            {% else %}
+                                                {% if user.is_authenticated and user == publicacion.usuario %}
+                                                    <form method="POST" action="{% url 'agregar_respuesta' pregunta.id %}">
+                                                        {% csrf_token %}
+                                                        <div class="form-group">
+                                                            <label for="respuesta">Responder:</label>
+                                                            <textarea class="form-control" id="respuesta" name="contenido" rows="2" required></textarea>
+                                                        </div>
+                                                        <button type="submit" class="btn btn-primary btn-sm">Responder</button>
+                                                    </form>
+                                                {% endif %}
+                                            {% endif %}
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            {% else %}
+                                <p>No hay preguntas aún.</p>
+                            {% endif %}
+                        </div>
+                        <!-- Formulario para agregar pregunta -->
+                        {% if user.is_authenticated and user != publicacion.usuario and not user.isModerador and not user.isAdmin %}
+                            <form method="POST" action="{% url 'agregar_pregunta' publicacion.id %}">
+                                {% csrf_token %}
+                                <div class="form-group mt-3">
+                                    <label for="pregunta">Hacer una pregunta:</label>
+                                    <textarea class="form-control" id="pregunta" name="contenido" rows="3" required></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Preguntar</button>
+                            </form>
+                        {% elif not user.is_authenticated %}
+                            <p>Inicia sesión para hacer una pregunta.</p>
+                        {% endif %}
+
+                        <!-- <script> SI SE NECESITA BOTON VER PREGUNTAS
+                            document.getElementById('togglePreguntasBtn').addEventListener('click', function() {
+                                var preguntasContainer = document.getElementById('preguntasContainer');
+                                if (preguntasContainer.style.display === 'none') {
+                                    preguntasContainer.style.display = 'block';
+                                    this.textContent = 'Ocultar Preguntas';
+                                } else {
+                                    preguntasContainer.style.display = 'none';
+                                    this.textContent = 'Ver Preguntas';
+                                }
+                            });
+                        </script> -->
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-5 item-photo rounded" style="box-shadow: 0 4px 8px rgba(0,0,0,0.1); overflow: hidden; justify-content: center; align-items: center;">
+                <img style="width: 100%; height: auto; max-height: 100%;" src="{{ publicacion.imagen.url }}" alt="Imagen de la publicación">
+            </div>
+            {% comment %} <div class="col-md-5" style="box-shadow: 0 4px 8px rgba(0,0,0,0.1); border-radius: 10px; overflow: hidden; display: flex; justify-content: center; align-items: center;">
+                <img src="{{ publicacion.imagen.url }}" class="rounded-end" 
+                     style="width: auto; max-width: 100%; height: auto; max-height: 100%;" alt="Imagen de la publicación">
+            </div> {% endcomment %}
         </div>
     </div>
-</div>
 
-<!-- <script> SI SE NECESITA BOTON VER PREGUNTAS
-    document.getElementById('togglePreguntasBtn').addEventListener('click', function() {
-        var preguntasContainer = document.getElementById('preguntasContainer');
-        if (preguntasContainer.style.display === 'none') {
-            preguntasContainer.style.display = 'block';
-            this.textContent = 'Ocultar Preguntas';
-        } else {
-            preguntasContainer.style.display = 'none';
-            this.textContent = 'Ver Preguntas';
-        }
-    });
-</script> -->
 {% endblock %}

@@ -10,11 +10,11 @@ class PublicacionForm(forms.ModelForm):
         widget=forms.CheckboxSelectMultiple,
         required=True
     )
-    punto_encuentro = forms.MultipleChoiceField(
-        choices=Publicacion.PUNTOS_ENC,
-        widget=forms.CheckboxSelectMultiple,
-        required=True
-    )
+    #punto_encuentro = forms.MultipleChoiceField(
+    #    choices=Publicacion.PUNTOS_ENC,
+    #    widget=forms.CheckboxSelectMultiple,
+    #    required=True
+    #)
     franja_horaria_inicio = forms.TimeField(
         widget=forms.TimeInput(format='%H:%M', attrs={'placeholder': 'HH:MM'}),
         required=True,
@@ -26,13 +26,14 @@ class PublicacionForm(forms.ModelForm):
         label='Franja horaria fin'
     )
     categoria = forms.ModelChoiceField(queryset=Categoria.objects.all(), empty_label="-- Seleccione --", required=True)
+    filial = forms.ModelMultipleChoiceField(queryset=Filial.objects.all(), widget=forms.CheckboxSelectMultiple, required=True)
 
     class Meta:
         model = Publicacion
-        fields = ['nombre', 'descripcion', 'imagen', 'categoria', 'estado', 'punto_encuentro', 'dias_convenientes', 'franja_horaria_inicio', 'franja_horaria_fin']
+        fields = ['nombre', 'descripcion', 'imagen', 'categoria', 'estado', 'filial', 'dias_convenientes', 'franja_horaria_inicio', 'franja_horaria_fin']
         widgets = {
             'dias_convenientes': forms.CheckboxSelectMultiple,
-            'punto_encuentro': forms.CheckboxSelectMultiple,
+            'filial': forms.CheckboxSelectMultiple,
             'franja_horaria_inicio': forms.TimeInput(format='%H:%M'),
             'franja_horaria_fin': forms.TimeInput(format='%H:%M'),
         }
@@ -57,6 +58,7 @@ class PublicacionForm(forms.ModelForm):
 class IntercambioForm(forms.ModelForm):
     publicacion_ofertante = forms.ModelChoiceField(queryset=Publicacion.objects.none())
     fecha_intercambio = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}), required=True)
+    filial = forms.ModelChoiceField(queryset=Filial.objects.all(), empty_label="-- Seleccione --", required=True)
 
     franja_horaria = forms.TimeField(
         widget=forms.TimeInput(format='%H:%M', attrs={'placeholder': 'HH:MM'}),
@@ -66,7 +68,7 @@ class IntercambioForm(forms.ModelForm):
 
     class Meta:
         model = Intercambio
-        fields = ['publicacion_ofertante', 'punto_encuentro', 'fecha_intercambio', 'franja_horaria']
+        fields = ['publicacion_ofertante', 'filial', 'fecha_intercambio', 'franja_horaria']
         widgets = {
             'franja_horaria': forms.TimeInput(format='%H:%M')
         }
@@ -82,7 +84,7 @@ class IntercambioForm(forms.ModelForm):
         self.fields['publicacion_ofertante'].queryset = Publicacion.objects.filter(usuario=user, categoria=categoria, disponible_para_intercambio=True)
         # self.fields['dias_convenientes'].choices = [(dia, dia) for dia in dias]
 
-        self.fields['punto_encuentro'].choices = [(p, p) for p in puntos]
+        self.fields['filial'].choices = [(p, p) for p in puntos]
 
         self.franja_horaria_inicio_publicacion = franja_horaria_inicio
         self.franja_horaria_fin_publicacion = franja_horaria_fin
@@ -178,20 +180,20 @@ class CategoriaForm(forms.ModelForm):
         model = Categoria
         fields = ['nombre']
 
-class FilialForm(forms.ModelForm):
-    class Meta:
-        model = Filial
-        fields = ['nombre']
-        widgets = {
-            'nombre': forms.TextInput(attrs={'class': 'form-control'})
-        }
-
     def clean_nombre(self):
         nombre = self.cleaned_data['nombre']
         capitalized_nombre = nombre.title() 
         if Categoria.objects.filter(nombre__iexact=capitalized_nombre).exists():
             raise forms.ValidationError("")
         return capitalized_nombre
+
+class FilialForm(forms.ModelForm):
+    class Meta:
+        model = Filial
+        fields = ['nombre']
+        #widgets = {
+        #    'nombre': forms.TextInput(attrs={'class': 'form-control'})
+        #}
 
     def clean_nombre(self):
         nombre = self.cleaned_data['nombre']

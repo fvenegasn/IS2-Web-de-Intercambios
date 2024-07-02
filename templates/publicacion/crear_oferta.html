@@ -31,13 +31,16 @@
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <div data-mdb-input-init class="form-outline">
-                                            <label class="form-label mb-1" for="punto_encuentro">Punto de encuentro</label>
-                                            <select id="punto_encuentro" name="punto_encuentro"
-                                                class="form-select form-select-lg" required>
+                                            <label class="form-label mb-1" for="filial">Punto de encuentro</label>
+                                            <select id="filial" name="filial" class="form-select form-select-lg" required>
                                                 <option value="" selected disabled>-- Seleccione --</option>
-                                                {% for value, display in form.fields.punto_encuentro.choices %}
-                                                <option value="{{ value }}">{{ display }}</option>
-                                                {% endfor %}
+                                                {% if publicacion_demandada.filial.count == 1 %}
+                                                    <option value="{{ publicacion_demandada.filial.first.id }}">{{ publicacion_demandada.filial.first }}</option>
+                                                {% else %}
+                                                    {% for punto in publicacion_demandada.filial.all %}
+                                                        <option value="{{ punto.id }}">{{ punto }}</option>
+                                                    {% endfor %}
+                                                {% endif %}
                                             </select>
                                         </div>
                                     </div>

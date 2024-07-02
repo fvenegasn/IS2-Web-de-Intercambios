@@ -63,32 +63,27 @@
                         <option value="Moderador">Moderador</option>
                         {% endif %}
                     </select>
-
-        
-                    <div id="filial-selection" style="display: none;">
+            
+                    <div id="filial-selection-container" style="display: none;">
                         <label class="form-label mb-1" for="filial-selection">Seleccionar Filial:</label>
                         <select name="filial-selection" id="filial-selection" class="form-select form-select-lg" required>
                             <option value="" disabled selected>Seleccione un sitio</option>
-                            {% for choice in user.Filiales.choices %}
-                            <option value="{{ choice.0 }}">{{ choice.1 }}</option>
+                            {% for filial in filiales %}
+                            <option value="{{ filial.nombre }}">{{ filial.nombre }}</option>
                             {% endfor %}
                         </select>
                     </div>
-                    
-
+              
                     {% if messages %}
                     {% for message in messages %}
                     <div class="alert alert-{{ message.tags }} alert-dismissible fade show m-2 p-1" role="alert">
                         {{ message }}
-                        <button type="button" class="btn-close m-0 p-2" data-bs-dismiss="alert"
-                            aria-label="Close"></button>
+                        <button type="button" class="btn-close m-0 p-2" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                     {% endfor %}
                     {% endif %}
-
-                    
+    
                     <button type="submit" class="btn btn-primary btn-block mt-2 p-2">Cambiar rol</button>
-                                   
                 </form>
             </div>
     </div>
@@ -97,15 +92,15 @@
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         var rolSelect = document.getElementById('rol');
-        var filialSelection = document.getElementById('filial-selection');
+        var filialSelectionContainer = document.getElementById('filial-selection-container'); // Actualizado para usar el nuevo ID
     
         function toggleSiteSelection() {
             if (rolSelect.value === 'Moderador') {
-                filialSelection.style.display = 'block';
-                filialSelection.querySelector('select').required = true;
+                filialSelectionContainer.style.display = 'block';
+                filialSelectionContainer.querySelector('select').required = true;
             } else {
-                filialSelection.style.display = 'none';
-                filialSelection.querySelector('select').required = false;
+                filialSelectionContainer.style.display = 'none';
+                filialSelectionContainer.querySelector('select').required = false;
             }
         }
     
