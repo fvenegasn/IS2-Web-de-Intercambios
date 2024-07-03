@@ -3,6 +3,7 @@ from django.utils import timezone
 from django import forms
 from .models import Filial, Publicacion, Intercambio, Categoria, Pregunta, Respuesta
 from django.core.exceptions import ValidationError
+from django.core.validators import validate_email
 
 class PublicacionForm(forms.ModelForm):
     dias_convenientes = forms.MultipleChoiceField(
@@ -136,10 +137,74 @@ from django import forms
 from django.core.exceptions import ValidationError
 from .models import Usuario
 
+from django import forms
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
+from .models import Usuario
+
+from django import forms
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
+from .models import Usuario
+
 class UserUpdateForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+        if self.user:
+            self.fields['email'].initial = self.user.email
+
     class Meta:
         model = Usuario
         fields = ['first_name', 'last_name', 'email', 'telefono', 'direccion']
+        widgets = {
+            'first_name': forms.TextInput(attrs={'class': 'form-control', 'required': 'required'}),
+            'last_name': forms.TextInput(attrs={'class': 'form-control', 'required': 'required'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control', 'required': 'required'}),
+            'telefono': forms.TextInput(attrs={'class': 'form-control', 'required': 'required'}),
+            'direccion': forms.TextInput(attrs={'class': 'form-control', 'required': 'required'}),
+        }
+        error_messages = {
+            'first_name': {
+                'required': "El campo Nombre no puede estar vacío",
+            },
+            'last_name': {
+                'required': "El campo Apellido no puede estar vacío",
+            },
+            'email': {
+                'required': "El campo Email no puede estar vacío",
+            },
+            'telefono': {
+                'required': "El campo Teléfono no puede estar vacío",
+            },
+            'direccion': {
+                'required': "El campo Dirección no puede estar vacío",
+            },
+        }
+
+    def clean_telefono(self):
+        telefono = self.cleaned_data.get('telefono')
+        if not telefono.isdigit():
+            raise ValidationError("Formato de campo Teléfono inválido o vacio")
+        return telefono
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if not email:
+            raise ValidationError("El campo Email no puede estar vacío")
+        try:
+            validate_email(email)
+        except ValidationError:
+            raise ValidationError("Formato de campo Email inválido")
+        return email
+
+    def clean(self):
+        cleaned_data = super().clean()
+        cleaned_data_copy = cleaned_data.copy()  # Copia de cleaned_data para evitar el error de modificación durante la iteración
+        for field_name, field_value in cleaned_data_copy.items():
+            if not field_value:
+                self.add_error(field_name, f"El campo {self.fields[field_name].label} no puede estar vacío")
+        return cleaned_data
 
 
 
