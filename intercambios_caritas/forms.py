@@ -335,7 +335,9 @@ class UsuarioModelChoiceField(forms.ModelChoiceField):
         return f"{obj.get_full_name()}"
         
 class FiltroIntercambiosForm(forms.Form):
-    usuario = UsuarioModelChoiceField(queryset=Usuario.objects.all(), required=False, label='Usuario')
+    usuario = UsuarioModelChoiceField(queryset=Usuario.objects.filter(rol="Usuario"), required=False, label='Usuario')
     ESTADOS_CHOICES = [('', 'Todos')] + list(Intercambio.ESTADOS)
     estado = forms.ChoiceField(choices=ESTADOS_CHOICES, required=False, label='Estado')
-    fecha = forms.DateField(label='Fecha', required=False, widget=forms.DateInput(attrs={'type': 'date'}))
+    #fecha = forms.DateField(label='Fecha', required=False, widget=forms.DateInput(attrs={'type': 'date'}))
+    fecha_desde = forms.DateField(label='Fecha Desde', required=False, widget=forms.DateInput(attrs={'type': 'date'}))
+    fecha_hasta = forms.DateField(label='Fecha Hasta', required=False, widget=forms.DateInput(attrs={'type': 'date'}))

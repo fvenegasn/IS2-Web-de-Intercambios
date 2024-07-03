@@ -506,7 +506,8 @@ def ver_intercambios_moderador(request):
         if form.is_valid():
             usuario = form.cleaned_data.get('usuario')
             estado = form.cleaned_data.get('estado')
-            fecha = form.cleaned_data.get('fecha')
+            fecha_desde = form.cleaned_data.get('fecha_desde')
+            fecha_hasta = form.cleaned_data.get('fecha_hasta')
 
             if usuario:
                 intercambios = intercambios.filter(
@@ -516,12 +517,16 @@ def ver_intercambios_moderador(request):
             if estado and estado != 'Todos':
                 intercambios = intercambios.filter(estado=estado)
 
-            if fecha:
-                intercambios = intercambios.filter(fecha_intercambio=fecha)
+            if fecha_desde:
+                intercambios = intercambios.filter(fecha_intercambio__gte=fecha_desde)
+
+            if fecha_hasta:
+                intercambios = intercambios.filter(fecha_intercambio__lte=fecha_hasta)
     else:
         form = FiltroIntercambiosForm()
 
     return render(request, 'publicacion/ver_intercambios.html', {'ofertas_recibidas': intercambios, 'form': form})
+
 
 @login_required
 def ver_mis_intercambios(request):
