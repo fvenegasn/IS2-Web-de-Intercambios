@@ -1,11 +1,8 @@
-{% load static%}
-{% comment %} {% load static %} aca para que cargue bien la imagen del navbar porque toma los estilos del base pero no esto {% endcomment %}
+{% load static %}
 <nav class="navbar navbar-expand-lg navbar-custom">
     <div class="container">
-        <a class="navbar-brand" href="{% url 'home' %}"><img src="{% static 'logosCaritas/Logo-blanco.png' %}"
-                width=50></a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation" style="filter: invert(100%);">
+        <a class="navbar-brand" href="{% url 'home' %}"><img src="{% static 'logosCaritas/Logo-blanco.png' %}" width=50></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation" style="filter: invert(100%);">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="containter">
@@ -41,8 +38,7 @@
                         <a href="{% url 'crear_publicacion' %}" class="nav-link">Publicar Producto</a>
                     </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                            aria-expanded="false">Mi Perfil</a>
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Mi Perfil</a>
                         <ul class="dropdown-menu">
                             <li class="nav-item"><a class="nav-link" href="{% url 'mi_perfil' %}">Ver mi perfil</a></li>
                             <li class="nav-item"><a class="nav-link" href="{% url 'mis_publicaciones' %}">Mis publicaciones</a></li>
@@ -50,6 +46,10 @@
                             <li class="nav-item"><a class="nav-link" href="{% url 'ver_ofertas_realizadas' %}">Mis ofertas realizadas</a></li>
                             <li class="nav-item"><a class="nav-link" href="{% url 'ver_ofertas_recibidas' %}">Mis ofertas recibidas</a></li>
                         </ul>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'listar_notificaciones' %}">&#128276;</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/logout">Cerrar sesión</a>

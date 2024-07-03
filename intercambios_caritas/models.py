@@ -519,3 +519,12 @@ class Respuesta(models.Model):
 
     def __str__(self):
         return f"Respuesta de {self.usuario.username} a {self.pregunta.id}"
+    
+class Notificacion(models.Model):
+    mensaje = models.TextField()
+    dueño = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    fecha = models.DateTimeField(default=timezone.now)
+    leida = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.mensaje

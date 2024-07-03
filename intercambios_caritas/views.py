@@ -3,7 +3,7 @@ import django
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render, get_object_or_404
 from intercambios_caritas.forms import IntercambioForm, PublicacionForm, UpdatePublicacionForm,PreguntaForm,RespuestaForm, FilialForm, FiltroIntercambiosForm
-from intercambios_caritas.models import Intercambio, Usuario, Publicacion, Categoria,Pregunta,Respuesta, Filial
+from intercambios_caritas.models import Intercambio, Usuario, Publicacion, Categoria,Pregunta,Respuesta, Filial, Notificacion
 
 from . import views
 from django.utils.html import strip_tags
@@ -456,6 +456,7 @@ def crear_oferta(request, publicacion_id):
             if propuesta.es_valida():
                 
                 propuesta.save()
+                add_notificacion(publicacion_demandada.usuario, f"Recibiste una oferta por tu {publicacion_demandada.nombre}")
                 messages.success(request, "Propuesta de intercambio creada exitosamente.")
                 return redirect('home')
             else:
@@ -547,7 +548,8 @@ def aceptar_oferta(request, oferta_id):
     try:
         oferta.cancelar_ofertas_relacionadas()
         oferta.aceptar()
-
+        add_notificacion(oferta.publicacion_demandada.usuario, f"Se aceptó la oferta entre {oferta.publicacion_demandada} y {oferta.publicacion_ofertante} en {oferta.filial} el día {oferta.fecha_intercambio}")
+        add_notificacion(oferta.publicacion_ofertante.usuario, f"Se aceptó la oferta entre {oferta.publicacion_demandada} y {oferta.publicacion_ofertante} en {oferta.filial} el día {oferta.fecha_intercambio}")
         oferta.publicacion_ofertante.disponible_para_intercambio = False
         oferta.publicacion_ofertante.save()
         oferta.publicacion_demandada.disponible_para_intercambio = False
@@ -571,6 +573,8 @@ def rechazar_oferta(request, oferta_id):
                 motivo = motivo_otro
             try:
                 oferta.rechazar(motivo)
+                add_notificacion(oferta.publicacion_demandada.usuario, f"Se rechazó la oferta entre {oferta.publicacion_demandada} y {oferta.publicacion_ofertante} en {oferta.filial} el día {oferta.fecha_intercambio} por motivo {oferta.motivo_desestimacion}")
+                add_notificacion(oferta.publicacion_ofertante.usuario, f"Se rechazó la oferta entre {oferta.publicacion_demandada} y {oferta.publicacion_ofertante} en {oferta.filial} el día {oferta.fecha_intercambio} por motivo {oferta.motivo_desestimacion}")
                 messages.success(request, "Oferta rechazada exitosamente.")
             except ValueError as e:
                 messages.error(request, str(e))
@@ -592,6 +596,8 @@ def cancelar_oferta(request, oferta_id):
                 motivo = motivo_otro
             try:
                 oferta.cancelar(motivo)
+                add_notificacion(oferta.publicacion_demandada.usuario, f"Se canceló la oferta entre {oferta.publicacion_demandada} y {oferta.publicacion_ofertante} en {oferta.filial} el día {oferta.fecha_intercambio} por motivo {oferta.motivo_desestimacion}")
+                add_notificacion(oferta.publicacion_ofertante.usuario, f"Se canceló la oferta entre {oferta.publicacion_demandada} y {oferta.publicacion_ofertante} en {oferta.filial} el día {oferta.fecha_intercambio} por motivo {oferta.motivo_desestimacion}")
                 messages.success(request, "Oferta cancelada exitosamente.")
             except ValueError as e:
                 messages.error(request, str(e))
@@ -623,7 +629,8 @@ def gestionar_intercambio(request, oferta_id):
         if accion == 'confirmar_intercambio':
             try:
                 actualizar_calificaciones_y_donacion(oferta, request)
-
+                add_notificacion(oferta.publicacion_demandada.usuario, f"Se confirmó el intercambio entre {oferta.publicacion_demandada} y {oferta.publicacion_ofertante} en {oferta.filial} el día {oferta.fecha_intercambio}")
+                add_notificacion(oferta.publicacion_ofertante.usuario, f"Se confirmó el intercambio entre {oferta.publicacion_demandada} y {oferta.publicacion_ofertante} en {oferta.filial} el día {oferta.fecha_intercambio}")
                 oferta.confirmar()
                 oferta.save()
                 messages.success(request, "Intercambio confirmado.")
@@ -640,6 +647,8 @@ def gestionar_intercambio(request, oferta_id):
                     actualizar_calificaciones_y_donacion(oferta, request)
 
                     oferta.desestimar(motivo)
+                    add_notificacion(oferta.publicacion_demandada.usuario, f"Se desestimo el intercambio entre {oferta.publicacion_demandada} y {oferta.publicacion_ofertante} en {oferta.filial} el día {oferta.fecha_intercambio} por motivo {oferta.motivo_desestimacion}")
+                    add_notificacion(oferta.publicacion_ofertante.usuario, f"Se desestimo el intercambio entre {oferta.publicacion_demandada} y {oferta.publicacion_ofertante} en {oferta.filial} el día {oferta.fecha_intercambio} por motivo {oferta.motivo_desestimacion}")
                     oferta.publicacion_ofertante.disponible_para_intercambio = True
                     oferta.publicacion_ofertante.save()
                     oferta.publicacion_demandada.disponible_para_intercambio = True
@@ -858,7 +867,9 @@ def agregar_pregunta(request, publicacion_id):
             pregunta = form.save(commit=False)
             pregunta.publicacion = publicacion
             pregunta.usuario = request.user
+            
             pregunta.save()
+            add_notificacion(publicacion.usuario, f"Recibiste una pregunta por tu {publicacion.nombre}")
             return redirect('ver_publicacion', publicacion_id=publicacion.id)
     else:
         form = PreguntaForm()
@@ -875,6 +886,7 @@ def agregar_respuesta(request, pregunta_id):
             respuesta.pregunta = pregunta
             respuesta.usuario = request.user
             respuesta.save()
+            add_notificacion(pregunta.usuario, f"Recibiste una respuesta en la publicacion {pregunta.publicacion.nombre}")
             return redirect('ver_publicacion', publicacion_id=pregunta.publicacion.id)
     else:
         form = RespuestaForm()
@@ -1017,3 +1029,16 @@ def modificar_mi_publicacion(request, publicacion_id):
         'selected_dias_disponibles': selected_dias_disponibles,
     }
     return render(request, 'publicacion/modificar_mi_publicacion.html', context)
+
+
+def add_notificacion(usuario, mensaje):
+    notificacion = Notificacion(dueño=usuario, mensaje=mensaje)
+    notificacion.save()
+
+@login_required
+def listar_notificaciones(request):
+    notificaciones = Notificacion.objects.filter(dueño=request.user).order_by('-fecha')
+    context = {
+        'notificaciones': notificaciones
+    }
+    return render(request, 'notificaciones/listar_notificaciones.html', context)
