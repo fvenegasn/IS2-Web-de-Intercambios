@@ -391,7 +391,7 @@ function updateTable(data) {
       // Si data es un array, asumimos que son los datos directos de la tabla
       data.forEach(row => {
           table.row.add([
-              row.punto_encuentro,
+              row.filial,
               row.year_month,
               row.estado,
               row.publicacion_ofertante__categoria,
@@ -403,7 +403,7 @@ function updateTable(data) {
       // Si data tiene la propiedad 'intercambios', asumimos que es el objeto completo
       data.intercambios.forEach(row => {
           table.row.add([
-              row.punto_encuentro,
+              row.filial__nombre,
               row.year_month,
               row.estado,
               row.publicacion_ofertante__categoria,

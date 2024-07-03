@@ -761,11 +761,11 @@ def get_intercambios_mes(request):
     if end_date:
         filters &= Q(fecha_intercambio__lte=end_date)
     if user.rol == "Moderador":
-        filters &= Q(punto_encuentro=user.filial)
+        filters &= Q(filial__nombre=user.filial)
 
-    intercambios = Intercambio.objects.filter(filters).values('punto_encuentro').annotate(total=Count('id'))
+    intercambios = Intercambio.objects.filter(filters).values('filial__nombre').annotate(total=Count('id'))
 
-    finalrep = {item['punto_encuentro']: item['total'] for item in intercambios}
+    finalrep = {item['filial__nombre']: item['total'] for item in intercambios}
 
     return JsonResponse({'intercambios_mes': finalrep}, safe=False)
 """
@@ -797,7 +797,7 @@ def get_intercambios_estado(request):
     if end_date:
         filters &= Q(fecha_intercambio__lte=end_date)
     if user.rol == "Moderador":
-        filters &= Q(punto_encuentro=user.filial)
+        filters &= Q(filial__nombre=user.filial)
 
     intercambios = Intercambio.objects.filter(filters).values('estado').annotate(total=Count('id'))
     finalrep = {item['estado']: item['total'] for item in intercambios}
@@ -815,7 +815,7 @@ def get_intercambios_totales(request):
     if end_date:
         filters &= Q(fecha_intercambio__lte=end_date)
     if user.rol == "Moderador":
-        filters &= Q(punto_encuentro=user.filial)
+        filters &= Q(filial__nombre=user.filial)
 
     intercambios = Intercambio.objects.filter(filters).annotate(day=TruncDay('fecha_intercambio')).values('day').annotate(total=Count('id')).order_by('day')
     
@@ -930,12 +930,12 @@ def mostrar_tabla_estadisticas(request):
     if end_date:
         filters &= Q(fecha_intercambio__lte=end_date)
     if user.rol == "Moderador":
-        filters &= Q(punto_encuentro=user.filial)
+        filters &= Q(filial__nombre=user.filial)
 
     intercambios = (
         Intercambio.objects.filter(filters)
         .annotate(year_month=TruncMonth('fecha_intercambio'))
-        .values('year_month', 'punto_encuentro', 'estado', 'publicacion_ofertante__categoria')
+        .values('year_month', 'filial__nombre', 'estado', 'publicacion_ofertante__categoria')
         .annotate(total=Count('id'))
         .annotate(donaciones=Count('id', filter=Q(hubo_donacion=True)))
         .order_by('year_month')
@@ -954,7 +954,7 @@ def get_intercambios_categoria(request):
     if end_date:
         filters &= Q(fecha_intercambio__lte=end_date)
     if user.rol == "Moderador":
-        filters &= Q(punto_encuentro=user.filial)
+        filters &= Q(filial__nombre=user.filial)
 
     intercambios = Intercambio.objects.filter(filters).values('publicacion_ofertante__categoria').annotate(total=Count('id'))
 
