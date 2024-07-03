@@ -432,7 +432,7 @@ class Intercambio(models.Model):
     publicacion_ofertante = models.ForeignKey('Publicacion', related_name='ofertas_realizadas', on_delete=models.CASCADE)
     publicacion_demandada = models.ForeignKey('Publicacion', related_name='ofertas_recibidas', on_delete=models.CASCADE)
     #punto_encuentro = models.CharField(max_length=50, choices=Publicacion.PUNTOS_ENC) # 1 solo respecto de lo seleccionado en publicacion_demandada
-    filial = models.ForeignKey(Filial, on_delete=models.CASCADE, default=1,null=True)
+    filial = models.ForeignKey(Filial, on_delete=models.PROTECT, default=1,null=True)
     categoria_nueva = models.ForeignKey(Categoria, on_delete=models.PROTECT,default=1)
     fecha_intercambio = models.DateField(default=datetime.datetime(2024,7,3)) # representa una fecha calendario sobre los días convenientes
     # La franja horaria debe representar 1 hora dentro del rango previamente seleccionado por el usuario

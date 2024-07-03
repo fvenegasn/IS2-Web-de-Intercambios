@@ -341,3 +341,13 @@ class FiltroIntercambiosForm(forms.Form):
     #fecha = forms.DateField(label='Fecha', required=False, widget=forms.DateInput(attrs={'type': 'date'}))
     fecha_desde = forms.DateField(label='Fecha Desde', required=False, widget=forms.DateInput(attrs={'type': 'date'}))
     fecha_hasta = forms.DateField(label='Fecha Hasta', required=False, widget=forms.DateInput(attrs={'type': 'date'}))
+
+    def clean(self):
+        cleaned_data = super().clean()
+        fecha_desde = cleaned_data.get("fecha_desde")
+        fecha_hasta = cleaned_data.get("fecha_hasta")
+
+        if fecha_desde and fecha_hasta and fecha_desde > fecha_hasta:
+            raise ValidationError("La fecha 'Desde' debe ser menor o igual a la fecha 'Hasta'.")
+
+        return cleaned_data

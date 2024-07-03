@@ -523,6 +523,11 @@ def ver_intercambios_moderador(request):
 
             if fecha_hasta:
                 intercambios = intercambios.filter(fecha_intercambio__lte=fecha_hasta)
+        else:
+            for field, errors in form.errors.items():
+                for error in errors:
+                    if error != "Este campo es obligatorio.":
+                        messages.error(request, f"Error: {error}")
     else:
         form = FiltroIntercambiosForm()
 
@@ -735,8 +740,11 @@ def listar_filiales(request):
             filial_id = request.POST.get('filial_id')
             filial = Filial.objects.get(id=filial_id)
             try:
-                filial.delete()
-                messages.success(request, "Filial eliminada exitosamente.")
+                if (len(Intercambio.objects.filter(filial=filial)) ==0) and (len(Publicacion.objects.filter(filial=filial)) ==0):
+                    filial.delete()
+                    messages.success(request, "Filial eliminada exitosamente.")
+                else:
+                    messages.error(request, "No se puede eliminar la filial ya que hay intercambios y publicaciones en la misma")
             except ProtectedError:
                 messages.error(request, "No se puede eliminar la filial hasta que no existan intercambios en la misma")
             return redirect(reverse('listar_filiales'))
