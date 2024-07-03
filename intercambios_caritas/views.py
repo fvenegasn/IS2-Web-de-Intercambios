@@ -41,28 +41,27 @@ def home(request):
     )
 
     if categorias_seleccionadas:
-        publicaciones_disponibles = publicaciones_disponibles.filter(categoria__in=categorias_seleccionadas)
+        publicaciones_disponibles = publicaciones_disponibles.filter(categoria_nueva__id__in=categorias_seleccionadas)
 
     if puntos_de_encuentro_seleccionados:
-        filtered_publicaciones = Publicacion.objects.none()
-        for punto in puntos_de_encuentro_seleccionados:
-            filtered_publicaciones |= publicaciones_disponibles.filter(punto_encuentro__contains=punto)
-        publicaciones_disponibles = filtered_publicaciones
-        
+        publicaciones_disponibles = publicaciones_disponibles.filter(filial__id__in=puntos_de_encuentro_seleccionados)
+
     if estados_seleccionados:
         publicaciones_disponibles = publicaciones_disponibles.filter(estado__in=estados_seleccionados)
+    
     if queryset:
         publicaciones_disponibles = publicaciones_disponibles.filter(
-            Q(nombre__icontains=queryset) | 
-            Q(categoria__icontains=queryset)
+            Q(nombre__icontains=queryset) #| 
+            #Q(categoria_nueva__nombre__icontains=queryset)
         ).distinct()
 
-        
+    categorias = Categoria.objects.all()
+    puntos_de_encuentro = Filial.objects.all()
 
     return render(request, 'authentication/index.html', {
         'publicaciones': publicaciones_disponibles,
-        'categorias': Publicacion.CATEGORIAS,
-        'puntos_de_encuentro': Publicacion.PUNTOS_ENC,
+        'categorias': categorias,
+        'puntos_de_encuentro': puntos_de_encuentro,
         'estados': Publicacion.ESTADOS,
         'categorias_seleccionadas': categorias_seleccionadas,
         'puntos_de_encuentro_seleccionados': puntos_de_encuentro_seleccionados,
