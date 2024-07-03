@@ -7,7 +7,7 @@
 <!-- TODO: agregar logica para que solo lo vean los admins -->
 <h1 class="text-center custom-h1-bg mb-2">Métricas Intercambios Cáritas</h1>
 
-<!-- Filtro de fechas-->
+<!-- Filtro de fechas
 <div class="container mt-4">
   <form id="filter-form" class="form-inline mt-4">
       <label for="start_date">Desde: </label>
@@ -17,13 +17,24 @@
       <button type="button" onclick="applyFilters()" class="btn btn-primary">Filtrar</button>
   </form>
 </div>
+-->
+
+  <div class="p-2 bg-light border rounded">
+    <form id="filter-form" class="form-inline">
+        <label for="start_date" class="me-2">Desde:</label>
+        <input type="date" id="start_date" name="start_date" class="form-control form-control-sm me-2">
+        <label for="end_date" class="me-2">Hasta:</label>
+        <input type="date" id="end_date" name="end_date" class="form-control form-control-sm me-2">
+        <button type="button" onclick="applyFilters()" class="btn btn-primary btn-sm">Filtrar</button>
+    </form>
+  </div>
 
 <!-- Graficos -->
 
 <div class="container mt-4"><h3 class ="centered">Principales KPIs</h3>
   <div class="row mt-4">
     <div class="col-sm">
-      <b>Intercambios por Filial</b>
+      <b>Intercambios Confirmados por Filial</b>
       <canvas id="intercambios_mes" width="150" height="150" style="border:1px solid #f0f0f0;"></canvas>
     </div>
     <div class="col-sm">
@@ -31,11 +42,11 @@
       <canvas id="piechart_intercambios_estado" width="150" height="150" style="border:1px solid #f0f0f0;"></canvas>
     </div>
     <div class="col-sm">
-      <b>Intercambios Totales por Categoria</b>
+      <b>Intercambios Confirmados por Categoria</b>
       <canvas id="intercambios_categoria" width="150" height="150" style="border:1px solid #f0f0f0;"></canvas>
     </div>
     <div class="col-sm">
-      <b>Intercambios diarios acumulados</b>
+      <b>Intercambios Confirmados acumulados</b>
       <canvas id="intercambios_totales" width="150" height="150" style="border:1px solid #f0f0f0;"></canvas>
     </div>
   </div>

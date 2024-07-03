@@ -755,7 +755,7 @@ def get_intercambios_mes(request):
     start_date = request.GET.get('start_date')
     end_date = request.GET.get('end_date')
 
-    filters = Q(estado__in=["ACEPTADA", "CONFIRMADA", "DESESTIMADA"])
+    filters = Q(estado__in=[ "CONFIRMADA"])
     if start_date:
         filters &= Q(fecha_intercambio__gte=start_date)
     if end_date:
@@ -809,7 +809,7 @@ def get_intercambios_totales(request):
     start_date = request.GET.get('start_date')
     end_date = request.GET.get('end_date')
 
-    filters = Q(estado__in=["ACEPTADA", "CONFIRMADA", "DESESTIMADA"])
+    filters = Q(estado__in=[ "CONFIRMADA"])
     if start_date:
         filters &= Q(fecha_intercambio__gte=start_date)
     if end_date:
@@ -948,7 +948,7 @@ def get_intercambios_categoria(request):
     start_date = request.GET.get('start_date')
     end_date = request.GET.get('end_date')
 
-    filters = Q(estado__in=["ACEPTADA", "CONFIRMADA", "DESESTIMADA"])
+    filters = Q(estado__in=["CONFIRMADA"])
     if start_date:
         filters &= Q(fecha_intercambio__gte=start_date)
     if end_date:
