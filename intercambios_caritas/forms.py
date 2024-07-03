@@ -207,7 +207,7 @@ class UserUpdateForm(forms.ModelForm):
         return cleaned_data
 
 
-
+"""
 class UpdatePublicacionForm(forms.ModelForm):
     dias_convenientes = forms.MultipleChoiceField(
         choices=Publicacion.DIAS_SEMANA,
@@ -239,6 +239,50 @@ class UpdatePublicacionForm(forms.ModelForm):
             'franja_horaria_inicio': forms.TimeInput(format='%H:%M'),
             'franja_horaria_fin': forms.TimeInput(format='%H:%M'),
         }
+"""
+class UpdatePublicacionForm(forms.ModelForm):
+    dias_convenientes = forms.MultipleChoiceField(
+        choices=Publicacion.DIAS_SEMANA,
+        widget=forms.CheckboxSelectMultiple,
+        required=True
+    )
+    punto_encuentro = forms.MultipleChoiceField(
+        choices=Publicacion.PUNTOS_ENC,
+        widget=forms.CheckboxSelectMultiple,
+        required=True
+    )
+    franja_horaria_inicio = forms.TimeField(
+        widget=forms.TimeInput(format='%H:%M', attrs={'placeholder': 'HH:MM'}),
+        required=True,
+        label='Franja horaria inicio'
+    )
+    franja_horaria_fin = forms.TimeField(
+        widget=forms.TimeInput(format='%H:%M', attrs={'placeholder': 'HH:MM'}),
+        required=True,
+        label='Franja horaria fin'
+    )
+
+    class Meta:
+        model = Publicacion
+        fields = ['nombre', 'descripcion', 'imagen', 'categoria', 'estado', 'punto_encuentro', 'dias_convenientes', 'franja_horaria_inicio', 'franja_horaria_fin']
+        widgets = {
+            'dias_convenientes': forms.CheckboxSelectMultiple,
+            'punto_encuentro': forms.CheckboxSelectMultiple,
+            'franja_horaria_inicio': forms.TimeInput(format='%H:%M'),
+            'franja_horaria_fin': forms.TimeInput(format='%H:%M'),
+        }
+
+    def clean(self):
+        cleaned_data = super().clean()
+        imagen = cleaned_data.get('imagen')
+        categoria = cleaned_data.get('categoria')
+
+        if not imagen:
+            self.add_error('imagen', 'La publicación debe tener al menos una foto del producto.')
+
+        if not categoria:
+            self.add_error('categoria', 'La publicación debe tener la categoría del producto.')
+        
 
 class CategoriaForm(forms.ModelForm):
     class Meta:

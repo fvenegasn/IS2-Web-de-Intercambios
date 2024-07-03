@@ -1,4 +1,6 @@
 {% extends 'layouts/base.html' %}
+{% load static %}
+
 {% block title %}Modificar Publicación{% endblock %}
 
 {% block content %}
@@ -11,14 +13,22 @@
                     <div class="card-body p-4 p-md-4">
                         <h1 class="text-center">Intercambios Caritas</h1>
                         <h2 class="mb-3 text-center">Modificar Publicación</h2>
-                        <form action="" method="post">
+                        <form action="{% url 'modificar_mi_publicacion' publicacion_id=publicacion.id %}" method="post" enctype="multipart/form-data">
                             {% csrf_token %}
+                            {{ form.non_field_errors }}
                             <div class="row">
                                 <div class="col-md-4 mb-3">
                                     <div data-mdb-input-init class="form-outline">
                                         <label class="form-label mb-1" for="nombre">Nombre</label>
                                         <input type="text" id="nombre" name="nombre"
                                             class="form-control form-control-lg" required value="{{ publicacion.nombre }}"/>
+                                        {% if form.nombre.errors %}
+                                            <div class="invalid-feedback d-block">
+                                                {% for error in form.nombre.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        {% endif %}
                                     </div>
                                 </div>
                                 <div class="col-md-4 mb-3">
@@ -27,12 +37,19 @@
                                         <select id="estado" name="estado" class="form-select form-select-lg" required>
                                             {% for value, display in form.fields.estado.choices %}
                                                 {% if forloop.first %}
-                                                    <option value="{{ value }}">{{ publicacion.estado }}</option>
+                                                    <option value="{{ value }}" {% if publicacion.estado == value %} selected {% endif %}>{{ publicacion.get_estado_display }}</option>
                                                 {% else %}
                                                     <option value="{{ value }}">{{ display }}</option>
                                                 {% endif %}
                                             {% endfor %}
                                         </select>
+                                        {% if form.estado.errors %}
+                                            <div class="invalid-feedback d-block">
+                                                {% for error in form.estado.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        {% endif %}
                                     </div>
                                 </div>
                                 <div class="col-md-4 mb-3">
@@ -40,11 +57,17 @@
                                         <label class="form-label mb-1" for="categoria">Categoría</label>
                                         <select id="categoria" name="categoria" class="form-select form-select-lg"
                                             required>
-                                            <option value={{ publicacion.categoria }} selected disabled>{{ publicacion.categoria }}</option>
                                             {% for value, display in form.fields.categoria.choices %}
-                                            <option value="{{ value }}">{{ display }}</option>
+                                                <option value="{{ value }}" {% if publicacion.categoria == value %} selected {% endif %}>{{ display }}</option>
                                             {% endfor %}
                                         </select>
+                                        {% if form.categoria.errors %}
+                                            <div class="invalid-feedback d-block">
+                                                {% for error in form.categoria.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        {% endif %}
                                     </div>
                                 </div>
                             </div>
@@ -52,15 +75,32 @@
                                 <div class="col-md-6 mb-3">
                                     <div data-mdb-input-init class="form-outline">
                                         <label class="form-label mb-1" for="descripcion">Descripción</label>
-                                        <textarea id="descripcion" name="descripcion" style="height: 16px"
+                                        <textarea id="descripcion" name="descripcion" style="height: 120px"
                                             class="form-control form-control-lg">{{ publicacion.descripcion }}</textarea>
+                                        {% if form.descripcion.errors %}
+                                            <div class="invalid-feedback d-block">
+                                                {% for error in form.descripcion.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        {% endif %}
                                     </div>
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <div data-mdb-input-init class="form-outline">
                                         <label class="form-label mb-1" for="imagen">Imagen</label>
-                                        <input type="file" id="imagen" name="imagen" value="{{ publicacion.imagen }}"
-                                            class="form-control form-control-lg" required/>Actual: {{ publicacion.imagen }}
+                                        <input type="file" id="imagen" name="imagen"
+                                            class="form-control form-control-lg" {% if not form.imagen.value %}required{% endif %}/>
+                                        {% if form.imagen.errors %}
+                                            <div class="invalid-feedback d-block">
+                                                {% for error in form.imagen.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        {% endif %}
+                                        {% if publicacion.imagen %}
+                                            <p>Imagen actual: <img src="{{ publicacion.imagen.url }}" alt="Imagen actual" style="max-width: 200px;"></p>
+                                        {% endif %}
                                     </div>
                                 </div>
                             </div>
@@ -70,12 +110,19 @@
                                         <label class="form-label mb-1" for="punto_encuentro">Punto de encuentro</label>
                                         <div id="punto_encuentro">
                                             {% for value, display in form.fields.punto_encuentro.choices %}
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" value="{{ value }}" id="punto_encuentro_{{ forloop.counter0 }}" name="punto_encuentro"
-                                                       {% if value in selected_puntos_encuentro %} checked {% endif %}>
-                                                <label class="form-check-label" for="punto_encuentro_{{ forloop.counter0 }}">{{ display }}</label>
-                                            </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" value="{{ value }}" id="punto_encuentro_{{ forloop.counter0 }}" name="punto_encuentro"
+                                                        {% if value in selected_puntos_encuentro %} checked {% endif %}>
+                                                    <label class="form-check-label" for="punto_encuentro_{{ forloop.counter0 }}">{{ display }}</label>
+                                                </div>
                                             {% endfor %}
+                                            {% if form.punto_encuentro.errors %}
+                                                <div class="invalid-feedback d-block">
+                                                    {% for error in form.punto_encuentro.errors %}
+                                                        {{ error }}
+                                                    {% endfor %}
+                                                </div>
+                                            {% endif %}
                                         </div>
                                     </div>
                                 </div>
@@ -84,12 +131,19 @@
                                         <label class="form-label mb-1" for="dias_convenientes">Días disponibles</label>
                                         <div id="dias_convenientes">
                                             {% for value, display in form.fields.dias_convenientes.choices %}
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" value="{{ value }}" id="dias_convenientes_{{ forloop.counter0 }}" name="dias_convenientes"
-                                                       {% if value in selected_dias_disponibles %} checked {% endif %}>
-                                                <label class="form-check-label" for="dias_convenientes_{{ forloop.counter0 }}">{{ display }}</label>
-                                            </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" value="{{ value }}" id="dias_convenientes_{{ forloop.counter0 }}" name="dias_convenientes"
+                                                        {% if value in selected_dias_disponibles %} checked {% endif %}>
+                                                    <label class="form-check-label" for="dias_convenientes_{{ forloop.counter0 }}">{{ display }}</label>
+                                                </div>
                                             {% endfor %}
+                                            {% if form.dias_convenientes.errors %}
+                                                <div class="invalid-feedback d-block">
+                                                    {% for error in form.dias_convenientes.errors %}
+                                                        {{ error }}
+                                                    {% endfor %}
+                                                </div>
+                                            {% endif %}
                                         </div>
                                     </div>
                                 </div>
@@ -97,32 +151,40 @@
                                     <div class="row">
                                         <div class="col-12 mb-3">
                                             <div data-mdb-input-init class="form-outline">
-                                                <label class="form-label mb-1" for="franja_horaria_inicio">Desde</label>
-                                                <input type="time" id="franja_horaria_inicio" name="franja_horaria_inicio" class="form-control form-control-lg" required />
+                                                <label class="form-label mb-1" for="franja_horaria_inicio">Franja horaria inicio</label>
+                                                <input type="time" id="franja_horaria_inicio" name="franja_horaria_inicio"
+                                                    class="form-control form-control-lg" required value="{{ publicacion.franja_horaria_inicio|time:'H:i' }}"/>
+                                                {% if form.franja_horaria_inicio.errors %}
+                                                    <div class="invalid-feedback d-block">
+                                                        {% for error in form.franja_horaria_inicio.errors %}
+                                                            {{ error }}
+                                                        {% endfor %}
+                                                    </div>
+                                                {% endif %}
                                             </div>
                                         </div>
                                         <div class="col-12 mb-3">
                                             <div data-mdb-input-init class="form-outline">
-                                                <label class="form-label mb-1" for="franja_horaria_fin">Hasta</label>
-                                                <input type="time" id="franja_horaria_fin" name="franja_horaria_fin" class="form-control form-control-lg" required />
+                                                <label class="form-label mb-1" for="franja_horaria_fin">Franja horaria fin</label>
+                                                <input type="time" id="franja_horaria_fin" name="franja_horaria_fin"
+                                                    class="form-control form-control-lg" required value="{{ publicacion.franja_horaria_fin|time:'H:i' }}"/>
+                                                {% if form.franja_horaria_fin.errors %}
+                                                    <div class="invalid-feedback d-block">
+                                                        {% for error in form.franja_horaria_fin.errors %}
+                                                            {{ error }}
+                                                        {% endfor %}
+                                                    </div>
+                                                {% endif %}
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            {% if messages %}
-                            {% for message in messages %}
-                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show mb-2 p-1"
-                                role="alert">
-                                {{ message }}
-                                <button type="button" class="btn-close m-0 p-2" data-bs-dismiss="alert"
-                                    aria-label="Close"></button>
-                            </div>
-                            {% endfor %}
-                            {% endif %}
-                            <button type="submit" class="btn btn-primary btn-block mt-2 p-2">Actualizar
-                                Producto</button>
+                            <button type="submit" class="btn btn-primary btn-lg">Guardar cambios</button>
                         </form>
+                        {% for message in messages %}
+                            <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %} mt-3">{{ message }}</div>
+                        {% endfor %}
                     </div>
                 </div>
             </div>
@@ -130,3 +192,5 @@
     </div>
 </div>
 {% endblock %}
+
+

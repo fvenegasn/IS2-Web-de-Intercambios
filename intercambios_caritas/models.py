@@ -232,8 +232,9 @@ class Publicacion(models.Model):
             print(f'Parsed fin_hora: {fin_hora}, fin_minuto: {fin_minuto}')
             if int(inicio_hora) > int(fin_hora) or (int(inicio_hora) == int(fin_hora) and int(inicio_minuto) >= int(fin_minuto)):
                 raise ValidationError("La hora de inicio debe ser antes que la hora de finalización.")
+            """
             if int(inicio_hora) < 8 or int(fin_hora) > 20 or int(inicio_minuto) < 0 or int(fin_minuto) > 59:
-                raise ValidationError("Las horas deben estar entre 08 y 20, y los minutos entre 00 y 59.")
+                raise ValidationError("Las horas deben estar entre 08 y 20, y los minutos entre 00 y 59.")"""
 
     def __str__(self):
         return self.nombre

@@ -25,6 +25,7 @@ from django.db.models.functions import TruncMonth,TruncDay
 from django.utils.dateparse import parse_date
 from django.utils import timezone
 
+
 # Create your views here.
 
 
@@ -347,7 +348,7 @@ def crear_publicacion(request):
             if not custom_error_found:
                 messages.warning(request, generic_error_message)
     return render(request, 'publicacion/crear_publicacion.html', {'form': form})
-
+"""
 @login_required
 def modificar_mi_publicacion(request, publicacion_id):
     publicacion = get_object_or_404(Publicacion, id=publicacion_id)
@@ -370,7 +371,7 @@ def modificar_mi_publicacion(request, publicacion_id):
         'selected_dias_disponibles':selected_dias_disponibles,
     }
     return render(request, 'publicacion/modificar_mi_publicacion.html', context)
-
+"""
 @login_required
 def bajar_mi_publicacion(request, publicacion_id):
     publicacion = get_object_or_404(Publicacion, id=publicacion_id)
@@ -975,3 +976,40 @@ def get_intercambios_categoria(request):
     finalrep = {item['publicacion_ofertante__categoria']: item['total'] for item in intercambios}
 
     return JsonResponse({'intercambios_categoria': finalrep}, safe=False)
+
+from django.contrib import messages
+from django.shortcuts import render, get_object_or_404, redirect
+from django.urls import reverse
+from .models import Publicacion, Intercambio
+
+@login_required
+def modificar_mi_publicacion(request, publicacion_id):
+    publicacion = get_object_or_404(Publicacion, id=publicacion_id)
+
+    # Verificar si existen intercambios asociados a la publicación
+    intercambios = Intercambio.objects.filter(Q(publicacion_ofertante=publicacion) | Q(publicacion_demandada=publicacion))
+    intercambios_aceptados = intercambios.filter(estado__in=["ACEPTADA", "PENDIENTE"])
+
+    if intercambios_aceptados.exists():
+        messages.error(request, 'No puedes modificar esta publicación porque tiene intercambios aceptados o pendientes.')
+        return redirect('ver_publicacion', publicacion_id=publicacion.id)
+
+    selected_puntos_encuentro = publicacion.punto_encuentro
+    selected_dias_disponibles = publicacion.dias_convenientes
+
+    if request.method == 'POST':
+        form = UpdatePublicacionForm(request.POST, request.FILES, instance=publicacion)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Datos actualizados exitosamente.')
+            return redirect('ver_publicacion', publicacion_id=publicacion.id)
+    else:
+        form = UpdatePublicacionForm(instance=publicacion)
+
+    context = {
+        'publicacion': publicacion,
+        'form': form,
+        'selected_puntos_encuentro': selected_puntos_encuentro,
+        'selected_dias_disponibles': selected_dias_disponibles,
+    }
+    return render(request, 'publicacion/modificar_mi_publicacion.html', context)
