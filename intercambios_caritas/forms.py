@@ -255,17 +255,26 @@ class CategoriaForm(forms.ModelForm):
 class FilialForm(forms.ModelForm):
     class Meta:
         model = Filial
-        fields = ['nombre']
+        fields = ['nombre', 'direccion']  # Agrega 'direccion' a la lista
         #widgets = {
-        #    'nombre': forms.TextInput(attrs={'class': 'form-control'})
+        #    'nombre': forms.TextInput(attrs={'class': 'form-control'}),
+        #    'direccion': forms.TextInput(attrs={'class': 'form-control'}),  # Personaliza el widget si es necesario
         #}
 
     def clean_nombre(self):
         nombre = self.cleaned_data['nombre']
-        capitalized_nombre = nombre.title() 
+        capitalized_nombre = nombre.title()
         if Filial.objects.filter(nombre__iexact=capitalized_nombre).exists():
-            raise forms.ValidationError("")
+            raise forms.ValidationError("Una filial con este nombre ya existe.")
         return capitalized_nombre
+    
+    def clean_direccion(self):
+        direccion = self.cleaned_data['direccion']
+        capitalized_direccion = direccion.title()
+        # Aquí puedes agregar más validaciones si es necesario
+        if not direccion:
+            raise forms.ValidationError("La dirección no puede estar vacía.")
+        return capitalized_direccion
 
 class PreguntaForm(forms.ModelForm):
     class Meta:

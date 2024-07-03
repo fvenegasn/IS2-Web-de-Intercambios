@@ -26,7 +26,7 @@
                         {% if filiales %}
                         {% for filial in filiales %}
                         <li class="list-group-item d-flex justify-content-between align-items-center">
-                            {{ filial.nombre }}
+                            {{ filial.nombre }} - Direccion: {{ filial.direccion }}
                             <form method="post" style="display:inline;">
                                 {% csrf_token %}
                                 <input type="hidden" name="filial_id" value="{{ filial.id }}">

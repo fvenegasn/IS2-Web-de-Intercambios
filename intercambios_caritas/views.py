@@ -166,7 +166,8 @@ def signout(request):
     """ con redirect muestra las publicaciones, con render(request, "authentication/index.html") parece que no y con return home(request) el url no cambia queda /logout"""
 
 def quienes_somos(request):
-    return render(request, 'authentication/quienes_somos.html')
+    filiales = Filial.objects.all()
+    return render(request, 'authentication/quienes_somos.html', {'filiales': filiales})
 
 @login_required
 def mi_perfil(request):

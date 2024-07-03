@@ -22,7 +22,7 @@
                                     {% endfor %}
                                 {% endif %}
                             </li>
-                            <li class="list-group-item"><u>Dueño</u>: {{publicacion.usuario.get_full_name}}</li>
+                            <li class="list-group-item"><u>Dueño</u>: {{publicacion.usuario.get_full_name}} {{publicacion.usuario.get_promedio}}</li>
                             <li class="list-group-item"><u>Dias convenientes</u>: {{ publicacion.dias_convenientes }}</li>
                             <li class="list-group-item"><u>Franja horaria</u>: {{ publicacion.franja_horaria }}</li>
                         </ul>

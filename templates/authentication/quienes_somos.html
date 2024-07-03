@@ -3,30 +3,37 @@
 {% block content %}
 {% include 'layouts/navbar.html' %}
 <h1 class="text-center custom-h1-bg mb-2">Quienes somos:</h1>
-
-<div class="d-flex justify-content-center align-items-center flex-grow-1">
-    <section class="py-3 py-md-5">
-        <div class="container">
-          <div class="row gy-3 gy-md-4 gy-lg-0 align-items-lg-center">
-            <div class="col-12 col-lg-6 col-xl-5">
-              <img class="img-fluid rounded" loading="lazy" src="\static\logosCaritas\caritas_logo1.png" alt="About 1">
-            </div>
-            <div class="col-12 col-lg-6 col-xl-7">
-              <div class="row justify-content-xl-center">
-                <div class="col-12 col-xl-11">
-                  <h2 class="mb-3">Intercambios Cáritas</h2>
-                  <p class="lead fs-4 text-secondary mb-3">La solidaridad como moneda de cambio</p>
-                  <p class="mb-3">Somos una organización sin fines de lucro que busca fomentar la economía circular y la solidaridad
-                    entre
-                    las personas. Nuestro objetivo es que puedas intercambiar productos que ya no uses por otros que te
-                    interesen, sin necesidad de gastar dinero. De esta forma, contribuimos a la reducción de la basura y
-                    promovemos el consumo responsable. ¡Únete a nuestra comunidad!</p>
-                </div>
+<div class="card mb-3" style="width: 100%;">
+  <div class="row g-0">
+      <div class="col-md-7">
+          <div class="card-body">
+              <div class="">
+                <h2 class="mb-3">Intercambios Cáritas</h2>
+                <p class="mb-3">Somos una organización sin fines de lucro que busca fomentar la economía circular y la solidaridad
+                  entre
+                  las personas. Nuestro objetivo es que puedas intercambiar productos que ya no uses por otros que te
+                  interesen, sin necesidad de gastar dinero. De esta forma, contribuimos a la reducción de la basura y
+                  promovemos el consumo responsable. Hagamos que la solidaridad sea la moneda de cambio. ¡Únete a nuestra comunidad!</p>
+                  <h3 class="mb-3">Filiales disponibles para intercambiar:</h3>
+                  {% if filiales %}
+                    {% for filial in filiales %}
+                    <div class="card mb-2">
+                      <div class="card-body">
+                        <h5 class="card-title mb-3">🏠 {{ filial.nombre }}</h5>
+                        <p class="card-text">Direccion: {{ filial.direccion }}</p>
+                        {% comment %} <p class="card-text">{{ filial.horario }}</p> {% endcomment %}
+                      </div>
+                    </div>
+                    {% endfor %}
+                  {% else %}
+                    <p>No hay filiales disponibles actualmente.</p>
+                  {% endif %}
               </div>
-            </div>
           </div>
-        </div>
-      </section>
+      </div>
+      <div class="col-md-5 item-photo rounded" style="box-shadow: 0 4px 8px rgba(0,0,0,0.1); overflow: hidden; justify-content: center; align-items: center;">
+          <img style="width: 100%; height: auto; max-height: 100%;" src="\static\logosCaritas\caritas_logo1.png" alt="Imagen de la publicación">
+      </div>
+  </div>
 </div>
-
 {% endblock %}
