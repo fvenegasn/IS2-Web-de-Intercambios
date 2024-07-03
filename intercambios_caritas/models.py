@@ -24,19 +24,43 @@ class Usuario(AbstractUser):
         # Verifica primero si hay intercambios con calificaciones para el ofertante
         intercambios = Intercambio.objects.filter(publicacion_ofertante__usuario=self, calificacion_ofertante__gt=0)
         if intercambios.exists():
-            promedio = intercambios.aggregate(Avg('calificacion_ofertante'))['calificacion_ofertante__avg']
-            return promedio
+            total_promedio = 0
+            for intercambio in intercambios:
+                # Inicializa la suma y el contador para cada intercambio
+                suma_calificaciones = intercambio.calificacion_ofertante
+                contador = 1
+                # Si existe calificacion_demandante_a_ofertante, inclúyela en la suma y ajusta el contador
+                if hasattr(intercambio, 'calificacion_demandante_a_ofertante') and intercambio.calificacion_demandante_a_ofertante is not None and intercambio.calificacion_demandante_a_ofertante is not 0:
+                    suma_calificaciones += intercambio.calificacion_demandante_a_ofertante
+                    contador += 1
+                # Calcula el promedio para este intercambio y súmalo al total
+                total_promedio += suma_calificaciones / contador
+            # Calcula el promedio final dividiendo por la cantidad de intercambios
+            promedio_final = total_promedio / intercambios.count()
+            return promedio_final
         else:
-            return None  # O cualquier otro valor que indique la ausencia de calificaciones
+            return None
 
     def promedio_calificaciones_demandante(self):
         # Verifica primero si hay intercambios con calificaciones para el demandante
         intercambios = Intercambio.objects.filter(publicacion_demandada__usuario=self, calificacion_demandante__gt=0)
         if intercambios.exists():
-            promedio = intercambios.aggregate(Avg('calificacion_demandante'))['calificacion_demandante__avg']
-            return promedio
+            total_promedio = 0
+            for intercambio in intercambios:
+                # Inicializa la suma y el contador para cada intercambio
+                suma_calificaciones = intercambio.calificacion_demandante
+                contador = 1
+                # Si existe calificacion_ofertante_a_demandante, inclúyela en la suma y ajusta el contador
+                if hasattr(intercambio, 'calificacion_ofertante_a_demandante') and intercambio.calificacion_ofertante_a_demandante is not None and intercambio.calificacion_ofertante_a_demandante is not 0:
+                    suma_calificaciones += intercambio.calificacion_ofertante_a_demandante
+                    contador += 1
+                # Calcula el promedio para este intercambio y súmalo al total
+                total_promedio += suma_calificaciones / contador
+            # Calcula el promedio final dividiendo por la cantidad de intercambios
+            promedio_final = total_promedio / intercambios.count()
+            return promedio_final
         else:
-            return None  # O cualquier otro valor que indique la ausencia de calificaciones
+            return None
 
     def get_promedio(self):
         ofertante = self.promedio_calificaciones_ofertante()
@@ -418,6 +442,9 @@ class Intercambio(models.Model):
     donacion_descripcion = models.CharField(max_length=280, blank=True, null=True, default="Sin descripción", verbose_name="Descripción de la donación", help_text="Descripción de la donación realizada")
     calificacion_ofertante = models.IntegerField(default=0, verbose_name="Calificación del ofertante", help_text="Calificación del ofertante")
     calificacion_demandante = models.IntegerField(default=0, verbose_name="Calificación del demandante", help_text="Calificación del demandante")
+    calificacion_demandante_a_ofertante = models.IntegerField(default=0, blank=True, null=True, verbose_name="Calificación del demandante al ofertante", help_text="Calificación del demandante al ofertante")
+    calificacion_ofertante_a_demandante = models.IntegerField(default=0, blank=True, null=True, verbose_name="Calificación del ofertante al demandante", help_text="Calificación del ofertante al demandante")
+            
     
     def __str__(self):
         return f"Intercambio de {self.publicacion_ofertante.nombre} por {self.publicacion_demandada.nombre}"

@@ -50,6 +50,7 @@ urlpatterns = [
     path('rechazar_oferta/<int:oferta_id>/', views.rechazar_oferta, name='rechazar_oferta'),
     path('cancelar_oferta/<int:oferta_id>/', views.cancelar_oferta, name='cancelar_oferta'),
     path('gestionar_intercambio/<int:oferta_id>/', views.gestionar_intercambio, name="gestionar_intercambio"),
+    path('calificar/<int:oferta_id>/<str:tipo_calificacion>/', views.calificar_otro, name='calificar_otro'),
     path('intercambios', views.ver_mis_intercambios, name='ver_mis_intercambios'),
     path('intercambios/moderador', views.ver_intercambios_moderador, name='ver_intercambios_moderador'),
 

@@ -649,6 +649,19 @@ def gestionar_intercambio(request, oferta_id):
     
     return redirect('ver_intercambios_moderador')
 
+@login_required
+def calificar_otro(request, oferta_id, tipo_calificacion):
+    oferta = get_object_or_404(Intercambio, id=oferta_id)
+    calificacion_key = f'calificacion_{tipo_calificacion}'  # Construye el nombre del campo basado en el tipo de calificación
+    calificacion = request.POST.get(calificacion_key)
+    
+    if calificacion:
+        setattr(oferta, calificacion_key, calificacion)  # Actualiza el campo correspondiente en el modelo
+        oferta.save()
+        messages.success(request, 'Calificación enviada con éxito.')
+    else:
+        messages.warning(request, 'Debe seleccionar una calificación.')
+    return redirect('ver_mis_intercambios')
 
 @login_required
 def ver_metricas_filiales(request):
