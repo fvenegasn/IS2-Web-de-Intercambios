@@ -14,13 +14,13 @@
                             <li class="list-group-item"><u>Categoría</u>: {{ publicacion.categoria }}</li>
                             <li class="list-group-item"><u>Estado</u>: {{ publicacion.estado }}</li>
                             <li class="list-group-item"><u>Punto de encuentro</u>:
-                                {% if publicacion.filial.count == 1 %}
-                                    {{ publicacion.filial.first }}
-                                {% else %}
-                                    {% for punto in publicacion.filial.all %}
-                                        {{punto}} <a href="">-</a>
-                                    {% endfor %}
-                                {% endif %}
+                                {% with publicacion.filial.all as filiales %}
+                                    {% if filiales|length == 1 %}
+                                        {{ filiales.first }}
+                                    {% else %}
+                                        {{ filiales|join:" - " }}
+                                    {% endif %}
+                                {% endwith %}
                             </li>
                             <li class="list-group-item"><u>Dueño</u>: {{publicacion.usuario.get_full_name}} {{publicacion.usuario.get_promedio}}</li>
                             <li class="list-group-item"><u>Dias convenientes</u>: {{ publicacion.dias_convenientes }}</li>

@@ -332,7 +332,7 @@ def crear_publicacion(request):
         else:
             print (form.errors)
             error_messages = {
-                'punto_encuentro': 'No se especificó un punto de encuentro.',
+                'filial': 'No se especificó un punto de encuentro.',
                 'dias_convenientes': 'No se especificó un dia conveniente.',
                 'franja_horaria_inicio': 'La hora de fin no puede ser menor a la hora de inicio.',
                 'categoria':'No se especificó la categoría',
@@ -440,7 +440,7 @@ def crear_oferta(request, publicacion_id):
             request.POST,
             user=usuario_actual,
             dias=publicacion_demandada.dias_convenientes,
-            puntos=publicacion_demandada.punto_encuentro,
+            #puntos=publicacion_demandada.punto_encuentro,
             categoria=publicacion_demandada.categoria,
             franja_horaria_inicio=publicacion_demandada.franja_horaria_inicio,
             franja_horaria_fin=publicacion_demandada.franja_horaria_fin
@@ -472,7 +472,7 @@ def crear_oferta(request, publicacion_id):
         form = IntercambioForm(
             user=usuario_actual,
             dias=publicacion_demandada.dias_convenientes,
-            puntos=publicacion_demandada.punto_encuentro,
+            #puntos=publicacion_demandada.punto_encuentro,
             categoria=publicacion_demandada.categoria,
             franja_horaria_inicio=publicacion_demandada.franja_horaria_inicio,
             franja_horaria_fin=publicacion_demandada.franja_horaria_fin
@@ -1018,7 +1018,7 @@ def modificar_mi_publicacion(request, publicacion_id):
         messages.error(request, 'No puedes modificar esta publicación porque tiene intercambios aceptados o pendientes.')
         return redirect('ver_publicacion', publicacion_id=publicacion.id)
 
-    selected_puntos_encuentro = publicacion.punto_encuentro
+    selected_puntos_encuentro = publicacion.filial.all()
     selected_dias_disponibles = publicacion.dias_convenientes
 
     if request.method == 'POST':

@@ -77,7 +77,7 @@ class IntercambioForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user')
         dias = kwargs.pop('dias')
-        puntos = kwargs.pop('puntos')
+        #puntos = kwargs.pop('puntos')
         categoria = kwargs.pop('categoria')
         franja_horaria_inicio = kwargs.pop('franja_horaria_inicio')
         franja_horaria_fin = kwargs.pop('franja_horaria_fin')
@@ -85,7 +85,7 @@ class IntercambioForm(forms.ModelForm):
         self.fields['publicacion_ofertante'].queryset = Publicacion.objects.filter(usuario=user, categoria=categoria, disponible_para_intercambio=True)
         # self.fields['dias_convenientes'].choices = [(dia, dia) for dia in dias]
 
-        self.fields['filial'].choices = [(p, p) for p in puntos]
+        # self.fields['filial'].choices = [(p, p) for p in puntos]
 
         self.franja_horaria_inicio_publicacion = franja_horaria_inicio
         self.franja_horaria_fin_publicacion = franja_horaria_fin
@@ -246,9 +246,9 @@ class UpdatePublicacionForm(forms.ModelForm):
         widget=forms.CheckboxSelectMultiple,
         required=True
     )
-    punto_encuentro = forms.MultipleChoiceField(
-        choices=Publicacion.PUNTOS_ENC,
-        widget=forms.CheckboxSelectMultiple,
+    filial = forms.ModelMultipleChoiceField(
+        queryset=Filial.objects.all(),
+        widget=forms.SelectMultiple,  # Usando SelectMultiple
         required=True
     )
     franja_horaria_inicio = forms.TimeField(
@@ -264,10 +264,10 @@ class UpdatePublicacionForm(forms.ModelForm):
 
     class Meta:
         model = Publicacion
-        fields = ['nombre', 'descripcion', 'imagen', 'categoria', 'estado', 'punto_encuentro', 'dias_convenientes', 'franja_horaria_inicio', 'franja_horaria_fin']
+        fields = ['nombre', 'descripcion', 'imagen', 'categoria', 'estado', 'filial', 'dias_convenientes', 'franja_horaria_inicio', 'franja_horaria_fin']
         widgets = {
             'dias_convenientes': forms.CheckboxSelectMultiple,
-            'punto_encuentro': forms.CheckboxSelectMultiple,
+            'filial': forms.CheckboxSelectMultiple,
             'franja_horaria_inicio': forms.TimeInput(format='%H:%M'),
             'franja_horaria_fin': forms.TimeInput(format='%H:%M'),
         }

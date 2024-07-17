@@ -66,12 +66,12 @@ class Usuario(AbstractUser):
         ofertante = self.promedio_calificaciones_ofertante()
         demandante = self.promedio_calificaciones_demandante()
         if ofertante is not None and demandante is not None:
-            total = (ofertante + demandante) / 2
+            total = round((ofertante + demandante) / 2, 2)
             return f"⭐{total}⭐"
         elif ofertante is not None:
-            return f"⭐{ofertante}⭐"
+            return f"⭐{round(ofertante, 2)}⭐"
         elif demandante is not None:
-            return f"⭐{demandante}⭐"
+            return f"⭐{round(demandante, 2)}⭐"
         else:
             return "(Usuario nuevo)"  # O cualquier otro valor que indique la ausencia de calificaciones
 
@@ -206,7 +206,7 @@ class Publicacion(models.Model):
     categoria = models.CharField(max_length=50, blank=False, null=False, choices=CATEGORIAS, default="Otros")
     categoria_nueva = models.ForeignKey(Categoria, on_delete=models.PROTECT,default=1)
     estado = models.CharField(max_length=50, blank=False, null=False, choices=ESTADOS, default=ESTADOS[0][0])
-    punto_encuentro = MultiSelectField(choices=PUNTOS_ENC, blank=True, max_length=100)
+    punto_encuentro = MultiSelectField(choices=PUNTOS_ENC, blank=True, max_length=100) #esto ya no se usa, pero lo dejo ahi porque tengo miedo
     #filial=models.ForeignKey(Filial,on_delete=models.CASCADE,blank=True)
     filial = models.ManyToManyField(Filial, related_name="publicaciones", blank=True)
     dias_convenientes = MultiSelectField(choices=DIAS_SEMANA, blank=True, max_length=100)

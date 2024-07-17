@@ -29,8 +29,14 @@
             <ul class="list-group list-group-flush">
                 <li class="list-group-item"><u>Estado</u>: {{ publicacion.estado }}</li>
                 <li class="list-group-item"><u>Categoría</u>: {{ publicacion.categoria }}</li>
-                <li class="list-group-item"><u>Punto de encuentro</u>: {{ publicacion.punto_encuentro }}
-                </li>
+                <li class="list-group-item"><u>Punto de encuentro</u>: 
+                {% with publicacion.filial.all as filiales %}
+                    {% if filiales|length == 1 %}
+                        {{ filiales.first }}
+                    {% else %}
+                        {{ filiales|join:" - " }}
+                    {% endif %}
+                {% endwith %}                </li>
                 <!-- <li class="list-group-item"><u>Dueño</u>: {{ publicacion.usuario_nombre }}</li> esto lo pondria en ver publicacion-->
                 <li class="list-group-item">
                     <a href="{% url 'ver_publicacion' publicacion.id %}" class="btn btn-primary d-block">Ver

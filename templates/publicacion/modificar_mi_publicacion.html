@@ -107,18 +107,20 @@
                             <div class="row">
                                 <div class="col-md-4 mb-3">
                                     <div data-mdb-input-init class="form-outline">
-                                        <label class="form-label mb-1" for="punto_encuentro">Punto de encuentro</label>
-                                        <div id="punto_encuentro">
-                                            {% for value, display in form.fields.punto_encuentro.choices %}
+                                        <label class="form-label mb-1" for="filial">Punto de encuentro</label>
+                                        <div id="filial">
+                                            
+                                            {% for punto in form.fields.filial.queryset %}
+                                                
                                                 <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" value="{{ value }}" id="punto_encuentro_{{ forloop.counter0 }}" name="punto_encuentro"
-                                                        {% if value in selected_puntos_encuentro %} checked {% endif %}>
-                                                    <label class="form-check-label" for="punto_encuentro_{{ forloop.counter0 }}">{{ display }}</label>
+                                                    <input class="form-check-input" type="checkbox" value="{{ punto.pk }}" id="filial_{{ forloop.counter0 }}" name="filial"
+                                                        {% if punto in selected_puntos_encuentro %} checked {% endif %}>
+                                                    <label class="form-check-label" for="filial_{{ forloop.counter0 }}">{{ punto }}</label>
                                                 </div>
                                             {% endfor %}
-                                            {% if form.punto_encuentro.errors %}
+                                            {% if form.filial.errors %}
                                                 <div class="invalid-feedback d-block">
-                                                    {% for error in form.punto_encuentro.errors %}
+                                                    {% for error in form.filial.errors %}
                                                         {{ error }}
                                                     {% endfor %}
                                                 </div>
