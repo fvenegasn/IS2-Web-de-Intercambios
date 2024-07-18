@@ -1,33 +1,24 @@
-# "Intercambios caritas" Proyecto de Ingeniería de Software II 2024
-## Descripción
-Intercambios Caritas es una webApp tipo "Marketplace" desarrollada en el contexto de la materia "Ingenieria de software 2" de la carrera "Licenciatura en sistemas" en la UNLP
+# "Intercambios caritas" Ingeniería de Software II 2024
+## Descripción:
+Intercambios Caritas es una webApp tipo "Marketplace" desarrollada en el contexto de la materia "Ingenieria de software 2" de la carrera "Licenciatura en sistemas" en la UNLP.
 
-## Tabla de Contenidos
-
-- [Descripción](#descripción)
-- [Alumnos/Contacto](#alumnoscontacto)
-- [Dependencias](#dependencias)
-- [Instalación y uso](#instalación-y-uso)
-
-## Alumnos/Contacto
+## Alumnos/Contacto:
 
 - Montalivet, Juan Sebastian - [Juanse](https://github.com/juan4171) [<img src="https://img.icons8.com/material-two-tone/452/github.png" alt="GitHub" width="20" height="20"/>](https://github.com/juan4171)
 - Peñalba, Manuel - [Manu](https://github.com/manupenalba) [<img src="https://img.icons8.com/material-two-tone/452/github.png" alt="GitHub" width="20" height="20"/>](https://github.com/manupenalba)
-- Sirai, Juan - [Juan Sirai](https://github.com/juansirai1) [<img src="https://img.icons8.com/material-two-tone/452/github.png" alt="GitHub" width="20" height="20"/>](https://github.com/juansirai)
+- Sirai, Juan - [Juan](https://github.com/juansirai1) [<img src="https://img.icons8.com/material-two-tone/452/github.png" alt="GitHub" width="20" height="20"/>](https://github.com/juansirai)
 - Venegas Naboulet, Francisco  - [Fran](https://github.com/fvenegasn) [<img src="https://img.icons8.com/material-two-tone/452/github.png" alt="GitHub" width="20" height="20"/>](https://github.com/fvenegasn)
 
-## Dependencias
-
+## Tecnologías utilizadas:
 [![Python](https://skillicons.dev/icons?i=python&theme=dark)](https://www.python.org/)
 [![Django](https://skillicons.dev/icons?i=django&theme=dark)](https://www.djangoproject.com/)
 [![HTML](https://skillicons.dev/icons?i=html&theme=dark)](https://developer.mozilla.org/es/docs/Web/HTML)
 [![CSS](https://skillicons.dev/icons?i=css&theme=dark)](https://developer.mozilla.org/es/docs/Web/CSS)
 [![Bootstrap](https://skillicons.dev/icons?i=bootstrap&theme=dark)](https://getbootstrap.com/)  
+-    [Python 3.12.3](https://www.python.org/)
+-    [Django 5.0.6](https://www.djangoproject.com/)
 
--    [Python 3.12.3]()
--    [Django 5.0.6]()
-
-## Instalación y uso
+## Instalación:
 
 Instrucciones de instalacion del proyecto en un entorno local.
 
@@ -39,7 +30,6 @@ git clone https://github.com/juan4171/Intercambios-Caritas-IS2.git
 cd Intercambios-Caritas-IS2
 
 # Crea y activa un entorno virtual (opcional pero recomendado)
-# con py -m venv venv:
 py -m venv venv
 .\venv\Scripts\activate
 
