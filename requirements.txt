@@ -1,0 +1,6 @@
+asgiref==3.8.1
+Django==5.0.6
+django-multiselectfield==0.1.13
+pillow==10.4.0
+sqlparse==0.5.0
+tzdata==2024.1
