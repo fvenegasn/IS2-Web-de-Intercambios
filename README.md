@@ -1,6 +1,6 @@
-# "Intercambios caritas" Ingeniería de Software II 2024
+# Intercambios caritas - Ingeniería de Software II 2024
 ## Descripción:
-Intercambios Caritas es una webApp tipo "Marketplace" desarrollada en el contexto de la materia "Ingenieria de software 2" de la carrera "Licenciatura en sistemas" en la UNLP.
+El proyecto Intercambios Caritas es una webApp tipo Marketplace desarrollada en el contexto de la materia Ingenieria de software 2 de la carrera Licenciatura en sistemas en la UNLP.
 
 ## Alumnos/Contacto:
 
