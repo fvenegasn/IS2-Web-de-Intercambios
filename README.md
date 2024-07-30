@@ -9,6 +9,9 @@ El proyecto Intercambios Cáritas es una webApp tipo Marketplace desarrollada en
 - Sirai, Juan - [Juan](https://github.com/juansirai1) [<img src="https://img.icons8.com/material-two-tone/452/github.png" alt="GitHub" width="20" height="20"/>](https://github.com/juansirai)
 - Venegas Naboulet, Francisco  - [Fran](https://github.com/fvenegasn) [<img src="https://img.icons8.com/material-two-tone/452/github.png" alt="GitHub" width="20" height="20"/>](https://github.com/fvenegasn)
 
+## Elevator pitch del proyecto:
+https://github.com/user-attachments/assets/12c83bc8-3f86-4632-9c40-707635fc1dca
+
 ## Tecnologías utilizadas:
 [![Python](https://skillicons.dev/icons?i=python&theme=dark)](https://www.python.org/)
 [![Django](https://skillicons.dev/icons?i=django&theme=dark)](https://www.djangoproject.com/)
