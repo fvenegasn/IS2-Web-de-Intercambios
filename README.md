@@ -3,7 +3,6 @@
 El proyecto Intercambios Cáritas es una webApp tipo Marketplace desarrollada en el contexto de la materia Ingenieria de software 2 de la carrera Licenciatura en Sistemas en la UNLP, en donde se practicaron las distintas etapas de desarrollo de un producto de software: Elicitación y análisis de requerimientos, diseño, planificación, implementación, pruebas, demos y despliegue de proyecto.
 
 Intercambios Cáritas permite a sus usuarios publicar productos que estén a su alcance para intercambiarlos por otros que les sea de su interés, siendo la ONG Cáritas administradora de dichos intercambios para obtener una mayor exposición de sus filiales.  
-**Algunas de sus funcionalidades**: Registro y autenticación de usuarios, creacion de publicaciones para intercambios, búsqueda y filtrado de publicaciones, sistema de calificaciones, sistema de notificaciones, panel de administracio y moderacion de intercambios.  
 
 <p align="center">
   <img src="https://github.com/user-attachments/assets/5e8c4afd-11b4-40d7-a9e3-33fa2d6a9f71" alt="Captura de pantalla (654)" width="400">
@@ -12,7 +11,9 @@ Intercambios Cáritas permite a sus usuarios publicar productos que estén a su 
   <img src="https://github.com/user-attachments/assets/1c5289de-50c3-42e5-8cb5-21c1418cb5a8" alt="Descripción de la imagen 1" width="250">
   <img src="https://github.com/user-attachments/assets/d2402744-ec63-4acd-9b36-804d86d0c9ab" alt="Descripción de la imagen 2" width="250">
   <img src="https://github.com/user-attachments/assets/ab7a2e43-d791-4b6b-9837-0b7dd8ad19e6" alt="Descripción de la imagen 3" width="250">
-</p>
+</p>  
+
+Algunas de sus funcionalidades: Registro y autenticación de usuarios, creacion de publicaciones para intercambios, búsqueda y filtrado de publicaciones, sistema de calificaciones, sistema de notificaciones, panel de administracio y moderacion de intercambios.  
 
 ## Tecnologías utilizadas:
 [![Python](https://skillicons.dev/icons?i=python&theme=dark)](https://www.python.org/)
