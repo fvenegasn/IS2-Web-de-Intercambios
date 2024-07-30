@@ -14,6 +14,8 @@ https://github.com/user-attachments/assets/12c83bc8-3f86-4632-9c40-707635fc1dca
 
 https://youtu.be/lDdWNGudDyg?si=Sa-GX_gyEL0TbytY
 
+[![](https://markdown-videos.deta.dev/youtube/NarBox1LkYc)](https://youtu.be/NarBox1LkYc)
+[![](https://markdown-videos.deta.dev/youtube/lDdWNGudDyg)](https://youtu.be/lDdWNGudDyg?si=Sa-GX_gyEL0TbytY)
 [¡!][(https://markdown-videos.deta.dev/youtube/lDdWNGudDyg)](https://youtu.be/lDdWNGudDyg?si=Sa-GX_gyEL0TbytY)
 
 ## Tecnologías utilizadas:
