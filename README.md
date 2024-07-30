@@ -12,6 +12,10 @@ El proyecto Intercambios Cáritas es una webApp tipo Marketplace desarrollada en
 ## Elevator pitch del proyecto:
 https://github.com/user-attachments/assets/12c83bc8-3f86-4632-9c40-707635fc1dca
 
+https://youtu.be/lDdWNGudDyg?si=Sa-GX_gyEL0TbytY
+
+[¡!][(https://markdown-videos.deta.dev/youtube/lDdWNGudDyg)](https://youtu.be/lDdWNGudDyg?si=Sa-GX_gyEL0TbytY)
+
 ## Tecnologías utilizadas:
 [![Python](https://skillicons.dev/icons?i=python&theme=dark)](https://www.python.org/)
 [![Django](https://skillicons.dev/icons?i=django&theme=dark)](https://www.djangoproject.com/)
