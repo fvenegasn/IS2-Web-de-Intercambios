@@ -13,7 +13,7 @@ Intercambios Cáritas permite a sus usuarios publicar productos que estén a su 
   <img src="https://github.com/user-attachments/assets/ab7a2e43-d791-4b6b-9837-0b7dd8ad19e6" alt="Descripción de la imagen 3" width="250">
 </p>  
 
-Algunas de sus funcionalidades: Registro y autenticación de usuarios, creacion de publicaciones para intercambios, búsqueda y filtrado de publicaciones, sistema de calificaciones, sistema de notificaciones, panel de administracio y moderacion de intercambios.  
+Algunas de sus funcionalidades: Registro y autenticación de usuarios, creacion de publicaciones para intercambios, búsqueda y filtrado de publicaciones, sistema de calificaciones, sistema de notificaciones, panel de administracion y moderacion de intercambios.  
 
 ## Tecnologías utilizadas:
 [![Python](https://skillicons.dev/icons?i=python&theme=dark)](https://www.python.org/)
