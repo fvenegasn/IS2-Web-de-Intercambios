@@ -2,7 +2,9 @@
 ## Descripción:
 El proyecto Intercambios Cáritas es una webApp tipo Marketplace desarrollada en el contexto de la materia Ingenieria de software 2 de la carrera Licenciatura en Sistemas en la UNLP, en donde se practicaron las distintas etapas de desarrollo de un producto de software: Elicitación y análisis de requerimientos, diseño, planificación, implementación, pruebas, demos y despliegue de proyecto.
 
-Intercambios Cáritas permite a sus usuarios publicar productos que estén a su alcance para intercambiarlos por otros que les sea de su interés, siendo la ONG Cáritas administradora de dichos intercambios para obtener una mayor exposición de sus filiales.  
+Intercambios Cáritas permite a sus usuarios publicar productos que estén a su alcance para intercambiarlos por otros que les sea de su interés, siendo la ONG Cáritas** administradora de dichos intercambios para obtener una mayor exposición de sus filiales.  
+
+** Este proyecto es ficticio y no tiene relación oficial con la ONG Cáritas.
 
 <p align="center">
   <img src="https://github.com/user-attachments/assets/5e8c4afd-11b4-40d7-a9e3-33fa2d6a9f71" alt="Captura de pantalla (654)" width="400">
