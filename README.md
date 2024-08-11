@@ -30,11 +30,6 @@ Algunas de sus funcionalidades: Registro y autenticación de usuarios, creacion 
 - Sirai, Juan - [Juan](https://github.com/juansirai1) [<img src="https://img.icons8.com/material-two-tone/452/github.png" alt="GitHub" width="20" height="20"/>](https://github.com/juansirai)
 - Venegas Naboulet, Francisco  - [Fran](https://github.com/fvenegasn) [<img src="https://img.icons8.com/material-two-tone/452/github.png" alt="GitHub" width="20" height="20"/>](https://github.com/fvenegasn)
 
-## Elevator Pitch del proyecto:
-<div align="center">
-  <video src="https://github.com/user-attachments/assets/12c83bc8-3f86-4632-9c40-707635fc1dca" controls></video>
-</div>
-
 ## Instalación:
 
 Instrucciones de instalacion del proyecto en un entorno local con [Python 3.12.3](https://www.python.org/) instalado.
